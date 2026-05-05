@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { ActionResponse } from '@/types';
 import { createEvent, deleteEvent, updateEvent } from '@/lib/googleCalendar';
+import { calculateXp, calculateStreak } from '@/utils/gamification';
 
 export async function createTask(formData: FormData): Promise<ActionResponse> {
   try {
@@ -129,6 +130,15 @@ export async function toggleTaskStatus(taskId: string, currentStatus: 'pending' 
 
     const newStatus = currentStatus === 'pending' ? 'done' : 'pending';
 
+    // Fetch the task to get scheduled_time
+    const { data: task } = await supabase
+      .from('tasks')
+      .select('scheduled_time')
+      .eq('id', taskId)
+      .single();
+
+    if (!task) return { success: false, error: 'Task not found' };
+
     const { error } = await supabase
       .from('tasks')
       .update({ status: newStatus })
@@ -136,6 +146,36 @@ export async function toggleTaskStatus(taskId: string, currentStatus: 'pending' 
       .eq('user_id', user.id);
 
     if (error) return { success: false, error: 'Failed to update task.' };
+
+    // PHASE 3: GAMIFICATION CORE LOGIC
+    if (newStatus === 'done') {
+      const { data: userData } = await supabase
+        .from('users')
+        .select('xp, streak_count, last_active_date')
+        .eq('id', user.id)
+        .single();
+
+      if (userData) {
+        const now = new Date();
+        const scheduledTime = new Date(task.scheduled_time);
+
+        // 1. XP Logic (pure, testable)
+        const { earnedXp } = calculateXp(now, scheduledTime);
+        const newXp = userData.xp + earnedXp;
+
+        // 2. Streak Logic (pure, testable)
+        const { newStreakCount, newLastActiveDate } = calculateStreak(
+          userData.streak_count,
+          userData.last_active_date,
+          now
+        );
+
+        await supabase
+          .from('users')
+          .update({ xp: newXp, streak_count: newStreakCount, last_active_date: newLastActiveDate })
+          .eq('id', user.id);
+      }
+    }
 
     revalidatePath('/dashboard');
     return { success: true };
