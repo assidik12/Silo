@@ -13,13 +13,28 @@ export async function GET(request: Request) {
     
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      // Jika berhasil, redirect ke dashboard (atau halaman next)
-      return NextResponse.redirect(`${origin}${next}`)
+      // Pastikan menggunakan https untuk production, dan http untuk local
+      const forwardedHost = request.headers.get('x-forwarded-host')
+      const isLocal = request.url.includes('localhost')
+      
+      let base = origin
+      if (forwardedHost) {
+        base = isLocal ? `http://${forwardedHost}` : `https://${forwardedHost}`
+      }
+
+      return NextResponse.redirect(`${base}${next}`)
     } else {
       console.error('Auth callback error:', error)
     }
   }
 
-  // Jika gagal, kembalikan ke login
-  return NextResponse.redirect(`${origin}/login?error=auth-failed`)
+  const forwardedHost = request.headers.get('x-forwarded-host')
+  const isLocal = request.url.includes('localhost')
+  
+  let base = origin
+  if (forwardedHost) {
+    base = isLocal ? `http://${forwardedHost}` : `https://${forwardedHost}`
+  }
+  
+  return NextResponse.redirect(`${base}/login?error=auth-failed`)
 }

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, PlusCircle, History, LogOut, CheckCircle2, Menu, X } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, History, LogOut, CheckCircle2, Menu, X, User, MessageCircle } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 
@@ -22,6 +22,8 @@ export default function Sidebar() {
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Create Task', href: '/dashboard/create', icon: PlusCircle },
     { name: 'History Task', href: '/dashboard/history', icon: History },
+    {name : "Feedback", href: "/dashboard/feedback", icon: MessageCircle},
+    {name : "Profile", href: "/dashboard/profile", icon: User}
   ];
 
   const closeSidebar = () => setIsOpen(false);

@@ -9,10 +9,17 @@ import {
   MessageSquare, 
   TrendingUp, 
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  User
 } from 'lucide-react';
+import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-slate-800 font-sans selection:bg-indigo-100">
       
@@ -31,12 +38,21 @@ export default function LandingPage() {
             <a href="#testimoni" className="hover:text-slate-800 transition-colors">Testimoni</a>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors hidden sm:block">
-              Login
-            </Link>
-            <Link href="/login" className="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2 rounded-full text-sm font-medium shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5">
-              Mulai Gratis
-            </Link>
+            {user ? (
+              <Link href="/dashboard" className="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-5 py-2 rounded-full text-sm font-bold transition-all hover:-translate-y-0.5 border border-indigo-200 shadow-sm">
+                <User className="w-4 h-4" />
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors hidden sm:block">
+                  Login
+                </Link>
+                <Link href="/login" className="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2 rounded-full text-sm font-medium shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5">
+                  Mulai Gratis
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -59,8 +75,8 @@ export default function LandingPage() {
               DoJo bantu lo ngatur tugas, ngingetin deadline, dan bikin proses belajar jadi lebih seru pake sistem reward + AI assistant.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-              <Link href="/login" className="w-full sm:w-auto bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-3.5 rounded-full font-medium shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
-                Coba Gratis <ArrowRight className="w-4 h-4" />
+              <Link href={user ? "/dashboard" : "/login"} className="w-full sm:w-auto bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-3.5 rounded-full font-medium shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
+                {user ? 'Ke Dashboard' : 'Coba Gratis'} <ArrowRight className="w-4 h-4" />
               </Link>
               <a href="#fitur" className="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-3.5 rounded-full font-medium transition-all hover:-translate-y-1 text-center">
                 Lihat Cara Kerja
@@ -291,40 +307,63 @@ export default function LandingPage() {
       </section>
 
       {/* 6. PROGRESS & INSIGHT SECTION */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-slate-900 mb-12">Lihat progres lo tiap minggu</h2>
+      <section className="py-24 px-6 bg-white overflow-hidden">
+        <div className="max-w-4xl mx-auto text-center relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-orange-50/50 blur-3xl rounded-full -z-10"></div>
           
-          <div className="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 max-w-2xl mx-auto">
+          <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">Bangun habit tanpa kerasa berat</h2>
+          <p className="text-slate-500 max-w-xl mx-auto mb-12">Fitur <span className="font-bold text-orange-500">Streak</span> dirancang dengan pendekatan psikologis buat ngasih lo dopamin instan setiap kali ngerjain tugas.</p>
+          
+          <div className="bg-white rounded-3xl shadow-2xl shadow-slate-200/50 border border-slate-100 p-8 max-w-2xl mx-auto transform transition-all hover:scale-[1.01] duration-500">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-8">
-              <div className="text-left">
-                <h3 className="text-slate-500 font-medium mb-1">Produktivitas Minggu Ini</h3>
-                <div className="text-4xl font-extrabold text-slate-800">75%</div>
+              <div className="text-left text-center sm:text-left w-full sm:w-auto">
+                <h3 className="text-slate-400 font-bold uppercase tracking-wide text-xs mb-1">Momentum Saat Ini</h3>
+                <div className="text-4xl font-extrabold text-slate-800">5 Hari!</div>
               </div>
-              <div className="bg-orange-100 text-orange-600 px-4 py-2 rounded-xl font-bold flex items-center gap-2">
-                🔥 5 Hari Streak
+              <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white px-5 py-2.5 rounded-full font-bold flex items-center gap-2 shadow-lg shadow-orange-200 animate-pulse">
+                🔥 Lo Sedang On Fire!
               </div>
             </div>
             
-            {/* Fake Chart */}
-            <div className="flex items-end justify-between h-32 gap-2 mb-6">
-              {[40, 60, 30, 80, 100, 75, 90].map((h, i) => (
-                <div key={i} className="w-full bg-slate-100 rounded-t-md relative group">
-                  <div 
-                    className="absolute bottom-0 w-full bg-indigo-400 rounded-t-md group-hover:bg-indigo-500 transition-colors" 
-                    style={{ height: `${h}%` }}
-                  ></div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="bg-sky-50 p-4 rounded-2xl flex items-start gap-4 text-left">
-              <TrendingUp className="w-6 h-6 text-sky-500 shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-bold text-slate-800">Lo on fire! 🔥</h4>
-                <p className="text-sm text-slate-600">Lo lebih produktif dari 70% user lain minggu ini. Pertahanin momentumnya!</p>
+            {/* Streak Timeline Graphic */}
+            <div className="mb-8 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6">Jangan Biarin Api Ini Padam</h4>
+              
+              <div className="flex justify-between items-center relative px-2">
+                {/* Track Line */}
+                <div className="absolute left-6 right-6 top-5 -translate-y-1/2 h-1.5 bg-slate-200 rounded-full z-0"></div>
+                {/* Active Track Line */}
+                <div className="absolute left-6 top-5 -translate-y-1/2 h-1.5 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full z-0 transition-all duration-1000" style={{ width: '65%' }}></div>
+                
+                {/* Simulated 7 days */}
+                {['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'].map((day, i) => {
+                  const isActive = i < 5; // 5 days streak
+                  const isToday = i === 5;
+                  
+                  return (
+                    <div key={i} className="relative z-10 flex flex-col items-center gap-3">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-500 ${
+                        isActive 
+                          ? 'bg-gradient-to-br from-orange-400 to-red-500 text-white shadow-md shadow-orange-200 scale-110' 
+                          : isToday 
+                            ? 'bg-white border-4 border-orange-300 text-orange-500 animate-bounce'
+                            : 'bg-white border-2 border-slate-200 text-slate-300'
+                      }`}>
+                        {isActive ? '✓' : (isToday ? '?' : '')}
+                      </div>
+                      <span className={`text-xs font-bold ${isActive ? 'text-orange-600' : isToday ? 'text-slate-800' : 'text-slate-400'}`}>{day}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              
+              <div className="mt-8 bg-orange-100/50 p-4 rounded-xl border border-orange-100">
+                <p className="text-sm text-orange-800 font-medium leading-relaxed">
+                  Cuma butuh <span className="font-extrabold bg-orange-200 px-2 py-0.5 rounded">1 Tugas Selesai</span> hari ini untuk ngelanjutin streak lo. Sayang banget kan kalau harus ngulang dari 0 lagi?
+                </p>
               </div>
             </div>
+            
           </div>
         </div>
       </section>

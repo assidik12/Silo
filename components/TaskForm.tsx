@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createTask } from '@/app/actions/task.actions';
-import { CheckCircle2, XCircle } from 'lucide-react';
+import { CheckCircle2, XCircle, Sparkles } from 'lucide-react';
 
 export default function TaskForm() {
   const router = useRouter();
@@ -48,74 +48,89 @@ export default function TaskForm() {
 
   return (
     <>
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-lg font-medium text-gray-900">Add New Task</h3>
-        
-        <form ref={formRef} action={handleSubmit} className="space-y-4">
+      <div className="w-full">
+        <form ref={formRef} action={handleSubmit} className="space-y-6">
+          
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700">Task Title</label>
+            <label htmlFor="title" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Task Title</label>
             <input
               type="text"
               name="title"
               id="title"
               required
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 text-gray-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
-              placeholder="Study Calculus"
+              className="block w-full rounded-2xl border-none bg-slate-100/80 px-5 py-4 text-slate-700 font-semibold placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all shadow-sm"
+              placeholder="E.g., Bikin PPT Presentasi"
             />
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description (Optional)</label>
+            <label htmlFor="description" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
+              Description <span className="text-slate-400 font-medium normal-case">(Opsional)</span>
+            </label>
             <textarea
               name="description"
               id="description"
-              rows={2}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm text-gray-600 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
-              placeholder="Details about the task..."
+              rows={3}
+              className="block w-full rounded-2xl border-none bg-slate-100/80 px-5 py-4 text-slate-700 font-medium placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all shadow-sm resize-none"
+              placeholder="Catatan kecil buat task ini..."
             />
           </div>
 
           <div>
-            <label htmlFor="module_link" className="block text-sm font-medium text-gray-700">Module Link (Google Drive)</label>
+            <label htmlFor="module_link" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
+              Module Link <span className="text-slate-400 font-medium normal-case">(Opsional)</span>
+            </label>
             <input
               type="url"
               name="module_link"
               id="module_link"
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm text-gray-600 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+              className="block w-full rounded-2xl border-none bg-slate-100/80 px-5 py-4 text-slate-700 font-medium placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all shadow-sm"
               placeholder="https://drive.google.com/..."
             />
           </div>
 
-          <div>
-            <label htmlFor="scheduled_time" className="block text-sm font-medium text-gray-700">Scheduled Time</label>
-            <input
-              type="datetime-local"
-              name="scheduled_time"
-              id="scheduled_time"
-              required
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm text-gray-600 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
-            />
-          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="scheduled_time" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Scheduled Time</label>
+              <input
+                type="datetime-local"
+                name="scheduled_time"
+                id="scheduled_time"
+                required
+                className="block w-full rounded-2xl border-none bg-slate-100/80 px-5 py-4 text-slate-700 font-medium focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all shadow-sm"
+              />
+            </div>
 
-          <div>
-            <label htmlFor="duration_estimate_minutes" className="block text-sm font-medium text-gray-700">Duration Estimate (Minutes)</label>
-            <input
-              type="number"
-              name="duration_estimate_minutes"
-              id="duration_estimate_minutes"
-              min="1"
-              required
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm text-gray-600 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
-              placeholder="60"
-            />
+            <div>
+              <label htmlFor="duration_estimate_minutes" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Duration (Mins)</label>
+              <input
+                type="number"
+                name="duration_estimate_minutes"
+                id="duration_estimate_minutes"
+                min="1"
+                required
+                className="block w-full rounded-2xl border-none bg-slate-100/80 px-5 py-4 text-slate-700 font-semibold placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all shadow-sm"
+                placeholder="60"
+              />
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+            className="group relative flex w-full justify-center items-center gap-3 rounded-2xl bg-indigo-600 px-6 py-4 mt-4 text-lg font-bold text-white shadow-xl shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-1 transition-all focus:outline-none focus:ring-4 focus:ring-indigo-200 disabled:opacity-50 disabled:hover:translate-y-0"
           >
-            {loading ? 'Saving...' : 'Create Task'}
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 animate-spin-slow" />
+                Lagi masukin ke kalender...
+              </span>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5 group-hover:scale-125 transition-transform" />
+                Bikin Tugas Sekarang!
+              </>
+            )}
           </button>
         </form>
       </div>
