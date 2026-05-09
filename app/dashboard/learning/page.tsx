@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { HardDrive, Zap, BookOpen, BrainCircuit, RefreshCw, CheckCircle2, ChevronRight, MessageSquare, Save, History, Edit2, Trash2 } from "lucide-react";
 import { syncGoogleDriveFolder, generateSKSSummary, generateBingeWatchPlan, saveLearningHistory, getLearningHistory, deleteLearningHistory, updateLearningHistoryTitle } from "@/app/actions/learning.actions";
-import { LearningHistoryItem } from "@/types";
+import { LearningHistoryItem, Episode } from "@/types";
 import { SksCanvas, BingeWatchCanvas } from "@/components/LearningCanvas";
 import { useModal } from "@/components/ModalProvider";
 
@@ -11,7 +11,7 @@ export default function LearningPage() {
   const { showModal } = useModal();
   const [driveUrl, setDriveUrl] = useState("");
   const [isSyncing, setIsSyncing] = useState(false);
-  const [syncedFolder, setSyncedFolder] = useState<any>(null);
+  const [syncedFolder, setSyncedFolder] = useState<{ filesCount: number; folderName: string; dbFolderId: string } | null>(null);
 
   const [mode, setMode] = useState<"selection" | "sks" | "binge">("selection");
   const [isLoadingMode, setIsLoadingMode] = useState(false);
@@ -20,7 +20,7 @@ export default function LearningPage() {
   const [sksSummary, setSksSummary] = useState({ title: "", content: "" });
 
   // Binge State
-  const [bingePlan, setBingePlan] = useState<{ courseTitle: string; episodes: any[] }>({ courseTitle: "", episodes: [] });
+  const [bingePlan, setBingePlan] = useState<{ courseTitle: string; episodes: Episode[] }>({ courseTitle: "", episodes: [] });
 
   // History State
   const [learningHistory, setLearningHistory] = useState<LearningHistoryItem[]>([]);
@@ -38,9 +38,9 @@ export default function LearningPage() {
     if (res.success && res.data) setLearningHistory(res.data as LearningHistoryItem[]);
   };
 
-  const handleSaveNote = async (title: string, type: string, content: any) => {
+  const handleSaveNote = async (title: string, type: string, content: string | Record<string, unknown> | Episode[]) => {
     setIsSaving(true);
-    const res = await saveLearningHistory(syncedFolder.dbFolderId, title, type, content);
+    const res = await saveLearningHistory(syncedFolder?.dbFolderId || "", title, type, content);
     if (res.success) {
       showModal({ title: "Berhasil", message: "Catatan berhasil disimpan ke History!", type: "success" });
       loadHistory();
@@ -86,7 +86,7 @@ export default function LearningPage() {
 
     setIsSyncing(true);
     const res = await syncGoogleDriveFolder(driveUrl);
-    if (res.success) {
+    if (res.success && res.data) {
       setSyncedFolder(res.data);
     }
     setIsSyncing(false);
@@ -95,7 +95,7 @@ export default function LearningPage() {
   const selectSKSMode = async () => {
     setMode("sks");
     setIsLoadingMode(true);
-    const res = await generateSKSSummary(syncedFolder.dbFolderId);
+    const res = await generateSKSSummary(syncedFolder?.dbFolderId || "");
     if (res.success && res.data) {
       setSksSummary(res.data);
     } else {
@@ -107,7 +107,7 @@ export default function LearningPage() {
   const selectBingeMode = async () => {
     setMode("binge");
     setIsLoadingMode(true);
-    const res = await generateBingeWatchPlan(syncedFolder.dbFolderId);
+    const res = await generateBingeWatchPlan(syncedFolder?.dbFolderId || "");
     if (res.success && res.data) {
       setBingePlan(res.data);
     } else {
@@ -252,7 +252,7 @@ export default function LearningPage() {
                 </div>
               ) : (
                 <>
-                  <BingeWatchCanvas episodes={bingePlan.episodes} folderId={syncedFolder?.dbFolderId || null} />
+                  <BingeWatchCanvas episodes={bingePlan.episodes} folderId={syncedFolder?.dbFolderId || undefined} />
 
                   <div className="mt-8 flex justify-end">
                     <button

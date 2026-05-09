@@ -1,6 +1,6 @@
 "use server";
 
-import { ActionResponse } from "@/types";
+import { ActionResponse, LearningHistoryItem, Episode } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { google } from "googleapis";
@@ -175,7 +175,7 @@ Materi:\n${contextText}`;
   }
 }
 
-export async function generateBingeWatchPlan(folderId: string): Promise<ActionResponse<{ courseTitle: string; episodes: any[] }>> {
+export async function generateBingeWatchPlan(folderId: string): Promise<ActionResponse<{ courseTitle: string; episodes: Episode[] }>> {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
@@ -221,7 +221,7 @@ Materi:\n${contextText}`;
   }
 }
 
-export async function saveLearningHistory(folderId: string, title: string, type: string, content: string | Record<string, unknown>): Promise<ActionResponse> {
+export async function saveLearningHistory(folderId: string, title: string, type: string, content: string | Record<string, unknown> | Episode[]): Promise<ActionResponse> {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
@@ -248,7 +248,7 @@ export async function saveLearningHistory(folderId: string, title: string, type:
   }
 }
 
-export async function getLearningHistory(): Promise<ActionResponse<any[]>> {
+export async function getLearningHistory(): Promise<ActionResponse<LearningHistoryItem[]>> {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
