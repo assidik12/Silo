@@ -69,7 +69,7 @@ export function BingeWatchCanvas({ episodes, folderId }: { episodes: Episode[]; 
       if (res.success && res.data) {
         setChats((prev) => ({
           ...prev,
-          [quarterId]: [{ role: "ai", content: res.data }],
+          [quarterId]: [{ role: "ai", content: res.data || "" }],
         }));
       } else {
         setChats((prev) => ({
@@ -103,7 +103,7 @@ export function BingeWatchCanvas({ episodes, folderId }: { episodes: Episode[]; 
     if (res.success && res.data) {
       setChats((prev) => ({
         ...prev,
-        [activeQuarter]: [...newHistory, { role: "ai", content: res.data }],
+        [activeQuarter]: [...newHistory, { role: "ai", content: res.data || "" }],
       }));
     }
   };
@@ -186,7 +186,7 @@ export function BingeWatchCanvas({ episodes, folderId }: { episodes: Episode[]; 
                       onChange={(e) => setInputValue(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                       placeholder="Tanya materi ini..."
-                      className="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                      className="flex-1 rounded-full border text-black border-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
                     />
                     <button
                       onClick={handleSendMessage}

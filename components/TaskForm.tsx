@@ -33,12 +33,12 @@ export default function TaskForm() {
     
     setAnalyzing(true);
     const res = await analyzeTaskWithAI(title, description, moduleLink);
-    if (res.success) {
+    if (res.success && res.data) {
       const descField = form.querySelector('#description') as HTMLTextAreaElement;
       if (descField) descField.value = res.data.summary;
       
       const durationField = form.querySelector('#duration_estimate_minutes') as HTMLInputElement;
-      if (durationField) durationField.value = res.data.estimatedMinutes;
+      if (durationField) durationField.value = res.data.estimatedMinutes.toString();
     } else {
       showGlobalModal({ title: 'AI Error', message: res.error || 'Gagal analisis AI', type: 'error' });
     }

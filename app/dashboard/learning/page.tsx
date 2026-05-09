@@ -35,7 +35,7 @@ export default function LearningPage() {
 
   const loadHistory = async () => {
     const res = await getLearningHistory();
-    if (res.success) setLearningHistory(res.data);
+    if (res.success && res.data) setLearningHistory(res.data as LearningHistoryItem[]);
   };
 
   const handleSaveNote = async (title: string, type: string, content: any) => {
@@ -96,7 +96,7 @@ export default function LearningPage() {
     setMode("sks");
     setIsLoadingMode(true);
     const res = await generateSKSSummary(syncedFolder.dbFolderId);
-    if (res.success) {
+    if (res.success && res.data) {
       setSksSummary(res.data);
     } else {
       showModal({ title: "Gagal AI", message: res.error || "Gagal Generate", type: "error" });
@@ -108,7 +108,7 @@ export default function LearningPage() {
     setMode("binge");
     setIsLoadingMode(true);
     const res = await generateBingeWatchPlan(syncedFolder.dbFolderId);
-    if (res.success) {
+    if (res.success && res.data) {
       setBingePlan(res.data);
     } else {
       showModal({ title: "Gagal AI", message: res.error || "Gagal Generate", type: "error" });
@@ -355,7 +355,7 @@ export default function LearningPage() {
               {selectedHistory.type === "sks" ? (
                 <SksCanvas content={typeof selectedHistory.content === "string" ? selectedHistory.content : JSON.stringify(selectedHistory.content)} />
               ) : (
-                <BingeWatchCanvas episodes={typeof selectedHistory.content === "string" ? JSON.parse(selectedHistory.content) : selectedHistory.content} folderId={selectedHistory.folder_id} />
+                <BingeWatchCanvas episodes={typeof selectedHistory.content === "string" ? JSON.parse(selectedHistory.content) : selectedHistory.content} folderId={selectedHistory.folder_id || undefined} />
               )}
             </div>
           </div>

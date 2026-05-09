@@ -7,7 +7,7 @@ import { google } from "googleapis";
 import { GoogleGenAI } from "@google/genai";
 import { parsePdfBuffer, chunkText } from "@/utils/pdfParser";
 
-export async function syncGoogleDriveFolder(driveUrl: string): Promise<ActionResponse> {
+export async function syncGoogleDriveFolder(driveUrl: string): Promise<ActionResponse<{ filesCount: number; folderName: string; dbFolderId: string }>> {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
@@ -113,13 +113,13 @@ export async function syncGoogleDriveFolder(driveUrl: string): Promise<ActionRes
       success: true,
       data: { filesCount: files.length, folderName: `Synced Folder (${files.length} files)`, dbFolderId: dbFolder.id },
     };
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Error syncing GDrive:", err);
-    return { success: false, error: err.message || "Failed to sync Drive folder" };
+    return { success: false, error: (err as Error).message || "Failed to sync Drive folder" };
   }
 }
 
-export async function generateSKSSummary(folderId: string): Promise<ActionResponse> {
+export async function generateSKSSummary(folderId: string): Promise<ActionResponse<{ title: string; content: string }>> {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
@@ -169,13 +169,13 @@ Materi:\n${contextText}`;
     const parsedData = JSON.parse(jsonStr.replace(/```json\n?|```/g, "").trim());
 
     return { success: true, data: parsedData };
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(err);
-    return { success: false, error: err.message || "Gagal generate SKS summary" };
+    return { success: false, error: (err as Error).message || "Gagal generate SKS summary" };
   }
 }
 
-export async function generateBingeWatchPlan(folderId: string): Promise<ActionResponse> {
+export async function generateBingeWatchPlan(folderId: string): Promise<ActionResponse<{ courseTitle: string; episodes: any[] }>> {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
@@ -282,8 +282,8 @@ export async function deleteLearningHistory(id: string): Promise<ActionResponse>
 
     if (error) throw error;
     return { success: true };
-  } catch (err: any) {
-    return { success: false, error: err.message || "Gagal menghapus history" };
+  } catch (err: unknown) {
+    return { success: false, error: (err as Error).message || "Gagal menghapus history" };
   }
 }
 
@@ -300,8 +300,8 @@ export async function updateLearningHistoryTitle(id: string, title: string): Pro
 
     if (error) throw error;
     return { success: true };
-  } catch (err: any) {
-    return { success: false, error: err.message || "Gagal mengubah judul" };
+  } catch (err: unknown) {
+    return { success: false, error: (err as Error).message || "Gagal mengubah judul" };
   }
 }
 
