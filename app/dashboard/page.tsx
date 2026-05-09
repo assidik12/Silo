@@ -2,6 +2,8 @@ import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import TaskCard from '@/components/TaskCard';
+import GamificationStats from '@/components/GamificationStats';
+import WeeklyInsightChart from '@/components/WeeklyInsightChart';
 import { Task } from '@/types';
 
 export const dynamic = 'force-dynamic';
@@ -34,26 +36,56 @@ export default async function DashboardPage() {
   const xp = userData?.xp || 0;
   const streak = userData?.streak_count || 0;
 
-  // Calculate Weekly Completion
+  // Calculate Weekly Completion & Chart Data (Past 7 Days)
   const now = new Date();
-  const startOfWeek = new Date(now);
-  startOfWeek.setDate(now.getDate() - now.getDay()); // Sunday
-  startOfWeek.setHours(0, 0, 0, 0);
-  
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6); // Saturday
-  endOfWeek.setHours(23, 59, 59, 999);
+  const past7Days = Array.from({ length: 7 }).map((_, i) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - (6 - i));
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
 
-  const { data: weekTasks } = await supabase
+  const startDateStr = past7Days[0].toISOString();
+  // set to end of current day
+  const endOfToday = new Date(now);
+  endOfToday.setHours(23, 59, 59, 999);
+  const endDateStr = endOfToday.toISOString();
+
+  // Tasks in past 7 days
+  const { data: recentTasks } = await supabase
     .from('tasks')
-    .select('id, status')
+    .select('id, scheduled_time, status')
     .eq('user_id', user.id)
-    .gte('scheduled_time', startOfWeek.toISOString())
-    .lte('scheduled_time', endOfWeek.toISOString());
+    .gte('scheduled_time', startDateStr)
+    .lte('scheduled_time', endDateStr);
 
-  const totalWeekTasks = weekTasks?.length || 0;
-  const doneWeekTasks = weekTasks?.filter(t => t.status === 'done').length || 0;
+  // Learning done in past 7 days
+  const { data: recentLearning } = await supabase
+    .from('learning_history')
+    .select('id, created_at')
+    .eq('user_id', user.id)
+    .gte('created_at', startDateStr)
+    .lte('created_at', endDateStr);
+
+  const totalWeekTasks = recentTasks?.length || 0;
+  const doneWeekTasks = recentTasks?.filter(t => t.status === 'done').length || 0;
   const weeklyProgress = totalWeekTasks === 0 ? 0 : Math.round((doneWeekTasks / totalWeekTasks) * 100);
+
+  const dailyData = past7Days.map(date => {
+    const dayName = date.toLocaleDateString('id-ID', { weekday: 'short' });
+    const isToday = date.toDateString() === now.toDateString();
+    
+    const tasksDone = recentTasks?.filter(t => t.status === 'done' && new Date(t.scheduled_time).toDateString() === date.toDateString()).length || 0;
+    const learningDone = recentLearning?.filter(l => new Date(l.created_at).toDateString() === date.toDateString()).length || 0;
+
+    return {
+      day: dayName,
+      tasksDone,
+      learningDone,
+      total: tasksDone + learningDone,
+      isToday
+    };
+  });
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -63,20 +95,7 @@ export default async function DashboardPage() {
           <p className="text-sm text-gray-600 mt-1">Welcome back, {user.email}</p>
         </div>
         
-        <div className="flex items-center gap-4">
-          <div className="bg-orange-50 px-4 py-3 rounded-2xl border border-orange-100 flex items-center gap-3">
-            <span className="text-2xl">🔥</span>
-            <div>
-              <p className="text-xs font-bold text-orange-400 uppercase tracking-wider">Streak</p>
-              <p className="text-xl font-extrabold text-orange-600">{streak} Days</p>
-            </div>
-          </div>
-          
-          <div className="bg-white px-6 py-3 rounded-2xl shadow-sm border border-gray-200 text-center min-w-32">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Your Score</p>
-            <p className="text-2xl font-extrabold text-indigo-600">{xp} XP</p>
-          </div>
-        </div>
+        <GamificationStats streak={streak} xp={xp} />
       </header>
 
       {/* Weekly Progress Bar */}
@@ -109,6 +128,8 @@ export default async function DashboardPage() {
           </div>
         )}
       </div>
+
+      <WeeklyInsightChart data={dailyData} />
     </div>
   );
 }

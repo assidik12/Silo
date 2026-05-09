@@ -2,8 +2,9 @@
 
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createTask } from '@/app/actions/task.actions';
-import { CheckCircle2, XCircle, Sparkles } from 'lucide-react';
+import { createTask, analyzeTaskWithAI } from '@/app/actions/task.actions';
+import { CheckCircle2, XCircle, Sparkles, Bot } from 'lucide-react';
+import { useModal } from '@/components/ModalProvider';
 
 export default function TaskForm() {
   const router = useRouter();
@@ -14,6 +15,35 @@ export default function TaskForm() {
     type: 'success',
     message: ''
   });
+  const [analyzing, setAnalyzing] = useState(false);
+  const { showModal: showGlobalModal } = useModal();
+
+  const handleAnalyzeAI = async () => {
+    const form = formRef.current;
+    if (!form) return;
+    const formData = new FormData(form);
+    const title = formData.get('title') as string;
+    const description = formData.get('description') as string;
+    const moduleLink = formData.get('module_link') as string;
+    
+    if (!title) {
+       showGlobalModal({ title: 'Oops!', message: 'Isi judul dulu sebelum analisis AI!', type: 'info' });
+       return;
+    }
+    
+    setAnalyzing(true);
+    const res = await analyzeTaskWithAI(title, description, moduleLink);
+    if (res.success) {
+      const descField = form.querySelector('#description') as HTMLTextAreaElement;
+      if (descField) descField.value = res.data.summary;
+      
+      const durationField = form.querySelector('#duration_estimate_minutes') as HTMLInputElement;
+      if (durationField) durationField.value = res.data.estimatedMinutes;
+    } else {
+      showGlobalModal({ title: 'AI Error', message: res.error || 'Gagal analisis AI', type: 'error' });
+    }
+    setAnalyzing(false);
+  };
 
   const handleSubmit = async (formData: FormData) => {
     setLoading(true);
@@ -64,13 +94,24 @@ export default function TaskForm() {
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
-              Description <span className="text-slate-400 font-medium normal-case">(Opsional)</span>
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label htmlFor="description" className="block text-xs font-bold text-slate-500 uppercase tracking-wide">
+                Description <span className="text-slate-400 font-medium normal-case">(Opsional)</span>
+              </label>
+              <button 
+                type="button" 
+                onClick={handleAnalyzeAI}
+                disabled={analyzing}
+                className="flex items-center gap-1 text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-full transition-colors disabled:opacity-50"
+              >
+                <Bot className="w-4 h-4" />
+                {analyzing ? 'Menganalisis...' : 'Analisis AI'}
+              </button>
+            </div>
             <textarea
               name="description"
               id="description"
-              rows={3}
+              rows={4}
               className="block w-full rounded-2xl border-none bg-slate-100/80 px-5 py-4 text-slate-700 font-medium placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all shadow-sm resize-none"
               placeholder="Catatan kecil buat task ini..."
             />
@@ -91,7 +132,7 @@ export default function TaskForm() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="scheduled_time" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Scheduled Time</label>
+              <label htmlFor="scheduled_time" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Deadline Time</label>
               <input
                 type="datetime-local"
                 name="scheduled_time"

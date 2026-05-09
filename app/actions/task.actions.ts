@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { ActionResponse } from '@/types';
 import { createEvent, deleteEvent, updateEvent } from '@/lib/googleCalendar';
 import { calculateXp, calculateStreak } from '@/utils/gamification';
+import { GoogleGenAI } from '@google/genai';
 
 export async function createTask(formData: FormData): Promise<ActionResponse> {
   try {
@@ -130,10 +131,10 @@ export async function toggleTaskStatus(taskId: string, currentStatus: 'pending' 
 
     const newStatus = currentStatus === 'pending' ? 'done' : 'pending';
 
-    // Fetch the task to get scheduled_time
+    // Fetch the task to get scheduled_time and created_at
     const { data: task } = await supabase
       .from('tasks')
-      .select('scheduled_time')
+      .select('scheduled_time, created_at')
       .eq('id', taskId)
       .single();
 
@@ -158,9 +159,10 @@ export async function toggleTaskStatus(taskId: string, currentStatus: 'pending' 
       if (userData) {
         const now = new Date();
         const scheduledTime = new Date(task.scheduled_time);
+        const createdAt = new Date(task.created_at);
 
         // 1. XP Logic (pure, testable)
-        const { earnedXp } = calculateXp(now, scheduledTime);
+        const { earnedXp } = calculateXp(now, createdAt, scheduledTime);
         const newXp = userData.xp + earnedXp;
 
         // 2. Streak Logic (pure, testable)
@@ -181,5 +183,55 @@ export async function toggleTaskStatus(taskId: string, currentStatus: 'pending' 
     return { success: true };
   } catch (error) {
     return { success: false, error: 'Unexpected error.' };
+  }
+}
+
+export async function saveSubTasks(taskId: string, subTasks: { id: string; title: string; done: boolean }[]): Promise<ActionResponse> {
+  try {
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Unauthorized.' };
+
+    const { error } = await supabase
+      .from('tasks')
+      .update({ sub_tasks: subTasks })
+      .eq('id', taskId)
+      .eq('user_id', user.id);
+
+    if (error) return { success: false, error: 'Failed to save sub tasks.' };
+
+    revalidatePath('/dashboard');
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: 'Unexpected error.' };
+  }
+}
+
+export async function analyzeTaskWithAI(title: string, description: string, moduleLink: string): Promise<ActionResponse> {
+  try {
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const prompt = `Analisis tugas berikut dan berikan breakdown estimasi waktu pengerjaan dalam menit, serta summary tugas yang lebih detail berdasarkan deskripsi user dan/atau link modul (anda dapat menebak konteksnya).
+Judul: ${title || 'Tidak ada'}
+Deskripsi User: ${description || 'Tidak ada'}
+Link Modul: ${moduleLink || 'Tidak ada'}
+
+Kembalikan respon DALAM FORMAT JSON murni (tanpa markdown backticks) dengan keys:
+- "summary": (string) Ringkasan dan breakdown langkah-langkah tugas.
+- "estimatedMinutes": (number) Estimasi waktu pengerjaan dalam menit.
+`;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt
+    });
+
+    const jsonStr = response.text || '{}';
+    const parsedData = JSON.parse(jsonStr.replace(/```json\n?|```/g, '').trim());
+
+    return { success: true, data: parsedData };
+  } catch (error: any) {
+    return { success: false, error: error.message };
   }
 }

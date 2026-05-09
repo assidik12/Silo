@@ -1,4 +1,5 @@
 import Sidebar from '@/components/Sidebar';
+import FeedbackWidget from '@/components/FeedbackWidget';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,6 +11,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {children}
         </div>
       </div>
+      <FeedbackWidget />
     </div>
   );
 }

@@ -11,20 +11,17 @@ export default function LoginPage() {
   const supabase = createClient();
 
   const handleGoogleLogin = async () => {
-    console.log('test')
     setLoading(true);
     setError(null);
-    console.log(`${window.location.origin}/auth/callback`)
-    
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
-        scopes: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events',
+        scopes: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly',
       },
     });
 
-    console.log(error)
     if (error) {
       setError(error.message);  
       setLoading(false);

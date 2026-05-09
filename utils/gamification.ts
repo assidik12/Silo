@@ -34,9 +34,24 @@ const EARLY_BONUS_XP = 5;
  * @param completedAt  The moment the user marked the task as done.
  * @param scheduledTime The task's original scheduled datetime.
  */
-export function calculateXp(completedAt: Date, scheduledTime: Date): XpResult {
-  const isEarlyBonus = completedAt < scheduledTime;
-  const earnedXp = BASE_XP + (isEarlyBonus ? EARLY_BONUS_XP : 0);
+export function calculateXp(completedAt: Date, createdAt: Date, deadlineTime: Date): XpResult {
+  const BASE_XP = 10;
+  let earnedXp = BASE_XP;
+  let isEarlyBonus = false;
+
+  if (completedAt < deadlineTime) {
+    isEarlyBonus = true;
+    const totalDuration = deadlineTime.getTime() - createdAt.getTime();
+    const timeSpent = completedAt.getTime() - createdAt.getTime();
+    
+    if (totalDuration > 0 && timeSpent >= 0) {
+      const timeSavedRatio = 1 - (timeSpent / totalDuration);
+      earnedXp += Math.round(timeSavedRatio * 20);
+    } else {
+      earnedXp += 5;
+    }
+  }
+
   return { earnedXp, isEarlyBonus };
 }
 
