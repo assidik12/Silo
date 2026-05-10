@@ -2,6 +2,8 @@
 
 import { Flame, TrendingUp, AlertCircle } from 'lucide-react';
 
+import { useState, useEffect, useMemo } from 'react';
+
 interface DailyData {
   day: string;
   tasksDone: number;
@@ -10,12 +12,43 @@ interface DailyData {
   total: number;
 }
 
-export default function WeeklyInsightChart({ data }: { data: DailyData[] }) {
+export default function WeeklyInsightChart({ recentTasks, recentLearning }: { recentTasks: any[], recentLearning: any[] }) {
+  const data = useMemo(() => {
+    const now = new Date();
+    const past7Days = Array.from({ length: 7 }).map((_, i) => {
+      const d = new Date(now);
+      d.setDate(d.getDate() - (6 - i));
+      d.setHours(0, 0, 0, 0);
+      return d;
+    });
+
+    return past7Days.map(date => {
+      const dayName = date.toLocaleDateString('id-ID', { weekday: 'short' });
+      const isToday = date.toDateString() === now.toDateString();
+      
+      const tasksDone = recentTasks?.filter(t => t.status === 'done' && new Date(t.scheduled_time).toDateString() === date.toDateString()).length || 0;
+      const learningDone = recentLearning?.filter(l => new Date(l.created_at).toDateString() === date.toDateString()).length || 0;
+
+      return {
+        day: dayName,
+        tasksDone,
+        learningDone,
+        total: tasksDone + learningDone,
+        isToday
+      };
+    });
+  }, [recentTasks, recentLearning]);
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const maxVal = Math.max(...data.map(d => d.total), 1); // Avoid division by 0
   
   // Calculate if they are at risk (0 activity today)
   const todayData = data.find(d => d.isToday);
   const isAtRisk = todayData && todayData.total === 0;
+
+  if (!mounted) return null; // Avoid hydration mismatch on timezone differences
 
   return (
     <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 mt-8 relative overflow-hidden group">

@@ -34,37 +34,31 @@ export interface StreakResult {
  * @param createdAt Phase 3: task creation datetime.
  * @param deadlineTime Phase 3: task deadline/scheduled datetime.
  */
-export function calculateXp(completedAt: Date, scheduledTime: Date): XpResult;
-export function calculateXp(completedAt: Date, createdAt: Date, deadlineTime: Date): XpResult;
-export function calculateXp(completedAt: Date, arg2: Date, arg3?: Date): XpResult {
-  const baseXp = 10;
-  let earnedXp = baseXp;
+export function calculateXp(completedAt: Date, deadlineTime: Date, subTasksDoneCount: number = 0, subTasksTotalCount: number = 0): XpResult {
+  const MAX_XP = 50;
+  let earnedXp = 0;
   let isEarlyBonus = false;
 
-  // Backward-compatible signature: (completedAt, scheduledTime)
-  if (!arg3) {
-    const scheduledTime = arg2;
-    if (completedAt < scheduledTime) {
-      isEarlyBonus = true;
-      earnedXp += 5;
-    }
-    return { earnedXp, isEarlyBonus };
-  }
+  const diffHours = (deadlineTime.getTime() - completedAt.getTime()) / (1000 * 60 * 60);
 
-  // Phase 3 signature: (completedAt, createdAt, deadlineTime)
-  const createdAt = arg2;
-  const deadlineTime = arg3;
-
-  if (completedAt < deadlineTime) {
+  if (diffHours >= 12) {
+    // Selesai > 12 jam sebelum deadline
+    earnedXp = MAX_XP;
     isEarlyBonus = true;
-    const totalDuration = deadlineTime.getTime() - createdAt.getTime();
-    const timeSpent = completedAt.getTime() - createdAt.getTime();
-
-    if (totalDuration > 0 && timeSpent >= 0) {
-      const timeSavedRatio = 1 - timeSpent / totalDuration;
-      earnedXp += Math.round(timeSavedRatio * 20);
+  } else if (diffHours >= 0 && diffHours < 12) {
+    // Selesai < 12 jam sebelum deadline
+    earnedXp = MAX_XP * 0.5; // 25
+  } else {
+    // Terlambat
+    if (subTasksDoneCount > 0 && subTasksTotalCount > 0) {
+      // Hanya Sebagian Selesai: (Jumlah sub-task selesai * 5%) + (10% dari EXP sub-task)
+      const expSubTask = MAX_XP / subTasksTotalCount;
+      const calculatedXp = (subTasksDoneCount * (0.05 * MAX_XP)) + (0.10 * (expSubTask * subTasksDoneCount));
+      const maxAllowed = 0.25 * MAX_XP; // 12.5
+      earnedXp = Math.round(Math.min(calculatedXp, maxAllowed));
     } else {
-      earnedXp += 5;
+      // Tidak ada progres saat deadline
+      earnedXp = 0;
     }
   }
 

@@ -126,8 +126,8 @@ export async function toggleTaskStatus(taskId: string, currentStatus: "pending" 
 
     const newStatus = currentStatus === "pending" ? "done" : "pending";
 
-    // Fetch the task to get scheduled_time and created_at
-    const { data: task } = await supabase.from("tasks").select("scheduled_time, created_at").eq("id", taskId).single();
+    // Fetch the task to get scheduled_time, created_at, and sub_tasks
+    const { data: task } = await supabase.from("tasks").select("scheduled_time, created_at, sub_tasks").eq("id", taskId).single();
 
     if (!task) return { success: false, error: "Task not found" };
 
@@ -145,7 +145,9 @@ export async function toggleTaskStatus(taskId: string, currentStatus: "pending" 
         const createdAt = new Date(task.created_at);
 
         // 1. XP Logic (pure, testable)
-        const { earnedXp } = calculateXp(now, createdAt, scheduledTime);
+        const subTasksTotal = task.sub_tasks ? task.sub_tasks.length : 0;
+        const subTasksDone = task.sub_tasks ? task.sub_tasks.filter((st: any) => st.done).length : 0;
+        const { earnedXp } = calculateXp(now, scheduledTime, subTasksDone, subTasksTotal);
         const newXp = userData.xp + earnedXp;
 
         // 2. Streak Logic (pure, testable)
@@ -183,6 +185,27 @@ export async function saveSubTasks(taskId: string, subTasks: { id: string; title
   }
 }
 
+export async function updateTaskDetails(taskId: string, title: string, description: string | null): Promise<ActionResponse> {
+  try {
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: "Unauthorized." };
+
+    const { error } = await supabase.from("tasks").update({ title, description }).eq("id", taskId).eq("user_id", user.id);
+
+    if (error) return { success: false, error: "Failed to update task details." };
+
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch {
+    return { success: false, error: "Unexpected error." };
+  }
+}
+
 export async function analyzeTaskWithAI(title: string, description: string, moduleLink: string): Promise<ActionResponse<{ summary: string; estimatedMinutes: number }>> {
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -207,5 +230,43 @@ Kembalikan respon DALAM FORMAT JSON murni (tanpa markdown backticks) dengan keys
     return { success: true, data: parsedData };
   } catch (error) {
     return { success: false, error: (error as Error).message };
+  }
+}
+
+export async function generateTaskBreakdown(title: string, description: string | null, moduleLink: string | null): Promise<string[]> {
+  try {
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    
+    const prompt = `Break down this task into 3-5 manageable subtasks. Use a casual Gen Z vibe (Indonesian slang / gaul, but keep it productive). 
+Task Title: "${title}"
+Task Description: "${description || "Tidak ada deskripsi tambahan"}"
+Module Link: "${moduleLink || "Tidak ada"}"
+
+Kembalikan respon HANYA DALAM FORMAT JSON array of strings murni (tanpa markdown backticks).
+Contoh output yang valid: ["Googling tipis-tipis cari referensi", "Bikin kerangka kasarnya", "Drafting isinya"]`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+    });
+
+    const jsonStr = response.text || "[]";
+    const parsedData = JSON.parse(jsonStr.replace(/```json\n?|```/g, "").trim());
+    
+    if (Array.isArray(parsedData) && parsedData.length > 0) {
+      return parsedData.map(item => String(item));
+    }
+    
+    throw new Error("Format respons tidak valid");
+  } catch (error) {
+    console.error("Failed to generate task breakdown:", error);
+    // Fallback jika API gagal/error
+    return [
+      `Googling tipis-tipis cari referensi buat "${title}" 🔍`,
+      `Bikin kerangka kasarnya dulu, no overthinking ✍️`,
+      `Drafting isinya, yang penting kelar dulu bos 🏃♂️`,
+      `Review bentar biar makin mantap ☕`,
+      `Submit! You nailed it ngab! 🎉`
+    ];
   }
 }

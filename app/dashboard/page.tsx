@@ -55,37 +55,18 @@ export default async function DashboardPage() {
   const { data: recentTasks } = await supabase
     .from('tasks')
     .select('id, scheduled_time, status')
-    .eq('user_id', user.id)
-    .gte('scheduled_time', startDateStr)
-    .lte('scheduled_time', endDateStr);
+    .eq('user_id', user.id); // Fetch all tasks so client can filter properly by their local timezone
 
-  // Learning done in past 7 days
+  // Learning done
   const { data: recentLearning } = await supabase
     .from('learning_history')
     .select('id, created_at')
-    .eq('user_id', user.id)
-    .gte('created_at', startDateStr)
-    .lte('created_at', endDateStr);
+    .eq('user_id', user.id);
 
+  // Calculate Weekly Completion
   const totalWeekTasks = recentTasks?.length || 0;
   const doneWeekTasks = recentTasks?.filter(t => t.status === 'done').length || 0;
   const weeklyProgress = totalWeekTasks === 0 ? 0 : Math.round((doneWeekTasks / totalWeekTasks) * 100);
-
-  const dailyData = past7Days.map(date => {
-    const dayName = date.toLocaleDateString('id-ID', { weekday: 'short' });
-    const isToday = date.toDateString() === now.toDateString();
-    
-    const tasksDone = recentTasks?.filter(t => t.status === 'done' && new Date(t.scheduled_time).toDateString() === date.toDateString()).length || 0;
-    const learningDone = recentLearning?.filter(l => new Date(l.created_at).toDateString() === date.toDateString()).length || 0;
-
-    return {
-      day: dayName,
-      tasksDone,
-      learningDone,
-      total: tasksDone + learningDone,
-      isToday
-    };
-  });
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -129,7 +110,7 @@ export default async function DashboardPage() {
         )}
       </div>
 
-      <WeeklyInsightChart data={dailyData} />
+      <WeeklyInsightChart recentTasks={recentTasks || []} recentLearning={recentLearning || []} />
     </div>
   );
 }

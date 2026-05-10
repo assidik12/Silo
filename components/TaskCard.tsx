@@ -1,12 +1,12 @@
 'use client';
 
 import { Task } from '@/types';
-import { deleteTask, toggleTaskStatus, saveSubTasks } from '@/app/actions/task.actions';
-import { generateTaskBreakdown } from '@/app/actions/ai.actions';
+import { deleteTask, toggleTaskStatus, saveSubTasks, generateTaskBreakdown, updateTaskDetails } from '@/app/actions/task.actions';
 import { useState } from 'react';
 import { Trash2, Wand2, CheckCircle2, Circle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import PomodoroTimer from './PomodoroTimer';
+import { useModal } from '@/components/ModalProvider';
 
 export default function TaskCard({ task }: { task: Task }) {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -14,11 +14,17 @@ export default function TaskCard({ task }: { task: Task }) {
   const [showModal, setShowModal] = useState(false);
   const [isDescExpanded, setIsDescExpanded] = useState(false);
   
+  const { showModal: showGlobalModal } = useModal();
+  const [isEditingTask, setIsEditingTask] = useState(false);
+  const [editTitle, setEditTitle] = useState(task.title);
+  const [editDesc, setEditDesc] = useState(task.description || '');
+  
   // AI Breakdown states
   const [showAIModal, setShowAIModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [subTasks, setSubTasks] = useState<{ id: string; title: string; done: boolean }[]>(task.sub_tasks || []);
   const [draftSubTasks, setDraftSubTasks] = useState<{ id: string; title: string; done: boolean }[]>([]);
+  const [newSubTaskTitle, setNewSubTaskTitle] = useState('');
 
   const handleBreakdownClick = async () => {
     setShowAIModal(true);
@@ -31,7 +37,7 @@ export default function TaskCard({ task }: { task: Task }) {
 
   const generate = async () => {
     setIsGenerating(true);
-    const result = await generateTaskBreakdown(task.title, task.description);
+    const result = await generateTaskBreakdown(task.title, task.description, task.module_link);
     const newSubTasks = result.map(title => ({
       id: Math.random().toString(36).substring(7),
       title,
@@ -47,6 +53,11 @@ export default function TaskCard({ task }: { task: Task }) {
     if (res.success) {
       setSubTasks(draftSubTasks);
       setShowAIModal(false);
+      
+      if (task.status === 'done' && draftSubTasks.length > subTasks.length) {
+         await toggleTaskStatus(task.id, 'done');
+         showGlobalModal({ title: 'Status Berubah', message: 'Sub-task baru ditambahkan ke Task yang sudah selesai. Status dikembalikan ke In Progress, silakan klik Selesai lagi nanti untuk kalkulasi ulang.', type: 'info' });
+      }
     }
     setIsUpdating(false);
   };
@@ -55,6 +66,26 @@ export default function TaskCard({ task }: { task: Task }) {
     const updated = subTasks.map(st => st.id === subId ? { ...st, done: !st.done } : st);
     setSubTasks(updated); // Optimistic UI
     await saveSubTasks(task.id, updated);
+  };
+
+  const handleAddManualSubTask = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newSubTaskTitle.trim()) return;
+    
+    setIsUpdating(true);
+    const newSt = { id: Math.random().toString(36).substring(7), title: newSubTaskTitle.trim(), done: false };
+    const updated = [...subTasks, newSt];
+    
+    const res = await saveSubTasks(task.id, updated);
+    if (res.success) {
+      setSubTasks(updated);
+      setNewSubTaskTitle('');
+      if (task.status === 'done') {
+        await toggleTaskStatus(task.id, 'done');
+        showGlobalModal({ title: 'Status Berubah', message: 'Sub-task baru ditambahkan ke Task yang sudah selesai. Status dikembalikan ke In Progress, silakan klik Selesai lagi nanti untuk kalkulasi ulang.', type: 'info' });
+      }
+    }
+    setIsUpdating(false);
   };
 
 
@@ -69,18 +100,28 @@ export default function TaskCard({ task }: { task: Task }) {
   };
 
   const handleToggle = async () => {
+    if (task.status === 'done') {
+      setIsEditingTask(true);
+      return;
+    }
+
     setIsUpdating(true);
     await toggleTaskStatus(task.id, task.status);
     
-    // Trigger confetti if task is being marked as done
-    if (task.status !== 'done') {
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-    }
+    // Trigger confetti since task was pending and is now being marked as done
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
     
+    setIsUpdating(false);
+  };
+
+  const handleSaveEdit = async () => {
+    setIsUpdating(true);
+    await updateTaskDetails(task.id, editTitle, editDesc);
+    setIsEditingTask(false);
     setIsUpdating(false);
   };
 
@@ -90,15 +131,35 @@ export default function TaskCard({ task }: { task: Task }) {
         task.status === 'done' ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-white'
       }`}>
         <div className="flex items-start justify-between">
-          <div>
-            <h4 className={`font-bold text-lg ${task.status === 'done' ? 'text-green-800 line-through' : 'text-gray-900'}`}>
-              {task.title}
-            </h4>
-            <p className="text-sm text-indigo-500 font-medium mt-1">
-              {new Date(task.scheduled_time).toLocaleString()} • {task.duration_estimate_minutes} mins
-            </p>
-          </div>
-          <div className="flex gap-2">
+          {isEditingTask ? (
+            <div className="flex-1 mr-4 space-y-2">
+              <input 
+                value={editTitle} 
+                onChange={e => setEditTitle(e.target.value)} 
+                className="w-full text-lg font-bold p-2 border rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-200" 
+              />
+              <textarea 
+                value={editDesc} 
+                onChange={e => setEditDesc(e.target.value)} 
+                rows={3}
+                className="w-full text-sm p-2 border rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-200 resize-none" 
+              />
+              <div className="flex gap-2">
+                <button onClick={handleSaveEdit} className="text-xs font-bold bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-1.5 rounded-lg transition-colors">Simpan</button>
+                <button onClick={() => setIsEditingTask(false)} className="text-xs font-bold bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-lg transition-colors">Batal</button>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <h4 className={`font-bold text-lg ${task.status === 'done' ? 'text-green-800 line-through' : 'text-gray-900'}`}>
+                {task.title}
+              </h4>
+              <p className="text-sm text-indigo-500 font-medium mt-1">
+                {new Date(task.scheduled_time).toLocaleString()} • {task.duration_estimate_minutes} mins
+              </p>
+            </div>
+          )}
+          <div className="flex gap-2 items-start shrink-0">
             <button 
               onClick={handleToggle} 
               disabled={isUpdating || isDeleting}
@@ -108,7 +169,7 @@ export default function TaskCard({ task }: { task: Task }) {
                   : 'bg-yellow-100 text-yellow-800 border-yellow-300 hover:bg-yellow-200 shadow-sm'
               }`}
             >
-              {isUpdating ? '...' : (task.status === 'done' ? 'UNDO' : 'DONE')}
+              {isUpdating ? '...' : (task.status === 'done' ? 'EDIT' : 'DONE')}
             </button>
             <button 
               onClick={handleDeleteClick}
@@ -167,6 +228,27 @@ export default function TaskCard({ task }: { task: Task }) {
             ))}
           </div>
         )}
+        
+        {/* Add manual subtask input */}
+        <div className="mt-3">
+          <form onSubmit={handleAddManualSubTask} className="flex items-center gap-2">
+            <input 
+              type="text" 
+              value={newSubTaskTitle}
+              onChange={e => setNewSubTaskTitle(e.target.value)}
+              placeholder="Tambah sub-task baru..."
+              className="flex-1 text-sm p-2 border rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+              disabled={isUpdating}
+            />
+            <button 
+              type="submit" 
+              disabled={!newSubTaskTitle.trim() || isUpdating}
+              className="text-xs font-bold bg-indigo-100 text-indigo-700 hover:bg-indigo-200 px-3 py-2 rounded-xl transition-colors disabled:opacity-50"
+            >
+              Add
+            </button>
+          </form>
+        </div>
 
         {task.status !== 'done' && <PomodoroTimer />}
 
