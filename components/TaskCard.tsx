@@ -7,6 +7,7 @@ import { Trash2, Wand2, CheckCircle2, Circle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import PomodoroTimer from './PomodoroTimer';
 import { useModal } from '@/components/ModalProvider';
+import FeedbackModal from './FeedbackModal';
 
 export default function TaskCard({ task }: { task: Task }) {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -21,6 +22,7 @@ export default function TaskCard({ task }: { task: Task }) {
   
   // AI Breakdown states
   const [showAIModal, setShowAIModal] = useState(false);
+  const [showAIFeedbackModal, setShowAIFeedbackModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [subTasks, setSubTasks] = useState<{ id: string; title: string; done: boolean }[]>(task.sub_tasks || []);
   const [draftSubTasks, setDraftSubTasks] = useState<{ id: string; title: string; done: boolean }[]>([]);
@@ -53,6 +55,9 @@ export default function TaskCard({ task }: { task: Task }) {
     if (res.success) {
       setSubTasks(draftSubTasks);
       setShowAIModal(false);
+      
+      // Trigger AI Feedback Modal
+      setTimeout(() => setShowAIFeedbackModal(true), 500);
       
       if (task.status === 'done' && draftSubTasks.length > subTasks.length) {
          await toggleTaskStatus(task.id, 'done');
@@ -299,7 +304,7 @@ export default function TaskCard({ task }: { task: Task }) {
 
       {/* AI BREAKDOWN MODAL */}
       {showAIModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
           <div className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl transform transition-all animate-fade-in">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center gap-2">
@@ -357,6 +362,15 @@ export default function TaskCard({ task }: { task: Task }) {
           </div>
         </div>
       )}
+
+      <FeedbackModal 
+        isOpen={showAIFeedbackModal}
+        onClose={() => setShowAIFeedbackModal(false)}
+        type="ai_breakdown"
+        title="Pecahannya Mantap Gak?"
+        description={`Gimana menurut lo hasil breakdown AI buat tugas "${task.title}"?`}
+        metadata={{ task_id: task.id }}
+      />
     </>
   );
 }

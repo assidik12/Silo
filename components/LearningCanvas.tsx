@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { BookOpen, MessageSquare, ChevronRight, Send, Loader2 } from "lucide-react";
 import { chatWithTutor, getQuarterChatHistory } from "@/app/actions/learning.actions";
 import { Episode } from "@/types";
+import FeedbackModal from "./FeedbackModal";
 
 export function SksCanvas({ content }: { content: string }) {
   if (!content) return null;
@@ -32,6 +33,9 @@ export function BingeWatchCanvas({ episodes, folderId }: { episodes: Episode[]; 
   const [inputValue, setInputValue] = useState("");
   const [isLoadingChat, setIsLoadingChat] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [aiMessageCount, setAiMessageCount] = useState(0);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [feedbackGiven, setFeedbackGiven] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -105,6 +109,13 @@ export function BingeWatchCanvas({ episodes, folderId }: { episodes: Episode[]; 
         ...prev,
         [activeQuarter]: [...newHistory, { role: "ai", content: res.data || "" }],
       }));
+      
+      const newCount = aiMessageCount + 1;
+      setAiMessageCount(newCount);
+      
+      if (newCount === 3 && !feedbackGiven) {
+        setTimeout(() => setShowFeedbackModal(true), 1500);
+      }
     }
   };
 
@@ -207,6 +218,18 @@ export function BingeWatchCanvas({ episodes, folderId }: { episodes: Episode[]; 
           </div>
         )}
       </div>
+
+      <FeedbackModal 
+        isOpen={showFeedbackModal}
+        onClose={() => {
+          setShowFeedbackModal(false);
+          setFeedbackGiven(true);
+        }}
+        type="ai_tutor"
+        title="AI Tutor-nya Ngebantu?"
+        description="Gimana penjelasan AI sejauh ini? Berasa belajar bareng temen atau kaku kayak buku teks?"
+        metadata={{ folder_id: folderId, quarter_id: activeQuarter }}
+      />
     </div>
   );
 }

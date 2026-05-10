@@ -46,7 +46,7 @@ export default async function CreateTaskPage() {
             <p className="text-sm text-gray-500">Complete some tasks to see your history grow here!</p>
           </div>
         ) : (
-          <div className="grid gap-4 opacity-75">
+          <div className="grid gap-4">
             {doneTasks.map((task: Task) => (
               <TaskCard key={task.id} task={task} />
             ))}

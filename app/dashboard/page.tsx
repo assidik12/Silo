@@ -6,6 +6,7 @@ import GamificationStats from '@/components/GamificationStats';
 import WeeklyInsightChart from '@/components/WeeklyInsightChart';
 import { Task } from '@/types';
 import PersonalizationTrigger from '@/components/PersonalizationTrigger';
+import MilestoneFeedbackTrigger from '@/components/MilestoneFeedbackTrigger';
 
 export const dynamic = 'force-dynamic';
 
@@ -116,6 +117,7 @@ export default async function DashboardPage() {
       <WeeklyInsightChart recentTasks={recentTasks || []} recentLearning={recentLearning || []} />
       
       <PersonalizationTrigger completed={onboardingCompleted} />
+      <MilestoneFeedbackTrigger />
     </div>
   );
 }

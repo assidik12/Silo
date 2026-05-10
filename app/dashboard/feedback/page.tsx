@@ -2,23 +2,41 @@
 
 import { useState } from 'react';
 import { MessageSquareHeart, Send, Sparkles } from 'lucide-react';
+import { sendFeedback } from '@/app/actions/feedback.actions';
+import { useModal } from '@/components/ModalProvider';
 
 export default function FeedbackPage() {
+  const { showModal } = useModal();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  
+  const [formData, setFormData] = useState({
+    category: 'idea' as 'idea' | 'bug' | 'love' | 'other',
+    message: ''
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Fake loading delay
-    setTimeout(() => {
-      setIsSubmitting(false);
+    const res = await sendFeedback({
+      type: 'general',
+      category: formData.category === 'other' ? undefined : formData.category,
+      message: formData.message
+    });
+
+    if (res.success) {
       setSubmitted(true);
-      
-      // Reset after 3 seconds
-      setTimeout(() => setSubmitted(false), 3000);
-    }, 1500);
+      setTimeout(() => setSubmitted(false), 5000);
+      setFormData({ category: 'idea', message: '' });
+    } else {
+      showModal({
+        title: 'Gagal Kirim',
+        message: res.error || 'Ada masalah pas kirim feedback. Coba lagi ya!',
+        type: 'error'
+      });
+    }
+    setIsSubmitting(false);
   };
 
   return (
@@ -46,6 +64,8 @@ export default function FeedbackPage() {
               <label htmlFor="category" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Kategori</label>
               <select
                 id="category"
+                value={formData.category}
+                onChange={e => setFormData({...formData, category: e.target.value as any})}
                 className="block w-full rounded-2xl border-none bg-slate-100/80 px-5 py-4 text-slate-700 font-semibold focus:bg-white focus:outline-none focus:ring-4 focus:ring-pink-100 transition-all shadow-sm cursor-pointer"
               >
                 <option value="idea">💡 Ide Fitur Baru</option>
@@ -61,6 +81,8 @@ export default function FeedbackPage() {
                 id="message"
                 required
                 rows={5}
+                value={formData.message}
+                onChange={e => setFormData({...formData, message: e.target.value})}
                 className="block w-full rounded-2xl border-none bg-slate-100/80 px-5 py-4 text-slate-700 font-medium placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-pink-100 transition-all shadow-sm resize-none"
                 placeholder="Ceritain detailnya di sini ya..."
               ></textarea>
