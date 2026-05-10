@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { ActionResponse } from "@/types";
+import { createWelcomeTasks } from "./task.actions";
 
 export async function updateUserProfile(data: {
   name: string;
@@ -32,6 +33,9 @@ export async function updateUserProfile(data: {
       .eq("id", user.id);
 
     if (error) throw error;
+
+    // Create welcome tasks for the new user
+    await createWelcomeTasks(user.id);
 
     revalidatePath("/dashboard");
     return { success: true };

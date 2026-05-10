@@ -116,6 +116,8 @@ export default function LearningPage() {
     setIsLoadingMode(false);
   };
 
+  const currentCourseTitle = bingePlan.courseTitle || (selectedHistory?.type === "binge" ? selectedHistory.title : undefined);
+
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
       <header>
@@ -252,7 +254,7 @@ export default function LearningPage() {
                 </div>
               ) : (
                 <>
-                  <BingeWatchCanvas episodes={bingePlan.episodes} folderId={syncedFolder?.dbFolderId || undefined} />
+                  <BingeWatchCanvas episodes={bingePlan.episodes} folderId={syncedFolder?.dbFolderId || undefined} courseTitle={bingePlan.courseTitle} />
 
                   <div className="mt-8 flex justify-end">
                     <button
@@ -355,7 +357,7 @@ export default function LearningPage() {
               {selectedHistory.type === "sks" ? (
                 <SksCanvas content={typeof selectedHistory.content === "string" ? selectedHistory.content : JSON.stringify(selectedHistory.content)} />
               ) : (
-                <BingeWatchCanvas episodes={typeof selectedHistory.content === "string" ? JSON.parse(selectedHistory.content) : selectedHistory.content} folderId={selectedHistory.folder_id || undefined} />
+                <BingeWatchCanvas episodes={typeof selectedHistory.content === "string" ? JSON.parse(selectedHistory.content) : selectedHistory.content} folderId={selectedHistory.folder_id || undefined} courseTitle={selectedHistory.title} />
               )}
             </div>
           </div>

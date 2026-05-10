@@ -234,7 +234,49 @@ Kembalikan respon DALAM FORMAT JSON murni (tanpa markdown backticks) dengan keys
 
     return { success: true, data: parsedData };
   } catch (error) {
-    return { success: false, error: (error as Error).message };
+    return { success: false, error: (error as Error).message || "Gagal analisis tugas" };
+  }
+}
+
+export async function createWelcomeTasks(userId: string): Promise<ActionResponse> {
+  try {
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+
+    const welcomeTasks = [
+      {
+        user_id: userId,
+        title: "👋 Eksplor DoJo Dashboard",
+        description: "Lihat statistik XP, Streak, dan grafik produktivitas mingguan kamu di sini.",
+        duration_estimate_minutes: 15,
+        status: 'pending',
+        scheduled_time: new Date(Date.now() + 3600000).toISOString(), // 1 hour from now
+      },
+      {
+        user_id: userId,
+        title: "🧠 Coba AI Strategist",
+        description: "Bikin task baru, lalu klik tombol 'AI Strategist' di kartunya buat liat keajaiban breakdown tugas!",
+        duration_estimate_minutes: 30,
+        status: 'pending',
+        scheduled_time: new Date(Date.now() + 7200000).toISOString(), // 2 hours from now
+      },
+      {
+        user_id: userId,
+        title: "📚 Connect Google Drive ke Learning Hub",
+        description: "Upload materi kuliah kamu ke Learning Hub dan coba mode SKS atau Binge-Watch.",
+        duration_estimate_minutes: 20,
+        status: 'pending',
+        scheduled_time: new Date(Date.now() + 86400000).toISOString(), // 1 day from now
+      }
+    ];
+
+    const { error } = await supabase.from('tasks').insert(welcomeTasks);
+    if (error) throw error;
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Welcome Tasks Error:", err);
+    return { success: false, error: err.message };
   }
 }
 

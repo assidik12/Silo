@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { google } from "googleapis";
 import { GoogleGenAI } from "@google/genai";
 import { parsePdfBuffer, chunkText } from "@/utils/pdfParser";
+import { createEvent } from "@/lib/googleCalendar";
 
 export async function syncGoogleDriveFolder(driveUrl: string): Promise<ActionResponse<{ filesCount: number; folderName: string; dbFolderId: string }>> {
   try {
@@ -465,5 +466,63 @@ export async function getQuarterChatHistory(folderId: string | null, quarterId: 
       return { success: false, error: err.message };
     }
     return { success: false, error: "Unknown error" };
+  }
+}export async function syncLearningPlanToCalendar(courseTitle: string, episodes: Episode[]): Promise<ActionResponse> {
+  try {
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+
+    const { data: { session } } = await supabase.auth.getSession();
+    const user = session?.user;
+    if (!user) return { success: false, error: "Unauthorized" };
+
+    const providerToken = session?.provider_token;
+    if (!providerToken) {
+      return { success: false, error: "Google Calendar not connected. Please re-login with Google." };
+    }
+
+    // Get user productive hours to schedule smartly
+    const { data: profile } = await supabase
+      .from('users')
+      .select('productive_hours')
+      .eq('id', user.id)
+      .single();
+
+    let startHour = 9; // Default 09:00 AM
+    if (profile?.productive_hours) {
+      const match = profile.productive_hours.match(/(\d{1,2})[:.](\d{2})/);
+      if (match) {
+        startHour = parseInt(match[1], 10);
+      } else if (profile.productive_hours.toLowerCase().includes('malam')) {
+        startHour = 19;
+      } else if (profile.productive_hours.toLowerCase().includes('sore')) {
+        startHour = 16;
+      }
+    }
+
+    for (let i = 0; i < episodes.length; i++) {
+      const episode = episodes[i];
+      const scheduledDate = new Date();
+      scheduledDate.setDate(scheduledDate.getDate() + i + 1); // Starting tomorrow, one per day
+      scheduledDate.setHours(startHour, 0, 0, 0);
+
+      const endDate = new Date(scheduledDate.getTime() + 60 * 60000); // 1 hour duration
+
+      const eventDetails = {
+        summary: `[DoJo Learning] ${courseTitle}: ${episode.title}`,
+        description: `Binge-watch episode from DoJo Learning Hub.\n\n${episode.description}`,
+        start: { dateTime: scheduledDate.toISOString() },
+        end: { dateTime: endDate.toISOString() },
+        colorId: '9', // Lavender/Purple for learning
+        reminders: { useDefault: true }
+      };
+
+      await createEvent(providerToken, eventDetails);
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Sync Learning Error:", err);
+    return { success: false, error: err.message || "Gagal sinkron kalender" };
   }
 }
