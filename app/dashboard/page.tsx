@@ -5,6 +5,7 @@ import TaskCard from '@/components/TaskCard';
 import GamificationStats from '@/components/GamificationStats';
 import WeeklyInsightChart from '@/components/WeeklyInsightChart';
 import { Task } from '@/types';
+import PersonalizationTrigger from '@/components/PersonalizationTrigger';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,12 +30,14 @@ export default async function DashboardPage() {
   // Fetch Gamification User Stats
   const { data: userData } = await supabase
     .from('users')
-    .select('xp, streak_count')
+    .select('name, xp, streak_count, onboarding_completed')
     .eq('id', user.id)
     .single();
 
+  const name = userData?.name || user.email?.split('@')[0] || 'User';
   const xp = userData?.xp || 0;
   const streak = userData?.streak_count || 0;
+  const onboardingCompleted = userData?.onboarding_completed || false;
 
   // Calculate Weekly Completion & Chart Data (Past 7 Days)
   const now = new Date();
@@ -73,7 +76,7 @@ export default async function DashboardPage() {
       <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-sm text-gray-600 mt-1">Welcome back, {user.email}</p>
+          <p className="text-sm text-gray-600 mt-1">Welcome back, {name}</p>
         </div>
         
         <GamificationStats streak={streak} xp={xp} />
@@ -111,6 +114,8 @@ export default async function DashboardPage() {
       </div>
 
       <WeeklyInsightChart recentTasks={recentTasks || []} recentLearning={recentLearning || []} />
+      
+      <PersonalizationTrigger completed={onboardingCompleted} />
     </div>
   );
 }

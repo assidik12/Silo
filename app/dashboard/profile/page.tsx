@@ -18,10 +18,11 @@ export default async function ProfilePage() {
   // Ambil data XP dan Streak
   const { data: userData } = await supabase
     .from('users')
-    .select('xp, streak_count')
+    .select('name, xp, streak_count')
     .eq('id', user.id)
     .single();
 
+  const name = userData?.name || user.email?.split('@')[0] || 'User';
   const xp = userData?.xp || 0;
   const streak = userData?.streak_count || 0;
 
@@ -39,7 +40,7 @@ export default async function ProfilePage() {
             <User className="w-12 h-12" />
           </div>
           <h2 className="text-xl font-bold text-slate-800 w-full truncate" title={user.email || ''}>
-            {user.email?.split('@')[0]}
+            {name}
           </h2>
           <div className="flex items-center gap-2 mt-2 text-slate-500 text-sm bg-slate-50 px-3 py-1 rounded-full">
             <Mail className="w-4 h-4" />

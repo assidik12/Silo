@@ -222,10 +222,15 @@ Kembalikan respon DALAM FORMAT JSON murni (tanpa markdown backticks) dengan keys
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: prompt,
+      config: {
+        systemInstruction: "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.",
+        temperature: 0.7,
+        responseMimeType: "application/json"
+      }
     });
 
     const jsonStr = response.text || "{}";
-    const parsedData = JSON.parse(jsonStr.replace(/```json\n?|```/g, "").trim());
+    const parsedData = JSON.parse(jsonStr);
 
     return { success: true, data: parsedData };
   } catch (error) {
@@ -235,23 +240,51 @@ Kembalikan respon DALAM FORMAT JSON murni (tanpa markdown backticks) dengan keys
 
 export async function generateTaskBreakdown(title: string, description: string | null, moduleLink: string | null): Promise<string[]> {
   try {
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    let userContext = "";
+    if (user) {
+      const { data: profile } = await supabase
+        .from('users')
+        .select('major, interests, learning_type')
+        .eq('id', user.id)
+        .single();
+        
+      if (profile && profile.major) {
+        userContext = `\nContext User:\n- Jurusan: ${profile.major}\n- Minat: ${profile.interests || 'Umum'}\n- Tipe Belajar: ${profile.learning_type === 'ngebut' ? 'Ngebut/Speedrunner' : 'Santai/Chill'}`;
+      }
+    }
+
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     
-    const prompt = `Break down this task into 3-5 manageable subtasks. Use a casual Gen Z vibe (Indonesian slang / gaul, but keep it productive). 
+    const systemInstruction = `Kamu adalah DoJo Strategist, asisten produktivitas Gen-Z yang asik, objektif, dan suportif.
+Tugasmu adalah memecah tugas menjadi 3-5 subtasks yang doable.
+Karaktermu: Casual Gen-Z (pake bahasa gaul dikit kayak 'ngab', 'gas', 'santuy'), tapi tetap profesional dan fokus ke hasil.
+Berikan afirmasi positif di awal atau akhir respon (misal: "Gaskeun ngab, lo pasti bisa!", "Chill aja, kita pecah pelan-pelan").
+${userContext}`;
+
+    const prompt = `Break down this task into 3-5 manageable subtasks.
 Task Title: "${title}"
 Task Description: "${description || "Tidak ada deskripsi tambahan"}"
 Module Link: "${moduleLink || "Tidak ada"}"
 
-Kembalikan respon HANYA DALAM FORMAT JSON array of strings murni (tanpa markdown backticks).
-Contoh output yang valid: ["Googling tipis-tipis cari referensi", "Bikin kerangka kasarnya", "Drafting isinya"]`;
+Kembalikan respon DALAM FORMAT JSON array of strings murni (tanpa markdown backticks).
+Contoh output: ["Poin 1", "Poin 2", "Poin 3"]`;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: prompt,
+      config: {
+        systemInstruction,
+        temperature: 0.7,
+        responseMimeType: "application/json"
+      }
     });
 
     const jsonStr = response.text || "[]";
-    const parsedData = JSON.parse(jsonStr.replace(/```json\n?|```/g, "").trim());
+    const parsedData = JSON.parse(jsonStr);
     
     if (Array.isArray(parsedData) && parsedData.length > 0) {
       return parsedData.map(item => String(item));
@@ -260,7 +293,6 @@ Contoh output yang valid: ["Googling tipis-tipis cari referensi", "Bikin kerangk
     throw new Error("Format respons tidak valid");
   } catch (error) {
     console.error("Failed to generate task breakdown:", error);
-    // Fallback jika API gagal/error
     return [
       `Googling tipis-tipis cari referensi buat "${title}" 🔍`,
       `Bikin kerangka kasarnya dulu, no overthinking ✍️`,

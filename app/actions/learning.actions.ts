@@ -144,7 +144,7 @@ export async function generateSKSSummary(folderId: string): Promise<ActionRespon
     if (error) {
       console.error(error);
       return { success: false, error: "Database vector search failed." };
-    }
+    } 
 
     const contextText = chunks?.map((c: any) => c.content).join("\n\n") || "";
 
@@ -152,21 +152,34 @@ export async function generateSKSSummary(folderId: string): Promise<ActionRespon
       return { success: false, error: "Tidak ada materi yang ditemukan." };
     }
 
-    const prompt = `Gunakan materi berikut untuk membuat SKS Summary (Rangkuman Ujian Kebut Semalam). 
-Buat seringkas dan sejelas mungkin dengan poin-poin penting. Gunakan gaya bahasa Gen Z tapi tetap profesional.
-Kembalikan respon DALAM FORMAT JSON murni (tanpa markdown backticks) dengan dua kunci:
-- "title": (string) Judul keren untuk rangkuman ini (maks 6 kata).
-- "content": (string) Isi rangkuman materi dalam format Markdown.
+    const { data: profile } = await supabase.from('users').select('name, major, interests, learning_type').eq('id', (await supabase.auth.getUser()).data.user?.id).single();
+    const userContext = profile ? `\nContext User:\n- Jurusan: ${profile.major}\n- Minat: ${profile.interests || 'Umum'}\n- Tipe Belajar: ${profile.learning_type === 'ngebut' ? 'Ngebut/Speedrunner' : 'Santai/Chill'}` : "";
 
-Materi:\n${contextText}`;
+    const prompt = `
+    Gunakan materi berikut untuk membuat SKS Summary (Rangkuman Ujian Kebut Semalam).
+    Sapa user terlebih dahulu dengan gaya bahasa Gen Z dengan menyebut nama user ${profile?.name || 'Bro/Sis'}.
+    Buat sepadat, sejelas, dan serinci mungkin dengan poin-poin penting.
+    Boleh menggunakan analogi untuk menjelaskan konsep yang susah, tapi tetap fokus pada materi utama.
+    Gunakan gaya bahasa Gen Z tapi tetap profesional serta kasual (boleh menggunakan corporate slang Gen Z).
+    Kembalikan respon DALAM FORMAT JSON murni (tanpa markdown backticks) dengan dua kunci:
+    "title": (string) Judul keren untuk rangkuman ini (maks 6 kata).
+    "content": (string) Isi rangkuman materi dalam format Markdown (gunakan sub-judul, bullet points, dan bold untuk menonjolkan poin penting). 
+
+    ${userContext}
+    Materi:\n${contextText}`;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: prompt,
+      config: {
+        systemInstruction: "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.",
+        temperature: 0.7,
+        responseMimeType: "application/json"
+      }
     });
 
     const jsonStr = response.text || "{}";
-    const parsedData = JSON.parse(jsonStr.replace(/```json\n?|```/g, "").trim());
+    const parsedData = JSON.parse(jsonStr);
 
     return { success: true, data: parsedData };
   } catch (err: unknown) {
@@ -198,21 +211,29 @@ export async function generateBingeWatchPlan(folderId: string): Promise<ActionRe
 
     const contextText = chunks?.map((c: any) => c.content).join("\n\n") || "";
 
+    const { data: profile } = await supabase.from('users').select('major, interests, learning_type').eq('id', (await supabase.auth.getUser()).data.user?.id).single();
+    const userContext = profile ? `\nContext User:\n- Jurusan: ${profile.major}\n- Minat: ${profile.interests || 'Umum'}\n- Tipe Belajar: ${profile.learning_type === 'ngebut' ? 'Ngebut/Speedrunner' : 'Santai/Chill'}` : "";
+
     const prompt = `Berdasarkan cuplikan materi berikut, buatkan "Binge-Watch Roadmap" yang membagi materi menjadi 3-4 "Quarter" atau "Episode" pembelajaran. 
 Kembalikan respon DALAM FORMAT JSON murni (tanpa markdown backticks) dengan dua kunci:
 - "courseTitle": (string) Judul keren untuk roadmap ini (maks 6 kata).
 - "episodes": (array of object) dimana setiap objek memiliki keys: id (string), title (string), description (string).
 
+${userContext}
 Materi:\n${contextText}`;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: prompt,
+      config: {
+        systemInstruction: "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.",
+        temperature: 0.7,
+        responseMimeType: "application/json"
+      }
     });
 
     const jsonStr = response.text || "{}";
-    // Attempt to parse JSON safely
-    const parsedData = JSON.parse(jsonStr.replace(/```json\n?|```/g, "").trim());
+    const parsedData = JSON.parse(jsonStr);
 
     return { success: true, data: parsedData };
   } catch (err: unknown) {
@@ -358,12 +379,16 @@ export async function chatWithTutor(folderId: string | null, quarterId: string, 
       }
     }
 
+    const { data: profile } = await supabase.from('users').select('major, interests, learning_type').eq('id', user.id).single();
+    const userContext = profile ? `\nContext User:\n- Jurusan: ${profile.major}\n- Minat: ${profile.interests || 'Umum'}\n- Tipe Belajar: ${profile.learning_type === 'ngebut' ? 'Ngebut/Speedrunner' : 'Santai/Chill'}` : "";
+
     const systemInstruction = `Kamu adalah DoJo Tutor, asisten AI Gen-Z yang santuy, asik, suportif, dan sangat afirmatif. 
 Tugasmu adalah ngebantu user belajar materi dari quarter ini: "${quarterTitle}" (${quarterDescription}).
 ${contextStr ? `\nGunakan referensi ini untuk menjawab jika relevan dengan pertanyaan:\n${contextStr}\n` : ""}
+${userContext}
 Aturan gaya bahasa:
-- Pake bahasa gaul lu/gw atau lo/gue (tergantung selera) yang natural, tapi tetap mendidik dan gampang dimengerti.
-- Sering kasih apresiasi, validasi, dan afirmasi positif (misal: "Mantap banget pertanyaannya!", "Lo pasti bisa paham ini!").
+- Pake bahasa gaul lu/gw atau lo/gue yang natural, tapi tetap mendidik dan objektif.
+- Sering kasih apresiasi, validasi, dan afirmasi positif (misal: "Mantap banget pertanyaannya!", "Lo pasti bisa paham ini!", "Keren banget argumen lo!").
 - Jangan jawab kaku kayak robot, pake emoji secukupnya.
 - Berikan penjelasan step-by-step jika rumit.
 - Jika pesan user adalah "Gue siap belajar materi ini", beri sapaan hangat yang asik, kasih overview singkat banget apa yang bakal dipelajari di quarter ini berdasarkan deskripsi yang diberikan, dan ajak/tanya kesiapan mereka buat diskusi.`;

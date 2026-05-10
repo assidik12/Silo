@@ -39,3 +39,16 @@ export interface ChatMessage {
   role: "user" | "ai";
   content: string;
 }
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  xp: number;
+  streak_count: number;
+  last_active_date: string | null;
+  onboarding_completed: boolean;
+  major: string | null;
+  productive_hours: string | null;
+  interests: string | null;
+  learning_type: 'ngebut' | 'santai' | null;
+}
