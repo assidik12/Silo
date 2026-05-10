@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, PlusCircle, History, LogOut, CheckCircle2, Menu, X, User, MessageCircle, BookOpen } from 'lucide-react';
@@ -12,6 +12,17 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+        setIsAdmin(true);
+      }
+    };
+    checkAdmin();
+  }, [supabase]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -25,6 +36,10 @@ export default function Sidebar() {
     {name : 'Feedback', href: '/dashboard/feedback', icon: MessageCircle},
     { name: 'Profile', href: '/dashboard/profile', icon: User }
   ];
+
+  if (isAdmin) {
+    navLinks.push({ name: 'Admin Monitoring', href: '/admin/feedback', icon: History });
+  }
 
   const closeSidebar = () => setIsOpen(false);
 
