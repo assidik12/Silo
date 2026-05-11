@@ -22,15 +22,16 @@ export async function updateUserProfile(data: {
 
     const { error } = await supabase
       .from("users")
-      .update({
+      .upsert({
+        id: user.id,
+        email: user.email,
         name: data.name,
         major: data.major,
         productive_hours: data.productive_hours,
         interests: data.interests,
         learning_type: data.learning_type,
         onboarding_completed: true
-      })
-      .eq("id", user.id);
+      });
 
     if (error) throw error;
 
