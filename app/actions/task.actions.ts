@@ -181,11 +181,12 @@ Kembalikan respon JSON dengan keys: "summary" (string), "estimatedMinutes" (numb
   }
 }
 
-export async function generateTaskBreakdown(title: string, description: string, subTasks: any[] | null): Promise<ActionResponse<string[]>> {
+export async function generateTaskBreakdown(title: string, description: string | null, moduleLink: string | null): Promise<ActionResponse<string[]>> {
   try {
-    const prompt = `Pecah tugas berikut menjadi 3-5 sub-tasks yang konkret dan mudah dikerjakan.
-Judul: ${title}
-Deskripsi: ${description}
+    const prompt = `Break down this task into 3-5 manageable subtasks.
+Task Title: "${title}"
+Task Description: "${description || "Tidak ada deskripsi tambahan"}"
+Module Link: "${moduleLink || "Tidak ada"}"
 
 Kembalikan respon JSON array of strings murni. Contoh: ["Langkah 1", "Langkah 2"]`;
 

@@ -40,12 +40,14 @@ export default function TaskCard({ task }: { task: Task }) {
   const generate = async () => {
     setIsGenerating(true);
     const result = await generateTaskBreakdown(task.title, task.description, task.module_link);
-    const newSubTasks = result.map(title => ({
-      id: Math.random().toString(36).substring(7),
-      title,
-      done: false
-    }));
-    setDraftSubTasks(newSubTasks);
+    if (result.success && result.data) {
+      const newSubTasks = result.data.map(title => ({
+        id: Math.random().toString(36).substring(7),
+        title,
+        done: false
+      }));
+      setDraftSubTasks(newSubTasks);
+    }
     setIsGenerating(false);
   };
 
