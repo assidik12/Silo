@@ -80,6 +80,17 @@ export default function LoginPage() {
             )}
           </button>
 
+          {/* Beta Notice / Build Trust */}
+          <div className="mt-8 p-4 rounded-2xl bg-amber-50 border border-amber-100 text-left">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700">Beta Testing Notice</span>
+            </div>
+            <p className="text-[11px] text-amber-800 leading-relaxed">
+              DoJo masih dalam tahap verifikasi Google. Jika muncul peringatan <span className="font-bold">"Google belum memverifikasi"</span>, lo bisa klik <span className="font-bold">Lanjutan (Advanced)</span> &gt; <span className="font-bold">Buka DoJo (unsafe)</span> untuk lanjut. Data lo aman, kita cuma pake Google Calendar buat sinkron jadwal belajar lo!
+            </p>
+          </div>
+
           <div className="mt-8 flex justify-center items-center gap-2 text-sm text-slate-400 font-medium bg-slate-50/50 w-fit mx-auto px-4 py-2 rounded-full border border-slate-100">
             <Gamepad2 className="w-4 h-4 text-indigo-400" />
             <p>Gamified Productivity App</p>

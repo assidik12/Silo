@@ -71,3 +71,25 @@ export async function checkTaskMilestone(): Promise<{ shouldShow: boolean }> {
     return { shouldShow: false };
   }
 }
+export async function getAllFeedback(): Promise<ActionResponse<any[]>> {
+  try {
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user?.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    const { data, error } = await supabase
+      .from("feedback")
+      .select("*, users!user_id(email, name)")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    return { success: true, data };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
