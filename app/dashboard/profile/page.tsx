@@ -3,6 +3,9 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { User, Medal, Settings, Mail, GraduationCap, MapPin } from 'lucide-react';
 import ProfileForm from '@/components/ProfileForm';
+import ShareButton from '@/components/ShareButton';
+import AvatarUpload from '@/components/AvatarUpload';
+
 
 export const dynamic = 'force-dynamic';
 
@@ -40,8 +43,11 @@ export default async function ProfilePage() {
         {/* Left Column: Stats & Identity */}
         <div className="space-y-6">
           <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/40 text-center flex flex-col items-center">
-            <div className="w-24 h-24 bg-indigo-100 text-indigo-500 rounded-full flex items-center justify-center mb-4 ring-8 ring-indigo-50">
-              <User className="w-12 h-12" />
+            <div className="mb-4 ring-8 ring-indigo-50 rounded-[1.8rem]">
+              <AvatarUpload 
+                initialAvatarUrl={userData?.avatar_url} 
+                userId={user.id} 
+              />
             </div>
             <h2 className="text-2xl font-black text-slate-800 w-full truncate">
               {name}
@@ -73,6 +79,19 @@ export default async function ProfilePage() {
                 <span className="truncate font-medium">{user.email}</span>
               </div>
             </div>
+
+            <ShareButton 
+              userId={user.id}
+              userData={{ 
+                name, 
+                major, 
+                xp, 
+                streak, 
+                bio,
+                learning_type: userData?.learning_type,
+                avatar_url: userData?.avatar_url
+              }} 
+            />
           </div>
 
           {/* Achievements Snippet */}

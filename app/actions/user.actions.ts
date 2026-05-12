@@ -70,3 +70,26 @@ export async function getUserProfile(): Promise<ActionResponse<any>> {
     return { success: false, error: err.message };
   }
 }
+
+export async function updateUserAvatar(avatarUrl: string): Promise<ActionResponse> {
+  try {
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: "Unauthorized" };
+
+    const { error } = await supabase
+      .from("users")
+      .update({ avatar_url: avatarUrl })
+      .eq("id", user.id);
+
+    if (error) throw error;
+
+    revalidatePath("/dashboard/profile");
+    return { success: true };
+  } catch (err: any) {
+    console.error("Update Avatar Error:", err);
+    return { success: false, error: err.message || "Gagal update avatar" };
+  }
+}
