@@ -1,4 +1,6 @@
 /**
+ * @jest-environment node
+ *
  * calendar-sync.test.ts
  *
  * Tests that createEvent / updateEvent / deleteEvent in lib/googleCalendar.ts:

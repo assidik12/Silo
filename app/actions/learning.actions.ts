@@ -4,22 +4,19 @@ import { ActionResponse, LearningHistoryItem, Episode } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { google } from "googleapis";
-import { GoogleGenAI } from "@google/genai";
+import { getAiResponse, getEmbedding, aiClient } from "@/lib/ai-config";
 import { parsePdfBuffer, chunkText } from "@/utils/pdfParser";
 import { createEvent } from "@/lib/googleCalendar";
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function syncGoogleDriveFolder(driveUrl: string): Promise<ActionResponse<{ filesCount: number; folderName: string; dbFolderId: string }>> {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
 
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    const provider_token = session?.provider_token;
+    const { data: { user } } = await supabase.auth.getUser();
+    const provider_token = cookieStore.get("g_provider_token")?.value;
 
-    if (sessionError || authError || !user || !provider_token) {
+    if (!user || !provider_token) {
       return { success: false, error: "Unauthorized or Google Drive token missing. Please reconnect Google." };
     }
 
@@ -39,94 +36,127 @@ export async function syncGoogleDriveFolder(driveUrl: string): Promise<ActionRes
     const files = res.data.files;
     if (!files || files.length === 0) return { success: false, error: "No PDF files found in this folder." };
 
-    const { data: dbFolder, error: folderError } = await supabase
+    // 1. CEK APAKAH FOLDER SUDAH ADA (Hemat Kuota: Jangan duplikasi folder)
+    let { data: dbFolder } = await supabase
       .from("learning_folders")
-      .insert({
-        user_id: user.id,
-        drive_folder_id: folderId,
-        folder_name: `Synced Folder (${files.length} files)`,
-      })
       .select("id")
+      .eq("user_id", user.id)
+      .eq("drive_folder_id", folderId)
       .single();
 
-    if (folderError || !dbFolder) return { success: false, error: "Failed to create folder record in DB." };
+    if (!dbFolder) {
+      const { data: newFolder, error: folderError } = await supabase
+        .from("learning_folders")
+        .insert({
+          user_id: user.id,
+          drive_folder_id: folderId,
+          folder_name: `Synced Folder (${files.length} files)`,
+        })
+        .select("id")
+        .single();
+      
+      if (folderError || !newFolder) return { success: false, error: "Failed to create folder record in DB." };
+      dbFolder = newFolder;
+    }
+
+    // 2. AMBIL LIST FILE YANG SUDAH PERNAH DI-EMBED (Hemat Kuota: Skip if Synced)
+    const { data: existingChunks } = await supabase
+      .from("document_chunks")
+      .select("metadata->sourceFile")
+      .eq("folder_id", dbFolder.id);
+    
+    const syncedFiles = new Set(existingChunks?.map(c => (c as any).sourceFile) || []);
+
+    let newFilesProcessed = 0;
 
     for (const file of files) {
-      if (!file.id) continue;
+      if (!file.id || !file.name) continue;
+
+      // SKIP JIKA FILE SUDAH ADA DI DATABASE
+      if (syncedFiles.has(file.name)) {
+        console.log(`⏭️ Skipping ${file.name} (Already synced)`);
+        continue;
+      }
+
       try {
+        console.log(`📄 Processing new file: ${file.name}`);
         const fileRes = await drive.files.get({ fileId: file.id, alt: "media" }, { responseType: "arraybuffer" });
         const text = await parsePdfBuffer(Buffer.from(fileRes.data as ArrayBuffer));
-        const chunks = chunkText(text, 1000);
+        
+        if (!text) continue;
 
+        const chunks = chunkText(text, 1000);
         for (const chunk of chunks) {
           if (!chunk.trim()) continue;
           
-          const embeddingRes = await ai.models.embedContent({
-            model: "gemini-embedding-2",
-            contents: chunk,
-            config: { outputDimensionality: 768 },
-          });
-
-          const embedding = embeddingRes.embeddings?.[0]?.values;
+          const embedding = await getEmbedding(chunk);
           if (!embedding) continue;
 
           await supabase.from("document_chunks").insert({
-            folder_id: dbFolder.id,
+            folder_id: dbFolder!.id,
             user_id: user.id,
             content: chunk,
             embedding,
             metadata: { sourceFile: file.name },
           });
         }
-      } catch (e) { console.error(`Error processing file ${file.name}:`, e); }
+        newFilesProcessed++;
+      } catch (e: any) { 
+        console.error(`Error processing file ${file.name}:`, e.message); 
+      }
     }
 
-    return { success: true, data: { filesCount: files.length, folderName: "Google Drive Folder", dbFolderId: dbFolder.id } };
+    return { 
+      success: true, 
+      data: { 
+        filesCount: files.length, 
+        folderName: "Google Drive Folder", 
+        dbFolderId: dbFolder.id 
+      } 
+    };
   } catch (err: any) {
-    console.error(err);
     return { success: false, error: err.message };
   }
 }
 
+// Sisa fungsi (generateSKSSummary, dll) tetap sama sesuai referensi work
 export async function generateSKSSummary(folderId: string): Promise<ActionResponse<{ title: string; content: string }>> {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
 
-    const queryEmb = await ai.models.embedContent({
-      model: "gemini-embedding-2",
-      contents: "Ringkasan topik utama dan poin-poin penting.",
-      config: { outputDimensionality: 768 },
-    });
+    const embedding = await getEmbedding("Rangkuman intisari, konsep utama, dan definisi penting untuk persiapan ujian SKS.");
+    if (!embedding) return { success: false, error: "Gagal memproses embedding materi." };
     
-    const { data: chunks } = await supabase.rpc("match_document_chunks", {
-      query_embedding: queryEmb.embeddings?.[0]?.values,
+    const { data: chunks, error: rpcError } = await supabase.rpc("match_document_chunks", {
+      query_embedding: embedding,
       match_threshold: 0.3,
       match_count: 15,
       p_folder_id: folderId,
     });
 
+    if (rpcError) throw rpcError;
+
     const contextText = chunks?.map((c: any) => c.content).join("\n\n") || "";
-    if (!contextText) return { success: false, error: "Tidak ada materi ditemukan." };
+    if (!contextText) return { success: false, error: "Tidak ada materi yang ditemukan." };
 
-    const { data: profile } = await supabase.from('users').select('name').eq('id', (await supabase.auth.getUser()).data.user?.id).single();
+    const { data: profile } = await supabase.from('users').select('name, major, interests, learning_type').eq('id', (await supabase.auth.getUser()).data.user?.id).single();
+    const userContext = profile ? `\nContext User:\n- Jurusan: ${profile.major}\n- Minat: ${profile.interests || 'Umum'}\n- Tipe Belajar: ${profile.learning_type === 'ngebut' ? 'Ngebut/Speedrunner' : 'Santai/Chill'}` : "";
 
-    const prompt = `Gunakan materi berikut untuk membuat SKS Summary. 
-Sapa user: ${profile?.name || 'Bro'}.
-Materi:\n${contextText}
-Kembalikan JSON dengan keys: "title" (string), "content" (markdown string).`;
+    const prompt = `Gunakan materi berikut untuk membuat SKS Summary (Rangkuman Ujian Kebut Semalam).
+Sapa user terlebih dahulu dengan gaya bahasa Gen Z dengan menyebut nama user ${profile?.name || 'Bro/Sis'}.
+Buat sepadat, sejelas, dan serinci mungkin dengan poin-poin penting.
+Kembalikan respon DALAM FORMAT JSON murni (tanpa markdown backticks) dengan dua kunci:
+"title": (string) Judul keren untuk rangkuman ini (maks 6 kata).
+"content": (string) Isi rangkuman materi dalam format Markdown. 
 
-    const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
-      contents: prompt,
-      config: {
-        systemInstruction: "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.",
-        temperature: 0.7,
-        responseMimeType: "application/json"
-      }
-    });
+${userContext}
+Materi:\n${contextText}`;
 
-    const parsedData = JSON.parse(response.text || "{}");
+    const result = await getAiResponse(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.");
+    if (!result) return { success: false, error: "Gagal memproses analisis AI." };
+
+    const parsedData = JSON.parse(result);
     return { success: true, data: parsedData };
   } catch (err: any) {
     return { success: false, error: err.message };
@@ -138,14 +168,11 @@ export async function generateBingeWatchPlan(folderId: string): Promise<ActionRe
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
 
-    const queryEmb = await ai.models.embedContent({
-      model: "gemini-embedding-2",
-      contents: "Daftar isi, topik utama, silabus.",
-      config: { outputDimensionality: 768 },
-    });
+    const embedding = await getEmbedding("Daftar isi, topik utama, silabus, dan ringkasan per bab.");
+    if (!embedding) return { success: false, error: "Gagal memproses embedding." };
     
     const { data: chunks } = await supabase.rpc("match_document_chunks", {
-      query_embedding: queryEmb.embeddings?.[0]?.values,
+      query_embedding: embedding,
       match_threshold: 0.3,
       match_count: 10,
       p_folder_id: folderId,
@@ -153,54 +180,61 @@ export async function generateBingeWatchPlan(folderId: string): Promise<ActionRe
 
     const contextText = chunks?.map((c: any) => c.content).join("\n\n") || "";
 
-    const prompt = `Buat Binge-Watch Roadmap (3-4 episode) dari materi ini.
-Materi:\n${contextText}
-Kembalikan JSON dengan keys: "courseTitle" (string), "episodes" (array of {id, title, description}).`;
+    const { data: profile } = await supabase.from('users').select('major, interests, learning_type').eq('id', (await supabase.auth.getUser()).data.user?.id).single();
+    const userContext = profile ? `\nContext User:\n- Jurusan: ${profile.major}\n- Minat: ${profile.interests || 'Umum'}\n- Tipe Belajar: ${profile.learning_type === 'ngebut' ? 'Ngebut/Speedrunner' : 'Santai/Chill'}` : "";
 
-    const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
-      contents: prompt,
-      config: {
-        systemInstruction: "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.",
-        temperature: 0.7,
-        responseMimeType: "application/json"
-      }
-    });
+    const prompt = `Berdasarkan cuplikan materi berikut, buatkan "Binge-Watch Roadmap" yang membagi materi menjadi 3-4 "Quarter" atau "Episode" pembelajaran. 
+Kembalikan respon DALAM FORMAT JSON murni (tanpa markdown backticks) dengan dua kunci:
+- "courseTitle": (string) Judul keren untuk roadmap ini (maks 6 kata).
+- "episodes": (array of object) dimana setiap objek memiliki keys: id (string), title (string), description (string).
 
-    const parsedData = JSON.parse(response.text || "{}");
+${userContext}
+Materi:\n${contextText}`;
+
+    const result = await getAiResponse(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.");
+    if (!result) return { success: false, error: "Gagal memproses roadmap AI." };
+
+    const parsedData = JSON.parse(result);
     return { success: true, data: parsedData };
   } catch (err: any) {
     return { success: false, error: err.message };
   }
 }
 
-export async function chatWithTutor(folderId: string | null, quarterId: string, title: string, description: string, userMessage: string, history: { role: "user" | "ai"; content: string }[]): Promise<ActionResponse<string>> {
+export async function chatWithTutor(folderId: string | null, quarterId: string, quarterTitle: string, quarterDescription: string, userMessage: string, history: { role: "ai" | "user"; content: string }[]): Promise<ActionResponse<string>> {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { success: false, error: "Unauthorized" };
 
-    const queryEmb = await ai.models.embedContent({
-      model: "gemini-embedding-2",
-      contents: userMessage,
-      config: { outputDimensionality: 768 },
-    });
-
-    let context = "";
-    if (folderId) {
-      const { data: chunks } = await supabase.rpc("match_document_chunks", {
-        query_embedding: queryEmb.embeddings?.[0]?.values,
-        match_threshold: 0.3,
-        match_count: 5,
-        p_folder_id: folderId,
-      });
-      context = chunks?.map((c: any) => c.content).join("\n\n") || "";
+    let contextStr = "";
+    if (folderId && userMessage.trim() !== "") {
+      const embedding = await getEmbedding(userMessage);
+      if (embedding) {
+        const { data: chunks } = await supabase.rpc("match_document_chunks", {
+          query_embedding: embedding,
+          match_threshold: 0.7,
+          match_count: 3,
+          p_folder_id: folderId,
+        });
+        if (chunks && chunks.length > 0) {
+          contextStr = "REFERENSI MATERI TERKAIT (DARI FILE PDF USER):\n" + chunks.map((c: any) => c.content).join("\n---\n");
+        }
+      }
     }
 
-    const systemInstruction = `Kamu adalah AI Tutor DoJo. Fokus pada topik: ${title}.
-Deskripsi topik: ${description}
-Materi pendukung:\n${context}`;
+    const { data: profile } = await supabase.from('users').select('major, interests, learning_type').eq('id', user.id).single();
+    const userContext = profile ? `\nContext User:\n- Jurusan: ${profile.major}\n- Minat: ${profile.interests || 'Umum'}\n- Tipe Belajar: ${profile.learning_type === 'ngebut' ? 'Ngebut/Speedrunner' : 'Santai/Chill'}` : "";
+
+    const systemInstruction = `Kamu adalah DoJo Tutor, asisten AI Gen-Z yang santuy, asik, suportif, dan sangat afirmatif. 
+Tugasmu adalah ngebantu user belajar materi dari quarter ini: "${quarterTitle}" (${quarterDescription}).
+${contextStr ? `\nGunakan referensi ini untuk menjawab jika relevan dengan pertanyaan:\n${contextStr}\n` : ""}
+${userContext}
+Aturan gaya bahasa:
+- Pake bahasa gaul lo/gue yang natural, tapi tetap mendidik dan objektif.
+- Sering kasih apresiasi, validasi, dan afirmasi positif.
+- Jika pesan user adalah "Gue siap belajar materi ini", beri sapaan hangat yang asik, kasih overview singkat banget apa yang bakal dipelajari di quarter ini.`;
 
     const contents = history.map(h => ({
       role: h.role === "ai" ? "model" : "user",
@@ -208,34 +242,15 @@ Materi pendukung:\n${context}`;
     }));
     contents.push({ role: "user", parts: [{ text: userMessage }] });
 
-    const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
-      contents,
-      config: {
-        systemInstruction,
-        temperature: 0.7,
-      }
-    });
+    const result = await getAiResponse(userMessage, systemInstruction, false);
+    if (!result) return { success: false, error: "Gagal memproses chat AI." };
 
-    const aiResponse = response.text || "";
+    await supabase.from("learning_chat_history").insert([
+      { user_id: user.id, folder_id: folderId, quarter_id: quarterId, role: 'user', content: userMessage },
+      { user_id: user.id, folder_id: folderId, quarter_id: quarterId, role: 'ai', content: result }
+    ]);
 
-    await supabase.from("learning_chat_history").insert({
-      user_id: user.id,
-      folder_id: folderId,
-      quarter_id: quarterId,
-      role: 'ai',
-      content: aiResponse,
-    });
-    
-    await supabase.from("learning_chat_history").insert({
-      user_id: user.id,
-      folder_id: folderId,
-      quarter_id: quarterId,
-      role: 'user',
-      content: userMessage,
-    });
-
-    return { success: true, data: aiResponse };
+    return { success: true, data: result };
   } catch (err: any) {
     return { success: false, error: err.message };
   }
@@ -253,7 +268,7 @@ export async function saveLearningHistory(folderId: string, title: string, type:
       folder_id: folderId || null,
       title,
       type,
-      content,
+      content: typeof content === "string" ? content : JSON.stringify(content),
     });
 
     return { success: true };
@@ -323,7 +338,10 @@ export async function syncLearningPlanToCalendar(courseTitle: string, episodes: 
     const supabase = createClient(cookieStore);
     const { data: { session } } = await supabase.auth.getSession();
     const user = session?.user;
-    if (!user || !session?.provider_token) return { success: false, error: "Unauthorized or Google not connected." };
+    if (!user) return { success: false, error: "Unauthorized" };
+
+    const provider_token = cookieStore.get("g_provider_token")?.value;
+    if (!provider_token) return { success: false, error: "Google Calendar not connected." };
 
     const { data: profile } = await supabase.from('users').select('productive_hours').eq('id', user.id).single();
     let startHour = 9;
@@ -341,7 +359,7 @@ export async function syncLearningPlanToCalendar(courseTitle: string, episodes: 
       scheduledDate.setHours(startHour, 0, 0, 0);
       const endDate = new Date(scheduledDate.getTime() + 60 * 60000);
 
-      await createEvent(session.provider_token, {
+      await createEvent(provider_token, {
         summary: `[DoJo Learning] ${courseTitle}: ${episode.title}`,
         description: `Binge-watch episode from DoJo Learning Hub.\n\n${episode.description}`,
         start: { dateTime: scheduledDate.toISOString() },

@@ -24,9 +24,12 @@ DoJo adalah aplikasi produktivitas yang ngebawa konsep **Gamification** ke *dail
 
 Fitur andalannya:
 - **Task Management Chill**: Catet tugas, deskripsi, estimasi waktu, plus *link* modul (Google Drive) di satu tempat yang rapi.
-- **Magic Google Calendar Sync**: Sekali klik *Create Task*, tugas lo otomatis nangkring di Google Calendar lo! Nggak perlu ribet *copy-paste* jadwal lagi.
-- **Gamification (XP & Streak)**: Tiap kelarin tugas = dapet XP. Kelarin sebelum waktunya = dapet **Bonus XP**. Kerjain tiap hari = *Streak* lo bertambah 🔥. Kalau bolong sehari? *Say goodbye to your streak*. (Biar ada efek *loss aversion* wkwk).
-- **Dashboard Aesthetic**: UX/UI yang *clean, calm*, dan *playful* biar mata lo nggak capek dan pikiran tetep adem pas lagi mumet-mumetnya.
+- **Magic Google Calendar Sync**: Sekali klik *Create Task*, tugas lo otomatis nangkring di Google Calendar lo!
+- **AI-Powered Learning Hub (SKS Mode)**: Generate materi belajar instan yang bisa lo *edit* langsung biar makin sesuai kebutuhan.
+- **Gamification (XP & Streak)**: Tiap kelarin tugas = dapet XP. Kerjain tiap hari = *Streak* lo bertambah 🔥.
+- **Advanced Profile Settings**: Atur preferensi belajar lo (Morning/Night Owl) dan *focus duration* biar makin personal.
+- **Smart Rate Limiting**: Penggunaan AI yang lebih stabil dan terkontrol biar nggak gampang *limit*.
+- **Dashboard Aesthetic**: UX/UI yang *clean, calm*, dan *playful* biar mata lo nggak capek.
 
 ---
 
@@ -49,8 +52,8 @@ Karena aplikasi ini dibangun dari keresahan bersama, DoJo terbuka banget buat si
 Masih banyak banget ruang buat bikin app ini makin gila. Kalau lo punya keresahan yang sama, ngerasa *relate*, atau sekadar pengen *flexing* skill *coding* lo, **yuk bareng-bareng kontribusi!** 
 
 Beberapa ide fitur yang pengen banget di-develop ke depannya:
-- 🤖 **Integrasi AI Assistant** buat ngebantu mecah tugas gede (kayak skripsi) jadi *step-step* kecil yang lebih *doable*.
-- 🏆 **Achievement Badges** yang lebih interaktif dan *rewarding*.
+- 🏆 **Achievement Badges** yang lebih interaktif dan *rewarding* (Shareable to social media!).
+- 📁 **Google Picker Integration** buat milih folder materi langsung tanpa *copy-paste* link.
 - 💬 **Social Accountability** biar bisa pamer *streak* atau balapan XP bareng temen se-angkatan.
 
 ### Cara Ikutan Nge-Code:

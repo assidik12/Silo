@@ -1,4 +1,6 @@
 /**
+ * @jest-environment node
+ *
  * auth-callback-route.test.ts
  *
  * Unit tests for app/auth/callback/route.ts

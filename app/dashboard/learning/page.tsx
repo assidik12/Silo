@@ -216,7 +216,10 @@ export default function LearningPage() {
                 </div>
               ) : (
                 <>
-                  <SksCanvas content={sksSummary.content} />
+                  <SksCanvas 
+                    content={sksSummary.content} 
+                    onChange={(newContent) => setSksSummary(prev => ({ ...prev, content: newContent }))}
+                  />
 
                   <div className="mt-6 flex justify-end">
                     <button
@@ -254,7 +257,12 @@ export default function LearningPage() {
                 </div>
               ) : (
                 <>
-                  <BingeWatchCanvas episodes={bingePlan.episodes} folderId={syncedFolder?.dbFolderId || undefined} courseTitle={bingePlan.courseTitle} />
+                  <BingeWatchCanvas 
+                    episodes={bingePlan.episodes} 
+                    folderId={syncedFolder?.dbFolderId || undefined} 
+                    courseTitle={bingePlan.courseTitle} 
+                    onEpisodesChange={(newEpisodes) => setBingePlan(prev => ({ ...prev, episodes: newEpisodes }))}
+                  />
 
                   <div className="mt-8 flex justify-end">
                     <button

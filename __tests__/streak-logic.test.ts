@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import { calculateStreak } from '@/utils/gamification';
 
 // Helpers to build deterministic Date objects from a YYYY-MM-DD string

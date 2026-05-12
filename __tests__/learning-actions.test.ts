@@ -1,71 +1,33 @@
 /**
+ * @jest-environment node
+ *
  * learning-actions.test.ts
  *
  * Unit tests for app/actions/learning.actions.ts
- * Mocks: Supabase, next/headers cookies, googleapis drive, Gemini, pdf parser.
+ * Updated mocks to match current production code:
+ * - Uses getAiResponse + getEmbedding from lib/ai-config (NOT direct GoogleGenAI)
+ * - syncGoogleDriveFolder checks user + provider_token (not just user)
+ * - generateSKSSummary throws rpcError directly (not wraps it)
  */
 
 import type { ActionResponse } from "@/types";
 
+// ─── Mock: next/headers ────────────────────────────────────────────────────────
 const cookiesGetMock = jest.fn();
-const cookiesSetMock = jest.fn();
-
 jest.mock("next/headers", () => ({
   cookies: jest.fn(async () => ({
     get: (...args: unknown[]) => cookiesGetMock(...args),
     getAll: jest.fn(() => []),
-    set: (...args: unknown[]) => cookiesSetMock(...args),
+    set: jest.fn(),
   })),
 }));
 
-type SupabaseMock = {
-  auth: {
-    getSession: jest.Mock;
-    getUser: jest.Mock;
-  };
-  from: jest.Mock;
-  rpc: jest.Mock;
-};
+// ─── Mock: next/cache ─────────────────────────────────────────────────────────
+jest.mock("next/cache", () => ({ revalidatePath: jest.fn() }));
 
-function makeSupabaseMock(): SupabaseMock {
-  return {
-    auth: {
-      getSession: jest.fn(),
-      getUser: jest.fn(),
-    },
-    from: jest.fn(),
-    rpc: jest.fn(),
-  };
-}
-
-const createClientMock = jest.fn();
-
-jest.mock("@/utils/supabase/server", () => ({
-  createClient: (...args: unknown[]) => createClientMock(...args),
-}));
-
-const parsePdfBufferMock = jest.fn();
-const chunkTextMock = jest.fn();
-
-jest.mock("@/utils/pdfParser", () => ({
-  parsePdfBuffer: (...args: unknown[]) => parsePdfBufferMock(...args),
-  chunkText: (...args: unknown[]) => chunkTextMock(...args),
-}));
-
-const embedContentMock = jest.fn();
-const generateContentMock = jest.fn();
-
-jest.mock("@google/genai", () => ({
-  GoogleGenAI: jest.fn().mockImplementation(() => ({
-    models: {
-      embedContent: (...args: unknown[]) => embedContentMock(...args),
-      generateContent: (...args: unknown[]) => generateContentMock(...args),
-    },
-  })),
-}));
-
-const driveListMock = jest.fn();
-const driveGetMock = jest.fn();
+// ─── Mock: googleapis ─────────────────────────────────────────────────────────
+const driveFilesListMock = jest.fn();
+const driveFilesGetMock = jest.fn();
 
 jest.mock("googleapis", () => ({
   google: {
@@ -74,135 +36,306 @@ jest.mock("googleapis", () => ({
         setCredentials: jest.fn(),
       })),
     },
-    drive: jest.fn().mockReturnValue({
+    drive: jest.fn(() => ({
       files: {
-        list: (...args: unknown[]) => driveListMock(...args),
-        get: (...args: unknown[]) => driveGetMock(...args),
+        list: (...args: unknown[]) => driveFilesListMock(...args),
+        get: (...args: unknown[]) => driveFilesGetMock(...args),
       },
-    }),
+    })),
   },
 }));
 
-// Import after mocks
-import { syncGoogleDriveFolder, generateSKSSummary } from "@/app/actions/learning.actions";
+// ─── Mock: lib/ai-config ──────────────────────────────────────────────────────
+const getAiResponseMock = jest.fn();
+const getEmbeddingMock = jest.fn();
 
+jest.mock("@/lib/ai-config", () => ({
+  getAiResponse: (...args: unknown[]) => getAiResponseMock(...args),
+  getEmbedding: (...args: unknown[]) => getEmbeddingMock(...args),
+  aiClient: {},
+  AI_MODELS: { PRIMARY_GENERATION: "gemini-2.5-flash", FALLBACK_GENERATION: "gemini-pro", EMBEDDING: "gemini-embedding-2" },
+}));
+
+// ─── Mock: utils/pdfParser ────────────────────────────────────────────────────
+const parsePdfBufferMock = jest.fn();
+const chunkTextMock = jest.fn();
+
+jest.mock("@/utils/pdfParser", () => ({
+  parsePdfBuffer: (...args: unknown[]) => parsePdfBufferMock(...args),
+  chunkText: (...args: unknown[]) => chunkTextMock(...args),
+}));
+
+// ─── Mock: lib/googleCalendar ─────────────────────────────────────────────────
+const createEventMock = jest.fn();
+jest.mock("@/lib/googleCalendar", () => ({
+  createEvent: (...args: unknown[]) => createEventMock(...args),
+}));
+
+// ─── Supabase mock factory ────────────────────────────────────────────────────
+function makeSupabaseMock() {
+  return {
+    auth: {
+      getUser: jest.fn(),
+      getSession: jest.fn(),
+    },
+    from: jest.fn(),
+    rpc: jest.fn(),
+  };
+}
+
+const createClientMock = jest.fn();
+jest.mock("@/utils/supabase/server", () => ({
+  createClient: (...args: unknown[]) => createClientMock(...args),
+}));
+
+// ─── Import after mocks ────────────────────────────────────────────────────────
+import {
+  syncGoogleDriveFolder,
+  generateSKSSummary,
+  getLearningHistory,
+  saveLearningHistory,
+} from "@/app/actions/learning.actions";
+
+// ─── Tests ────────────────────────────────────────────────────────────────────
 describe("learning.actions", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Default: provider token is present
+    cookiesGetMock.mockImplementation((key: string) => {
+      if (key === "g_provider_token") return { value: "test-provider-token" };
+      return undefined;
+    });
   });
 
+  // ══════════════════════════════════════════════════════════════
+  // syncGoogleDriveFolder
+  // ══════════════════════════════════════════════════════════════
   describe("syncGoogleDriveFolder", () => {
-    it("returns unauthorized when google drive token missing", async () => {
+    it("returns unauthorized when user is missing", async () => {
       const supabase = makeSupabaseMock();
-      supabase.auth.getSession.mockResolvedValue({ data: { session: { user: { id: "u1" } } }, error: null });
-      supabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
+      supabase.auth.getUser.mockResolvedValue({ data: { user: null } });
       createClientMock.mockReturnValue(supabase);
 
+      const res = await syncGoogleDriveFolder("https://drive.google.com/drive/folders/abc");
+      expect(res.success).toBe(false);
+      expect(res.error).toMatch(/unauthorized/i);
+    });
+
+    it("returns unauthorized when provider token is missing", async () => {
+      const supabase = makeSupabaseMock();
+      supabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } } });
+      createClientMock.mockReturnValue(supabase);
+
+      // No provider token
       cookiesGetMock.mockReturnValue(undefined);
 
-      const res = (await syncGoogleDriveFolder("https://drive.google.com/drive/folders/abc")) as ActionResponse;
+      const res = await syncGoogleDriveFolder("https://drive.google.com/drive/folders/abc");
       expect(res.success).toBe(false);
-      expect(res.error).toMatch(/token missing|unauthorized/i);
+      expect(res.error).toMatch(/unauthorized|google/i);
     });
 
-    it("returns error on invalid folder url", async () => {
+    it("returns error for invalid Google Drive URL", async () => {
       const supabase = makeSupabaseMock();
-      supabase.auth.getSession.mockResolvedValue({ data: { session: { user: { id: "u1" } } }, error: null });
-      supabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
+      supabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } } });
       createClientMock.mockReturnValue(supabase);
 
-      cookiesGetMock.mockReturnValue({ value: "g-token" });
-
-      const res = (await syncGoogleDriveFolder("https://example.com/not-drive")) as ActionResponse;
+      const res = await syncGoogleDriveFolder("https://not-a-drive-url.com");
       expect(res.success).toBe(false);
-      expect(res.error).toMatch(/invalid google drive folder url/i);
+      expect(res.error).toMatch(/invalid/i);
     });
 
-    it("returns error when no PDFs found", async () => {
+    it("returns error when no PDF files in folder", async () => {
       const supabase = makeSupabaseMock();
-      supabase.auth.getSession.mockResolvedValue({ data: { session: { user: { id: "u1" } } }, error: null });
-      supabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
+      supabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } } });
       createClientMock.mockReturnValue(supabase);
 
-      cookiesGetMock.mockReturnValue({ value: "g-token" });
-      driveListMock.mockResolvedValue({ data: { files: [] } });
+      driveFilesListMock.mockResolvedValue({ data: { files: [] } });
 
-      const res = (await syncGoogleDriveFolder("https://drive.google.com/drive/folders/abc")) as ActionResponse;
+      const res = await syncGoogleDriveFolder("https://drive.google.com/drive/folders/abc123");
       expect(res.success).toBe(false);
-      expect(res.error).toMatch(/no pdf files/i);
+      expect(res.error).toMatch(/no pdf|not found/i);
     });
 
-    it("processes files and inserts chunks when everything is OK", async () => {
+    it("processes files and returns success when folder exists and files are new", async () => {
       const supabase = makeSupabaseMock();
-      supabase.auth.getSession.mockResolvedValue({ data: { session: { user: { id: "u1" } } }, error: null });
-      supabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
+      supabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } } });
+      createClientMock.mockReturnValue(supabase);
 
-      const folderInsertSelectSingle = jest.fn().mockResolvedValue({ data: { id: "folder-db-1" }, error: null });
-      const chunksInsert = jest.fn().mockResolvedValue({ error: null });
+      // Google Drive returns 1 PDF
+      driveFilesListMock.mockResolvedValue({
+        data: { files: [{ id: "file1", name: "Materi.pdf" }] },
+      });
+      driveFilesGetMock.mockResolvedValue({ data: new ArrayBuffer(8) });
+
+      // PDF parsing
+      parsePdfBufferMock.mockResolvedValue("Chunk content 1. Chunk content 2.");
+      chunkTextMock.mockReturnValue(["Chunk content 1.", "Chunk content 2."]);
+
+      // Embedding
+      getEmbeddingMock.mockResolvedValue([0.1, 0.2, 0.3]);
+
+      // Supabase: folder already exists
+      const folderSingleMock = jest.fn().mockResolvedValue({ data: { id: "folder-db-1" } });
+      const existingChunksSelectMock = jest.fn().mockResolvedValue({ data: [] });
+      const chunkInsertMock = jest.fn().mockResolvedValue({ error: null });
 
       supabase.from.mockImplementation((table: string) => {
         if (table === "learning_folders") {
           return {
-            insert: () => ({
-              select: () => ({
-                single: folderInsertSelectSingle,
+            select: () => ({
+              eq: () => ({
+                eq: () => ({
+                  single: folderSingleMock,
+                }),
               }),
             }),
           };
         }
         if (table === "document_chunks") {
           return {
-            insert: chunksInsert,
+            select: () => ({
+              eq: () => existingChunksSelectMock(),
+            }),
+            insert: chunkInsertMock,
           };
         }
-        throw new Error(`Unexpected table ${table}`);
+        throw new Error(`Unexpected table: ${table}`);
       });
 
-      createClientMock.mockReturnValue(supabase);
-
-      cookiesGetMock.mockReturnValue({ value: "g-token" });
-
-      driveListMock.mockResolvedValue({ data: { files: [{ id: "f1", name: "a.pdf" }] } });
-      driveGetMock.mockResolvedValue({ data: new ArrayBuffer(8) });
-
-      parsePdfBufferMock.mockResolvedValue("hello world");
-      chunkTextMock.mockReturnValue(["chunk1", "chunk2"]);
-
-      embedContentMock.mockResolvedValue({ embeddings: [{ values: [0.1, 0.2] }] });
-
-      const res = (await syncGoogleDriveFolder("https://drive.google.com/drive/folders/abc")) as ActionResponse;
+      const res = await syncGoogleDriveFolder("https://drive.google.com/drive/folders/abc123");
       expect(res.success).toBe(true);
-      expect(folderInsertSelectSingle).toHaveBeenCalledTimes(1);
-      expect(chunksInsert).toHaveBeenCalledTimes(2);
+      expect(chunkInsertMock).toHaveBeenCalledTimes(2); // 2 chunks inserted
     });
   });
 
+  // ══════════════════════════════════════════════════════════════
+  // generateSKSSummary
+  // ══════════════════════════════════════════════════════════════
   describe("generateSKSSummary", () => {
-    it("returns error when rpc fails", async () => {
+    it("returns error when embedding fails", async () => {
+      getEmbeddingMock.mockResolvedValue(null); // no embedding
+
       const supabase = makeSupabaseMock();
-      supabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
-      supabase.rpc.mockResolvedValue({ data: null, error: { message: "rpc" } });
       createClientMock.mockReturnValue(supabase);
 
-      embedContentMock.mockResolvedValue({ embeddings: [{ values: [0.1, 0.2] }] });
+      const res = await generateSKSSummary("folder1");
+      expect(res.success).toBe(false);
+      expect(res.error).toMatch(/embedding/i);
+    });
 
-      const res = (await generateSKSSummary("folder1")) as ActionResponse;
+    it("returns error when rpc vector search fails", async () => {
+      getEmbeddingMock.mockResolvedValue([0.1, 0.2]);
+
+      const supabase = makeSupabaseMock();
+      supabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } } });
+      supabase.rpc.mockResolvedValue({ data: null, error: { message: "vector search failed" } });
+      createClientMock.mockReturnValue(supabase);
+
+      const res = await generateSKSSummary("folder1");
       expect(res.success).toBe(false);
       expect(res.error).toMatch(/vector search failed/i);
     });
 
-    it("returns parsed JSON when chunks exist", async () => {
+    it("returns parsed JSON when chunks exist and AI responds", async () => {
+      getEmbeddingMock.mockResolvedValue([0.1, 0.2]);
+      getAiResponseMock.mockResolvedValue('{"title":"SKS Cepat","content":"## Rangkuman..."}');
+
       const supabase = makeSupabaseMock();
-      supabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
-      supabase.rpc.mockResolvedValue({ data: [{ content: "c1" }, { content: "c2" }], error: null });
+      supabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } } });
+
+      // rpc returns chunks
+      supabase.rpc.mockResolvedValue({
+        data: [{ content: "Materi bab 1." }, { content: "Materi bab 2." }],
+        error: null,
+      });
+
+      // users profile query
+      supabase.from.mockImplementation((table: string) => {
+        if (table === "users") {
+          return {
+            select: () => ({
+              eq: () => ({
+                single: jest.fn().mockResolvedValue({
+                  data: { name: "Budi", major: "TI", interests: "AI", learning_type: "ngebut" },
+                }),
+              }),
+            }),
+          };
+        }
+        throw new Error(`Unexpected table: ${table}`);
+      });
       createClientMock.mockReturnValue(supabase);
 
-      embedContentMock.mockResolvedValue({ embeddings: [{ values: [0.1, 0.2] }] });
-      generateContentMock.mockResolvedValue({ text: '{"title":"T","content":"C"}' });
-
-      const res = (await generateSKSSummary("folder1")) as ActionResponse;
+      const res = await generateSKSSummary("folder1");
       expect(res.success).toBe(true);
-      expect(res.data).toMatchObject({ title: "T", content: "C" });
+      expect(res.data).toMatchObject({ title: "SKS Cepat", content: expect.any(String) });
+    });
+  });
+
+  // ══════════════════════════════════════════════════════════════
+  // getLearningHistory
+  // ══════════════════════════════════════════════════════════════
+  describe("getLearningHistory", () => {
+    it("returns unauthorized when no user", async () => {
+      const supabase = makeSupabaseMock();
+      supabase.auth.getUser.mockResolvedValue({ data: { user: null } });
+      createClientMock.mockReturnValue(supabase);
+
+      const res = await getLearningHistory();
+      expect(res.success).toBe(false);
+      expect(res.error).toMatch(/unauthorized/i);
+    });
+
+    it("returns empty array when no history exists", async () => {
+      const supabase = makeSupabaseMock();
+      supabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } } });
+      supabase.from.mockImplementation((table: string) => {
+        if (table === "learning_history") {
+          return {
+            select: () => ({
+              eq: () => ({
+                order: jest.fn().mockResolvedValue({ data: [], error: null }),
+              }),
+            }),
+          };
+        }
+        throw new Error(`Unexpected table: ${table}`);
+      });
+      createClientMock.mockReturnValue(supabase);
+
+      const res = await getLearningHistory();
+      expect(res.success).toBe(true);
+      expect(res.data).toEqual([]);
+    });
+  });
+
+  // ══════════════════════════════════════════════════════════════
+  // saveLearningHistory
+  // ══════════════════════════════════════════════════════════════
+  describe("saveLearningHistory", () => {
+    it("returns unauthorized when no user", async () => {
+      const supabase = makeSupabaseMock();
+      supabase.auth.getUser.mockResolvedValue({ data: { user: null } });
+      createClientMock.mockReturnValue(supabase);
+
+      const res = await saveLearningHistory("f1", "Title", "sks", "content");
+      expect(res.success).toBe(false);
+      expect(res.error).toMatch(/unauthorized/i);
+    });
+
+    it("inserts history record and returns success", async () => {
+      const supabase = makeSupabaseMock();
+      supabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } } });
+      const insertMock = jest.fn().mockResolvedValue({ error: null });
+      supabase.from.mockImplementation((table: string) => {
+        if (table === "learning_history") return { insert: insertMock };
+        throw new Error(`Unexpected table: ${table}`);
+      });
+      createClientMock.mockReturnValue(supabase);
+
+      const res = await saveLearningHistory("f1", "Rangkuman SKS", "sks", { title: "T", content: "C" });
+      expect(res.success).toBe(true);
+      expect(insertMock).toHaveBeenCalledTimes(1);
     });
   });
 });

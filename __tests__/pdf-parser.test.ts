@@ -1,4 +1,6 @@
 /**
+ * @jest-environment node
+ *
  * pdf-parser.test.ts
  *
  * Unit tests for utils/pdfParser.ts

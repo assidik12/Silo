@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import { calculateXp } from '@/utils/gamification';
 
 describe('XP Calculator', () => {

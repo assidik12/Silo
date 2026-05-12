@@ -5,9 +5,8 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { ActionResponse, Task } from "@/types";
 import { calculateXp, calculateStreak } from "@/lib/gamification";
-import { GoogleGenAI } from "@google/genai";
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+import { getAiResponse } from "@/lib/ai-config";
+import { checkAiLimit } from "@/lib/limiter";
 
 export async function getTasks(): Promise<Task[]> {
   const cookieStore = await cookies();
@@ -156,6 +155,9 @@ export async function saveSubTasks(taskId: string, subTasks: any[]): Promise<Act
 
 export async function analyzeTaskWithAI(title: string, description: string, moduleLink: string): Promise<ActionResponse<{ summary: string; estimatedMinutes: number }>> {
   try {
+    const limiter = await checkAiLimit();
+    if (!limiter.allowed) return { success: false, error: "Limit AI harian tercapai (10/hari). Coba lagi besok!" };
+
     const prompt = `Analisis tugas berikut dan berikan breakdown estimasi waktu pengerjaan dalam menit, serta summary tugas yang lebih detail.
 Judul: ${title}
 Deskripsi: ${description}
@@ -163,17 +165,10 @@ Link: ${moduleLink}
 
 Kembalikan respon JSON dengan keys: "summary" (string), "estimatedMinutes" (number).`;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
-      contents: prompt,
-      config: {
-        systemInstruction: "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.",
-        temperature: 0.7,
-        responseMimeType: "application/json"
-      }
-    });
+    const result = await getAiResponse(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.");
+    if (!result) return { success: false, error: "Gagal memproses analisis AI." };
 
-    const parsedData = JSON.parse(response.text || "{}");
+    const parsedData = JSON.parse(result || "{}");
     return { success: true, data: parsedData };
   } catch (err: any) {
     console.error("AI Analysis Error:", err);
@@ -183,24 +178,19 @@ Kembalikan respon JSON dengan keys: "summary" (string), "estimatedMinutes" (numb
 
 export async function generateTaskBreakdown(title: string, description: string | null, moduleLink: string | null): Promise<ActionResponse<string[]>> {
   try {
-    const prompt = `Break down this task into 3-5 manageable subtasks.
-Task Title: "${title}"
-Task Description: "${description || "Tidak ada deskripsi tambahan"}"
-Module Link: "${moduleLink || "Tidak ada"}"
+    const limiter = await checkAiLimit();
+    if (!limiter.allowed) return { success: false, error: "Limit AI harian tercapai (10/hari). Coba lagi besok!" };
+
+    const prompt = `Pecah tugas berikut menjadi 3-5 sub-tasks yang konkret dan mudah dikerjakan.
+Judul: ${title}
+Deskripsi: ${description}
 
 Kembalikan respon JSON array of strings murni. Contoh: ["Langkah 1", "Langkah 2"]`;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
-      contents: prompt,
-      config: {
-        systemInstruction: "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.",
-        temperature: 0.7,
-        responseMimeType: "application/json"
-      }
-    });
+    const result = await getAiResponse(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.");
+    if (!result) return { success: false, error: "Gagal memproses breakdown AI." };
 
-    const parsedData = JSON.parse(response.text || "[]");
+    const parsedData = JSON.parse(result || "[]");
     return { success: true, data: parsedData };
   } catch (err: any) {
     console.error("AI Breakdown Error:", err);

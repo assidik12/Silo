@@ -1,35 +1,100 @@
+"use client";
+
 import { useState, useRef, useEffect } from "react";
-import { BookOpen, MessageSquare, ChevronRight, Send, Loader2, Calendar } from "lucide-react";
+import { BookOpen, MessageSquare, ChevronRight, Send, Loader2, Calendar, Edit3, Check } from "lucide-react";
 import { chatWithTutor, getQuarterChatHistory, syncLearningPlanToCalendar } from "@/app/actions/learning.actions";
 import { Episode } from "@/types";
 import FeedbackModal from "./FeedbackModal";
 import { useModal } from "./ModalProvider";
 
-export function SksCanvas({ content }: { content: string }) {
+interface SksCanvasProps {
+  content: string;
+  onChange?: (newContent: string) => void;
+}
+
+export function SksCanvas({ content, onChange }: SksCanvasProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [localContent, setLocalContent] = useState(content);
+
+  useEffect(() => {
+    setLocalContent(content);
+  }, [content]);
+
   if (!content) return null;
+
+  const handleSave = () => {
+    setIsEditing(false);
+    if (onChange) onChange(localContent);
+  };
+
   return (
-    <div
-      className="prose prose-indigo max-w-none text-gray-800 bg-yellow-50/50 p-6 rounded-2xl border border-yellow-100 font-sans text-sm leading-relaxed"
-      dangerouslySetInnerHTML={{
-        __html: content
-          .replace(/^### (.*$)/gim, '<h3 class="text-lg font-bold mt-6 mb-2 text-indigo-900">$1</h3>')
-          .replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold mt-8 mb-3 text-indigo-900">$2</h2>')
-          .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold mt-8 mb-4 text-indigo-900">$3</h1>')
-          .replace(/\*\*(.*?)\*\*/gim, '<strong class="font-bold text-gray-900">$1</strong>')
-          .replace(/\*(.*?)\*/gim, '<em class="italic">$1</em>')
-          .replace(/^\* (.*$)/gim, '<li class="ml-4 list-disc mb-1">$1</li>')
-          .replace(/^- (.*$)/gim, '<li class="ml-4 list-disc mb-1">$1</li>')
-          .replace(/^\d+\. (.*$)/gim, '<li class="ml-4 list-decimal mb-1">$1</li>')
-          .replace(/\n/g, "<br/>"),
-      }}
-    />
+    <div className="relative group">
+      {!isEditing && (
+        <button 
+          onClick={() => setIsEditing(true)}
+          className="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white text-indigo-600 rounded-lg shadow-sm border border-indigo-100 opacity-0 group-hover:opacity-100 transition-all z-10"
+          title="Edit Catatan"
+        >
+          <Edit3 className="w-4 h-4" />
+        </button>
+      )}
+
+      {isEditing ? (
+        <div className="space-y-4">
+          <textarea
+            value={localContent}
+            onChange={(e) => setLocalContent(e.target.value)}
+            className="w-full min-h-[400px] p-6 rounded-2xl border-2 text-slate-900 border-indigo-300 focus:ring-4 focus:ring-indigo-100 outline-none font-mono text-sm leading-relaxed bg-white"
+          />
+          <div className="flex justify-end gap-2">
+            <button 
+              onClick={() => { setIsEditing(false); setLocalContent(content); }}
+              className="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700"
+            >
+              Cancel
+            </button>
+            <button 
+              onClick={handleSave}
+              className="px-6 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-md flex items-center gap-2"
+            >
+              <Check className="w-4 h-4" /> Save Changes
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div
+          className="prose prose-indigo max-w-none text-gray-800 bg-yellow-50/50 p-6 rounded-2xl border border-yellow-100 font-sans text-sm leading-relaxed"
+          dangerouslySetInnerHTML={{
+            __html: localContent
+              .replace(/^### (.*$)/gim, '<h3 class="text-lg font-bold mt-6 mb-2 text-indigo-900">$1</h3>')
+              .replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold mt-8 mb-3 text-indigo-900">$2</h2>')
+              .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold mt-8 mb-4 text-indigo-900">$1</h1>')
+              .replace(/\*\*(.*?)\*\*/gim, '<strong class="font-bold text-gray-900">$1</strong>')
+              .replace(/\*(.*?)\*/gim, '<em class="italic">$1</em>')
+              .replace(/^\* (.*$)/gim, '<li class="ml-4 list-disc mb-1">$1</li>')
+              .replace(/^- (.*$)/gim, '<li class="ml-4 list-disc mb-1">$1</li>')
+              .replace(/^\d+\. (.*$)/gim, '<li class="ml-4 list-decimal mb-1">$1</li>')
+              .replace(/\n/g, "<br/>"),
+          }}
+        />
+      )}
+    </div>
   );
 }
 
-export function BingeWatchCanvas({ episodes, folderId, courseTitle }: { episodes: Episode[]; folderId?: string; courseTitle?: string }) {
+interface BingeWatchCanvasProps {
+  episodes: Episode[];
+  folderId?: string;
+  courseTitle?: string;
+  onEpisodesChange?: (newEpisodes: Episode[]) => void;
+}
+
+export function BingeWatchCanvas({ episodes, folderId, courseTitle, onEpisodesChange }: BingeWatchCanvasProps) {
   const [activeQuarter, setActiveQuarter] = useState<string | null>(null);
   const { showModal } = useModal();
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isEditingDesc, setIsEditingDesc] = useState(false);
+  const [tempDesc, setTempDesc] = useState("");
 
   const [chats, setChats] = useState<Record<string, { role: "user" | "ai"; content: string }[]>>({});
   const [chatActive, setChatActive] = useState<Record<string, boolean>>({});
@@ -122,6 +187,15 @@ export function BingeWatchCanvas({ episodes, folderId, courseTitle }: { episodes
     }
   };
 
+  const handleSaveDesc = () => {
+    if (!activeQuarter || !onEpisodesChange) return;
+    const newEpisodes = episodes.map(ep => 
+      ep.id === activeQuarter ? { ...ep, description: tempDesc } : ep
+    );
+    onEpisodesChange(newEpisodes);
+    setIsEditingDesc(false);
+  };
+
   const handleSyncToCalendar = async () => {
     if (!courseTitle || episodes.length === 0) return;
     
@@ -154,6 +228,8 @@ export function BingeWatchCanvas({ episodes, folderId, courseTitle }: { episodes
 
   if (!episodes || episodes.length === 0) return null;
 
+  const activeEpisode = episodes.find((p) => p.id === activeQuarter);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between bg-slate-50 p-4 rounded-2xl border border-slate-100">
@@ -180,7 +256,10 @@ export function BingeWatchCanvas({ episodes, folderId, courseTitle }: { episodes
           {episodes.map((plan, idx) => (
             <button
               key={plan.id || idx}
-              onClick={() => setActiveQuarter(plan.id)}
+              onClick={() => {
+                setActiveQuarter(plan.id);
+                setIsEditingDesc(false);
+              }}
               className={`w-full text-left p-4 rounded-2xl border transition-all ${
                 activeQuarter === plan.id ? "bg-indigo-600 text-white border-indigo-600 shadow-md transform scale-[1.02]" : "bg-white border-gray-200 text-gray-700 hover:border-indigo-300"
               }`}
@@ -194,9 +273,32 @@ export function BingeWatchCanvas({ episodes, folderId, courseTitle }: { episodes
         <div className="md:col-span-2">
           {activeQuarter ? (
             <div className="h-[600px] flex flex-col bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
-              <div className="p-6 bg-white border-b border-gray-200 shrink-0">
-                <h3 className="text-xl font-bold text-gray-900">{episodes.find((p) => p.id === activeQuarter)?.title}</h3>
-                <p className="text-gray-600 mt-2 text-sm leading-relaxed">{episodes.find((p) => p.id === activeQuarter)?.description}</p>
+              <div className="p-6 bg-white border-b border-gray-200 shrink-0 group relative">
+                <h3 className="text-xl font-bold text-gray-900">{activeEpisode?.title}</h3>
+                
+                {isEditingDesc ? (
+                  <div className="mt-2 space-y-2">
+                    <textarea 
+                      value={tempDesc}
+                      onChange={(e) => setTempDesc(e.target.value)}
+                      className="w-full p-3 rounded-xl border-2 border-indigo-200 focus:ring-4 focus:ring-indigo-50 outline-none text-sm bg-slate-50 min-h-[100px]"
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button onClick={() => setIsEditingDesc(false)} className="text-xs font-bold text-slate-500">Cancel</button>
+                      <button onClick={handleSaveDesc} className="text-xs font-bold text-indigo-600">Save Description</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <p className="text-gray-600 mt-2 text-sm leading-relaxed">{activeEpisode?.description}</p>
+                    <button 
+                      onClick={() => { setTempDesc(activeEpisode?.description || ""); setIsEditingDesc(true); }}
+                      className="absolute top-0 right-0 p-1.5 bg-slate-100 text-slate-400 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
               </div>
 
               {!chatActive[activeQuarter] ? (
@@ -258,7 +360,7 @@ export function BingeWatchCanvas({ episodes, folderId, courseTitle }: { episodes
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200 rounded-2xl">
               <BookOpen className="w-12 h-12 mb-3 text-gray-300" />
-              <p className="font-medium">Pilih quarter di samping untuk mulai.</p>
+              <p className="font-medium">Pilih episode di samping untuk mulai.</p>
             </div>
           )}
         </div>
