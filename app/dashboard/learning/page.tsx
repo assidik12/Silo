@@ -6,6 +6,7 @@ import { syncGoogleDriveFolder, generateSKSSummary, generateBingeWatchPlan, save
 import { LearningHistoryItem, Episode } from "@/types";
 import { SksCanvas, BingeWatchCanvas } from "@/components/LearningCanvas";
 import { useModal } from "@/components/ModalProvider";
+import GooglePickerButton from "@/components/GooglePickerButton";
 
 export default function LearningPage() {
   const { showModal } = useModal();
@@ -136,18 +137,42 @@ export default function LearningPage() {
           <h2 className="text-xl font-bold text-gray-800 mb-2">Connect Google Drive</h2>
           <p className="text-gray-500 mb-8 max-w-md mx-auto text-sm">Paste link folder Google Drive kamu. DoJo bakal nge-scan PDF/Docs di dalamnya dan nyiapin vektor embedding biar kamu bisa belajar lebih gampang.</p>
 
-          <form onSubmit={handleSyncDrive} className="max-w-md mx-auto flex gap-2">
-            <input
-              type="url"
-              placeholder="https://drive.google.com/drive/folders/..."
-              className="flex-1 px-4 text-black py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
-              value={driveUrl}
-              onChange={(e) => setDriveUrl(e.target.value)}
-              required
-            />
-            <button type="submit" disabled={isSyncing} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition-all disabled:opacity-70 flex items-center gap-2">
-              {isSyncing ? <RefreshCw className="w-5 h-5 animate-spin" /> : "Sync"}
-            </button>
+          <form onSubmit={handleSyncDrive} className="max-w-xl mx-auto flex flex-col gap-4">
+            <div className="flex gap-2">
+              <input
+                type="url"
+                placeholder="Paste link folder Google Drive kamu..."
+                className="flex-1 px-4 text-black py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                value={driveUrl}
+                onChange={(e) => setDriveUrl(e.target.value)}
+                required
+              />
+              <button type="submit" disabled={isSyncing} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition-all disabled:opacity-70 flex items-center gap-2">
+                {isSyncing ? <RefreshCw className="w-5 h-5 animate-spin" /> : "Sync"}
+              </button>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="flex-1 h-px bg-slate-100"></div>
+              <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Atau</span>
+              <div className="flex-1 h-px bg-slate-100"></div>
+            </div>
+
+            <div className="flex justify-center">
+              <GooglePickerButton 
+                onFolderSelect={async (id, name) => {
+                  setDriveUrl(id);
+                  setIsSyncing(true);
+                  const res = await syncGoogleDriveFolder(id);
+                  if (res.success && res.data) {
+                    setSyncedFolder(res.data);
+                  } else {
+                    showModal({ title: "Gagal Sync", message: res.error || "Gagal", type: "error" });
+                  }
+                  setIsSyncing(false);
+                }} 
+              />
+            </div>
           </form>
         </div>
       ) : (

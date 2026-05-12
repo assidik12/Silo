@@ -20,9 +20,12 @@ export async function syncGoogleDriveFolder(driveUrl: string): Promise<ActionRes
       return { success: false, error: "Unauthorized or Google Drive token missing. Please reconnect Google." };
     }
 
-    const match = driveUrl.match(/folders\/([a-zA-Z0-9-_]+)/);
-    if (!match) return { success: false, error: "Invalid Google Drive Folder URL." };
-    const folderId = match[1];
+    let folderId = driveUrl;
+    if (driveUrl.includes('folders/')) {
+      const match = driveUrl.match(/folders\/([a-zA-Z0-9-_]+)/);
+      if (match) folderId = match[1];
+      else return { success: false, error: "Invalid Google Drive Folder URL." };
+    }
 
     const auth = new google.auth.OAuth2();
     auth.setCredentials({ access_token: provider_token });
