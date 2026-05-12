@@ -404,9 +404,17 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <footer className="bg-white py-8 border-t border-slate-100">
-        <div className="max-w-6xl mx-auto px-6 text-center text-slate-400 text-sm">
-          &copy; 2026 DoJo App. Bikin nugas nggak kerasa berat lagi.
+      <footer className="bg-white py-12 border-t border-slate-100">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6 text-slate-400 text-sm font-medium">
+          <div className="flex flex-col items-center md:items-start gap-2">
+            <p>&copy; 2026 DoJo App. Bikin nugas nggak kerasa berat lagi.</p>
+            <p className="text-[10px] uppercase tracking-widest text-slate-300">Made with 🔥 for students</p>
+          </div>
+          <div className="flex gap-8 items-center">
+            <Link href="/privacy-policy" className="hover:text-indigo-600 transition-colors">Privacy Policy</Link>
+            <a href="#" className="hover:text-indigo-600 transition-colors">Terms of Service</a>
+            <a href="mailto:sofi.sidik12@gmail.com" className="hover:text-indigo-600 transition-colors">Contact</a>
+          </div>
         </div>
       </footer>
     </div>
