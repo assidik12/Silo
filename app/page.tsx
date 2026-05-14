@@ -15,6 +15,7 @@ import {
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { NavLinks } from '@/components/NavLinks';
 
 export default async function LandingPage() {
   const cookieStore = await cookies();
@@ -33,11 +34,7 @@ export default async function LandingPage() {
             </div>
             <span className="font-bold text-xl tracking-tight text-slate-900 dark:text-white">DoJo</span>
           </div>
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-500 dark:text-slate-400">
-            <a href="#fitur" className="hover:text-slate-800 dark:hover:text-slate-200 transition-colors">Fitur</a>
-            <a href="#cara-kerja" className="hover:text-slate-800 dark:hover:text-slate-200 transition-colors">Cara Kerja</a>
-            <a href="#testimoni" className="hover:text-slate-800 dark:hover:text-slate-200 transition-colors">Testimoni</a>
-          </div>
+          <NavLinks />
           <div className="flex items-center gap-4">
             <ThemeToggle />
             {user ? (
@@ -60,7 +57,7 @@ export default async function LandingPage() {
       </nav>
 
       {/* 2. HERO SECTION */}
-      <section className="pt-24 pb-20 px-6 overflow-hidden">
+      <section className="pt-24 pb-20 px-6 overflow-hidden" id="home">
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-16">
           <div className="flex-1 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-sm font-medium mb-6 animate-fade-in">
