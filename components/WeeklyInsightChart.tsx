@@ -51,31 +51,31 @@ export default function WeeklyInsightChart({ recentTasks, recentLearning }: { re
   if (!mounted) return null; // Avoid hydration mismatch on timezone differences
 
   return (
-    <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 mt-8 relative overflow-hidden group">
+    <div className="bg-white dark:bg-slate-900/50 p-6 md:p-8 rounded-3xl shadow-sm dark:shadow-none border border-gray-100 mt-8 relative overflow-hidden group dark:border-slate-800">
       {/* Decorative Background Blur */}
-      <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-50 rounded-full blur-3xl opacity-50 pointer-events-none transition-opacity group-hover:opacity-100" />
+      <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-50 dark:bg-indigo-500/10 rounded-full blur-3xl opacity-50 pointer-events-none transition-opacity group-hover:opacity-100" />
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8 relative z-10">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
             Weekly Insights <TrendingUp className="w-6 h-6 text-indigo-500" />
           </h2>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">
             Produktivitas gabungan: Tugas selesai & Modul dipelajari.
           </p>
         </div>
         
         {isAtRisk ? (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl flex items-center gap-3 animate-pulse shadow-sm">
-            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+          <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-700 dark:text-red-400 px-4 py-3 rounded-2xl flex items-center gap-3 animate-pulse shadow-sm dark:shadow-none">
+            <AlertCircle className="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0" />
             <div>
               <p className="text-sm font-bold">Awas Streak Putus!</p>
               <p className="text-xs font-medium opacity-90">Selesaikan minimal 1 task hari ini.</p>
             </div>
           </div>
         ) : (
-          <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-2xl flex items-center gap-3 shadow-sm">
-            <Flame className="w-5 h-5 text-green-500 flex-shrink-0" />
+          <div className="bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 text-green-700 dark:text-green-400 px-4 py-3 rounded-2xl flex items-center gap-3 shadow-sm dark:shadow-none">
+            <Flame className="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0" />
             <div>
               <p className="text-sm font-bold">Produktivitas Aman 🔥</p>
               <p className="text-xs font-medium opacity-90">Pertahankan terus momentummu!</p>
@@ -93,7 +93,7 @@ export default function WeeklyInsightChart({ recentTasks, recentLearning }: { re
             <div key={i} className="flex flex-col items-center flex-1 group/bar relative cursor-pointer">
               
               {/* Tooltip on Hover */}
-              <div className="absolute -top-12 opacity-0 group-hover/bar:opacity-100 transition-opacity bg-gray-900 text-white text-xs py-1.5 px-3 rounded-lg whitespace-nowrap pointer-events-none shadow-xl z-20">
+              <div className="absolute -top-12 opacity-0 group-hover/bar:opacity-100 transition-opacity bg-gray-900 text-white text-xs py-1.5 px-3 rounded-lg whitespace-nowrap pointer-events-none shadow-xl dark:shadow-none z-20">
                 <span className="font-bold">{item.total} Total</span>
                 <div className="text-gray-300 text-[10px] mt-0.5">
                   {item.tasksDone} Tasks • {item.learningDone} Learns
@@ -101,10 +101,10 @@ export default function WeeklyInsightChart({ recentTasks, recentLearning }: { re
               </div>
 
               {/* Bar Container */}
-              <div className="w-full max-w-[40px] bg-gray-50 rounded-t-xl flex flex-col justify-end overflow-hidden h-48 relative border-b-2 border-indigo-100 hover:bg-gray-100 transition-colors">
+              <div className="w-full max-w-[40px] bg-gray-50 dark:bg-slate-800/50 rounded-t-xl flex flex-col justify-end overflow-hidden h-48 relative border-b-2 border-indigo-100 dark:border-indigo-900/50 hover:bg-gray-100 dark:hover:bg-slate-700/50 transition-colors">
                 
                 {item.total === 0 && (
-                  <div className="absolute bottom-2 w-full text-center text-gray-300 font-bold text-xs">
+                  <div className="absolute bottom-2 w-full text-center text-gray-400 dark:text-gray-500 font-bold text-xs">
                     0
                   </div>
                 )}
@@ -127,7 +127,7 @@ export default function WeeklyInsightChart({ recentTasks, recentLearning }: { re
               </div>
               
               {/* Day Label */}
-              <div className={`mt-3 text-xs sm:text-sm font-bold uppercase tracking-wider ${item.isToday ? 'text-indigo-600' : 'text-gray-400'}`}>
+              <div className={`mt-3 text-xs sm:text-sm font-bold uppercase tracking-wider ${item.isToday ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400'}`}>
                 {item.day}
               </div>
               
@@ -141,14 +141,14 @@ export default function WeeklyInsightChart({ recentTasks, recentLearning }: { re
       </div>
       
       {/* Legend */}
-      <div className="flex items-center justify-center gap-6 mt-8 pt-6 border-t border-gray-100">
+      <div className="flex items-center justify-center gap-6 mt-8 pt-6 border-t border-gray-100 dark:border-slate-800">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-indigo-600 shadow-sm" />
-          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Tasks Done</span>
+          <div className="w-3 h-3 rounded-full bg-indigo-600 shadow-sm dark:shadow-none" />
+          <span className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest">Tasks Done</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-indigo-300 shadow-sm" />
-          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Learning Sessions</span>
+          <div className="w-3 h-3 rounded-full bg-indigo-300 shadow-sm dark:shadow-none" />
+          <span className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest">Learning Sessions</span>
         </div>
       </div>
     </div>

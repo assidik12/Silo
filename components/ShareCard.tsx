@@ -28,25 +28,25 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(({ userData }, ref)
       style={{ fontFamily: 'sans-serif' }} // Ensure a clean font for capture
     >
       {/* Background Decorative Elements */}
-      <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+      <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-white dark:bg-slate-900/50/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-[-5%] left-[-5%] w-80 h-80 bg-fuchsia-400/20 rounded-full blur-3xl"></div>
 
       {/* Header Branding */}
       <div className="flex justify-between items-center z-10">
         <div className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
-            <span className="text-indigo-600 font-black text-xl italic">D</span>
+          <div className="w-10 h-10 bg-white dark:bg-slate-900/50 rounded-xl flex items-center justify-center shadow-lg dark:shadow-none">
+            <span className="text-indigo-600 dark:text-indigo-400 font-black text-xl italic">D</span>
           </div>
           <span className="font-black text-2xl tracking-tighter">DoJo</span>
         </div>
-        <div className="bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/30 text-[10px] font-bold uppercase tracking-widest">
+        <div className="bg-white dark:bg-slate-900/50/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/30 text-[10px] font-bold uppercase tracking-widest">
           Q3 Achievement
         </div>
       </div>
 
       <div className="flex-1 flex flex-col justify-center gap-8 z-10">
         <div className="space-y-6">
-          <div className="w-32 h-32 bg-white/20 backdrop-blur-xl rounded-[2.5rem] flex items-center justify-center border border-white/40 shadow-2xl mx-auto ring-8 ring-white/10 overflow-hidden">
+          <div className="w-32 h-32 bg-white dark:bg-slate-900/50/20 backdrop-blur-xl rounded-[2.5rem] flex items-center justify-center border border-white/40 shadow-2xl mx-auto ring-8 ring-white/10 overflow-hidden">
             {userData.avatar_url ? (
               <img src={userData.avatar_url} alt={userData.name} className="w-full h-full object-cover" />
             ) : (
@@ -63,14 +63,14 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(({ userData }, ref)
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white/15 backdrop-blur-lg rounded-3xl p-6 border border-white/20 text-center">
+          <div className="bg-white dark:bg-slate-900/50/15 backdrop-blur-lg rounded-3xl p-6 border border-white/20 text-center">
             <p className="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-1">Total XP</p>
             <div className="flex items-center justify-center gap-2">
               <Trophy className="w-5 h-5 text-amber-300" />
               <span className="text-4xl font-black">{userData.xp}</span>
             </div>
           </div>
-          <div className="bg-white/15 backdrop-blur-lg rounded-3xl p-6 border border-white/20 text-center">
+          <div className="bg-white dark:bg-slate-900/50/15 backdrop-blur-lg rounded-3xl p-6 border border-white/20 text-center">
             <p className="text-[10px] font-black text-orange-200 uppercase tracking-widest mb-1">Streak</p>
             <div className="flex items-center justify-center gap-2">
               <Flame className="w-5 h-5 text-orange-400 fill-orange-400" />
@@ -79,15 +79,15 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(({ userData }, ref)
           </div>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-md rounded-[2rem] p-6 border border-white/10">
+        <div className="bg-white dark:bg-slate-900/50/10 backdrop-blur-md rounded-[2rem] p-6 border border-white/10">
           <h3 className="text-xs font-black uppercase tracking-widest text-white/60 mb-4 text-center">Unlocked Badges</h3>
           <div className="flex justify-center gap-4">
             {badges.map((badge, i) => (
               <div key={i} className={`group relative flex flex-col items-center`}>
                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl border transition-all duration-300 ${
                   badge.active 
-                    ? 'bg-white text-slate-900 border-white shadow-xl scale-110' 
-                    : 'bg-white/5 border-white/10 grayscale opacity-20'
+                    ? 'bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white border-white shadow-xl dark:shadow-none scale-110' 
+                    : 'bg-white dark:bg-slate-900/50/5 border-white/10 grayscale opacity-20'
                 }`}>
                   {badge.icon}
                 </div>

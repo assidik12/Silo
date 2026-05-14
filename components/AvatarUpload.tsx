@@ -93,7 +93,7 @@ export default function AvatarUpload({ initialAvatarUrl, userId }: AvatarUploadP
         onClick={() => fileInputRef.current?.click()}
         className="relative w-24 h-24 group cursor-pointer"
       >
-        <div className="w-full h-full rounded-[1.8rem] overflow-hidden bg-indigo-100 border-4 border-white shadow-xl shadow-slate-200 transition-all group-hover:scale-105 group-active:scale-95 flex items-center justify-center">
+        <div className="w-full h-full rounded-[1.8rem] overflow-hidden bg-indigo-100 dark:bg-indigo-900/50 border-4 border-white dark:border-slate-800 shadow-xl dark:shadow-none shadow-slate-200 transition-all group-hover:scale-105 group-active:scale-95 flex items-center justify-center">
           {avatarUrl ? (
             <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
           ) : (
@@ -107,8 +107,8 @@ export default function AvatarUpload({ initialAvatarUrl, userId }: AvatarUploadP
         </div>
         
         {isUploading && (
-          <div className="absolute inset-0 bg-white/60 backdrop-blur-sm rounded-[1.8rem] flex items-center justify-center">
-            <Loader2 className="w-6 h-6 text-indigo-600 animate-spin" />
+          <div className="absolute inset-0 bg-white/60 dark:bg-slate-900/80 backdrop-blur-sm rounded-[1.8rem] flex items-center justify-center">
+            <Loader2 className="w-6 h-6 text-indigo-600 dark:text-indigo-400 animate-spin" />
           </div>
         )}
 
@@ -116,7 +116,7 @@ export default function AvatarUpload({ initialAvatarUrl, userId }: AvatarUploadP
         {avatarUrl && !isUploading && (
           <button
             onClick={handleDelete}
-            className="absolute -top-1 -right-1 bg-red-500 text-white p-1.5 rounded-full shadow-lg hover:bg-red-600 transition-all z-20 scale-0 group-hover:scale-100"
+            className="absolute -top-1 -right-1 bg-red-500 text-white p-1.5 rounded-full shadow-lg dark:shadow-none hover:bg-red-600 transition-all z-20 scale-0 group-hover:scale-100"
             title="Hapus foto"
           >
             <Trash2 className="w-3.5 h-3.5" />

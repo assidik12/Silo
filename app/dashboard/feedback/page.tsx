@@ -42,31 +42,31 @@ export default function FeedbackPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-8 animate-fade-in">
       <header className="text-center mb-10">
-        <div className="w-16 h-16 bg-pink-100 text-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 ring-4 ring-pink-50">
+        <div className="w-16 h-16 bg-pink-100 dark:bg-pink-500/10 text-pink-500 dark:text-pink-400 rounded-full flex items-center justify-center mx-auto mb-4 ring-4 ring-pink-50 dark:ring-pink-500/5">
           <MessageSquareHeart className="w-8 h-8" />
         </div>
-        <h1 className="text-3xl font-extrabold text-slate-900">Bantu DoJo Jadi Lebih Baik!</h1>
-        <p className="text-slate-500 mt-2">
+        <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">Bantu DoJo Jadi Lebih Baik!</h1>
+        <p className="text-slate-500 dark:text-slate-400 mt-2">
           Punya ide fitur baru? Nemu bug? Atau sekadar mau bilang halo? Kirim aja ke sini!
         </p>
       </header>
 
-      <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-xl shadow-slate-200/40">
+      <div className="bg-white dark:bg-slate-900/50 rounded-3xl p-8 border border-slate-100 dark:border-slate-800 shadow-xl dark:shadow-none shadow-slate-200/40">
         {submitted ? (
           <div className="text-center py-10 animate-fade-in">
             <div className="text-5xl mb-4">🚀</div>
-            <h3 className="text-2xl font-bold text-slate-800 mb-2">Makasih Banget!</h3>
-            <p className="text-slate-500">Feedback lo udah masuk. Kita bakal baca dan jadiin DoJo makin keren buat lo.</p>
+            <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">Makasih Banget!</h3>
+            <p className="text-slate-500 dark:text-slate-400">Feedback lo udah masuk. Kita bakal baca dan jadiin DoJo makin keren buat lo.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="category" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Kategori</label>
+              <label htmlFor="category" className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">Kategori</label>
               <select
                 id="category"
                 value={formData.category}
                 onChange={e => setFormData({...formData, category: e.target.value as any})}
-                className="block w-full rounded-2xl border-none bg-slate-100/80 px-5 py-4 text-slate-700 font-semibold focus:bg-white focus:outline-none focus:ring-4 focus:ring-pink-100 transition-all shadow-sm cursor-pointer"
+                className="block w-full rounded-2xl border-none bg-slate-100 dark:bg-slate-800/80 px-5 py-4 text-slate-700 dark:text-slate-200 font-semibold focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-pink-100 dark:focus:ring-pink-900/50 transition-all shadow-sm dark:shadow-none cursor-pointer"
               >
                 <option value="idea">💡 Ide Fitur Baru</option>
                 <option value="bug">🐛 Lapor Bug</option>
@@ -76,14 +76,14 @@ export default function FeedbackPage() {
             </div>
 
             <div>
-              <label htmlFor="message" className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Pesan Lo</label>
+              <label htmlFor="message" className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">Pesan Lo</label>
               <textarea
                 id="message"
                 required
                 rows={5}
                 value={formData.message}
                 onChange={e => setFormData({...formData, message: e.target.value})}
-                className="block w-full rounded-2xl border-none bg-slate-100/80 px-5 py-4 text-slate-700 font-medium placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-pink-100 transition-all shadow-sm resize-none"
+                className="block w-full rounded-2xl border-none bg-slate-100 dark:bg-slate-800/80 px-5 py-4 text-slate-700 dark:text-slate-200 font-medium placeholder-slate-400 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-pink-100 dark:focus:ring-pink-900/50 transition-all shadow-sm dark:shadow-none resize-none"
                 placeholder="Ceritain detailnya di sini ya..."
               ></textarea>
             </div>
@@ -91,7 +91,7 @@ export default function FeedbackPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="group relative flex w-full justify-center items-center gap-3 rounded-2xl bg-pink-500 px-6 py-4 mt-4 text-lg font-bold text-white shadow-xl shadow-pink-200 hover:bg-pink-600 hover:-translate-y-1 transition-all focus:outline-none focus:ring-4 focus:ring-pink-200 disabled:opacity-50 disabled:hover:translate-y-0"
+              className="group relative flex w-full justify-center items-center gap-3 rounded-2xl bg-pink-500 px-6 py-4 mt-4 text-lg font-bold text-white shadow-xl dark:shadow-none shadow-pink-200 hover:bg-pink-600 hover:-translate-y-1 transition-all focus:outline-none focus:ring-4 focus:ring-pink-200 disabled:opacity-50 disabled:hover:translate-y-0"
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">

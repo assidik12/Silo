@@ -101,7 +101,7 @@ export default function GooglePickerButton({ onFolderSelect }: GooglePickerButto
       variant="outline"
       disabled={!isLoaded || isOpening}
       onClick={handleOpenPicker}
-      className="flex items-center gap-2 h-12 px-6 rounded-xl border-slate-200 hover:bg-slate-50 text-slate-600 font-bold transition-all active:scale-95"
+      className="flex items-center gap-2 h-12 px-6 rounded-xl border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 font-bold transition-all active:scale-95"
     >
       {isOpening ? (
         <Loader2 className="w-5 h-5 animate-spin" />

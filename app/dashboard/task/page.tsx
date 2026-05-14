@@ -28,21 +28,21 @@ export default async function CreateTaskPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       <header>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Task</h1>
-        <p className="text-sm text-gray-600">Schedule a new task and we will sync it automatically with your Google Calendar.</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2 dark:text-gray-200">Create Task</h1>
+        <p className="text-sm text-gray-600 dark:text-slate-300">Schedule a new task and we will sync it automatically with your Google Calendar.</p>
       </header>
       
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+      <div className="bg-white dark:bg-slate-900/50 p-6 rounded-2xl shadow-sm dark:shadow-none border border-gray-200">
         <TaskForm />
       </div>
 
       {/* History Section merged into Dashboard */}
       <div className="space-y-4 pt-8 border-t border-gray-200">
-        <h2 className="text-xl font-semibold text-gray-800">Task History</h2>
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Task History</h2>
         
         {!doneTasks || doneTasks.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-gray-300 p-8 text-center bg-gray-50">
-            <h3 className="text-lg font-medium text-gray-900 mb-1">No history yet</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-1 dark:text-gray-200">No history yet</h3>
             <p className="text-sm text-gray-500">Complete some tasks to see your history grow here!</p>
           </div>
         ) : (

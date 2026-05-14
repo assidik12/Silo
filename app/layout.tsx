@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ModalProvider } from '@/components/ModalProvider';
+import { ThemeProvider } from '@/components/providers/ThemeProvider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -66,9 +67,12 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <ModalProvider>{children}</ModalProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ModalProvider>{children}</ModalProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

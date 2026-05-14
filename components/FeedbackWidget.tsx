@@ -24,10 +24,10 @@ export default function FeedbackWidget() {
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {isOpen ? (
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-4 w-72 transform transition-all animate-fade-in">
+        <div className="bg-white dark:bg-slate-900/50 rounded-2xl shadow-xl dark:shadow-none border border-gray-200 p-4 w-72 transform transition-all animate-fade-in">
           <div className="flex justify-between items-center mb-3">
             <h4 className="font-bold text-gray-800">How's DoJo today?</h4>
-            <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600">
+            <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600 dark:text-slate-300">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -56,7 +56,7 @@ export default function FeedbackWidget() {
       ) : (
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-700 transition-transform hover:scale-105 flex items-center justify-center"
+          className="bg-indigo-600 text-white p-3 rounded-full shadow-lg dark:shadow-none hover:bg-indigo-700 transition-transform hover:scale-105 flex items-center justify-center"
         >
           <Brain className="w-6 h-6" />
         </button>

@@ -84,7 +84,7 @@ export default function ShareButton({ userId, userData }: ShareButtonProps) {
           <Button 
             onClick={() => handleShare('ig')} 
             disabled={isGenerating}
-            className="bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] hover:opacity-90 text-white font-bold py-7 rounded-2xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95 border-none"
+            className="bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] hover:opacity-90 text-white font-bold py-7 rounded-2xl shadow-lg dark:shadow-none flex items-center justify-center gap-2 transition-all active:scale-95 border-none"
           >
             {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <InstagramIcon />}
             Story
@@ -93,7 +93,7 @@ export default function ShareButton({ userId, userData }: ShareButtonProps) {
           <Button 
             onClick={() => handleShare('wa')} 
             disabled={isGenerating}
-            className="bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold py-7 rounded-2xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95 border-none"
+            className="bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold py-7 rounded-2xl shadow-lg dark:shadow-none flex items-center justify-center gap-2 transition-all active:scale-95 border-none"
           >
             {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <WhatsAppIcon />}
             WhatsApp
@@ -103,7 +103,7 @@ export default function ShareButton({ userId, userData }: ShareButtonProps) {
         <Button 
           variant="outline"
           onClick={handleCopyLink}
-          className="w-full py-6 rounded-2xl border-slate-200 hover:bg-slate-50 text-slate-500 font-bold flex items-center justify-center gap-2 transition-all active:scale-95"
+          className="w-full py-6 rounded-2xl border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 font-bold flex items-center justify-center gap-2 transition-all active:scale-95"
         >
           {isCopied ? <Check className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5" />}
           {isCopied ? 'Copied Link!' : 'Copy Achievement Link'}

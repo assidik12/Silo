@@ -37,7 +37,7 @@ export default function ExportFeedbackButton() {
     <button
       onClick={handleExport}
       disabled={isExporting}
-      className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-70"
+      className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md dark:shadow-none hover:shadow-lg dark:shadow-none disabled:opacity-70"
     >
       {isExporting ? (
         <Loader2 className="w-4 h-4 animate-spin" />

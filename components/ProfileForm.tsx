@@ -48,7 +48,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Nama Lengkap */}
         <div className="space-y-2">
-          <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
+          <label className="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
             <User className="w-4 h-4 text-indigo-500" /> Nama Lengkap
           </label>
           <input
@@ -56,14 +56,14 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
             required
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full text-gray-700 px-4 py-3 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none"
+            className="w-full text-gray-700 dark:text-slate-200 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/50 focus:border-indigo-500 transition-all outline-none dark:bg-slate-900/50"
             placeholder="Masukkan nama lo..."
           />
         </div>
 
         {/* Jurusan */}
         <div className="space-y-2">
-          <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
+          <label className="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
             <GraduationCap className="w-4 h-4 text-indigo-500" /> Jurusan / Major
           </label>
           <input
@@ -71,14 +71,14 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
             required
             value={formData.major}
             onChange={(e) => setFormData({ ...formData, major: e.target.value })}
-            className="w-full text-gray-700 px-4 py-3 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none"
+            className="w-full text-gray-700 dark:text-slate-200 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/50 focus:border-indigo-500 transition-all outline-none dark:bg-slate-900/50"
             placeholder="Misal: Teknik Informatika"
           />
         </div>
 
         {/* Jam Produktif */}
         <div className="space-y-2">
-          <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
+          <label className="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
             <Clock className="w-4 h-4 text-indigo-500" /> Jam Paling Produktif
           </label>
           <input
@@ -86,14 +86,14 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
             required
             value={formData.productive_hours}
             onChange={(e) => setFormData({ ...formData, productive_hours: e.target.value })}
-            className="w-full text-gray-700 px-4 py-3 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none"
+            className="w-full text-gray-700 dark:text-slate-200 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/50 focus:border-indigo-500 transition-all outline-none dark:bg-slate-900/50"
             placeholder="Misal: 09:00 atau Malam Hari"
           />
         </div>
 
         {/* Minat */}
         <div className="space-y-2">
-          <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
+          <label className="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
             <Heart className="w-4 h-4 text-indigo-500" /> Minat / Hobi
           </label>
           <input
@@ -101,7 +101,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
             required
             value={formData.interests}
             onChange={(e) => setFormData({ ...formData, interests: e.target.value })}
-            className="w-full text-gray-700 px-4 py-3 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none"
+            className="w-full text-gray-700 dark:text-slate-200 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/50 focus:border-indigo-500 transition-all outline-none dark:bg-slate-900/50"
             placeholder="Misal: AI, Musik, Coding"
           />
         </div>
@@ -109,32 +109,32 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
 
       {/* Bio */}
       <div className="space-y-2">
-        <label className="text-sm font-bold text-slate-700">Bio Singkat</label>
+        <label className="text-sm font-bold text-slate-700 dark:text-slate-200">Bio Singkat</label>
         <textarea
           value={formData.bio}
           onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-          className="w-full px-4 py-3 text-gray-700 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all outline-none min-h-[100px]"
+          className="w-full px-4 py-3 text-gray-700 dark:text-slate-200 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/50 focus:border-indigo-500 transition-all outline-none min-h-[100px] dark:bg-slate-900/50"
           placeholder="Ceritain dikit tentang diri lo..."
         />
       </div>
 
       {/* Gaya Belajar */}
       <div className="space-y-3">
-        <label className="text-sm font-bold text-slate-700">Gaya Belajar</label>
+        <label className="text-sm font-bold text-slate-700 dark:text-slate-200">Gaya Belajar</label>
         <div className="grid grid-cols-2 gap-4">
           <button
             type="button"
             onClick={() => setFormData({ ...formData, learning_type: 'ngebut' })}
             className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
               formData.learning_type === 'ngebut'
-                ? 'border-indigo-600 bg-indigo-50'
-                : 'border-slate-100 bg-white hover:border-slate-200'
+                ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-500/10'
+                : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 hover:border-slate-200 dark:border-slate-700'
             }`}
           >
-            <Zap className={`w-6 h-6 ${formData.learning_type === 'ngebut' ? 'text-indigo-600' : 'text-slate-400'}`} />
+            <Zap className={`w-6 h-6 ${formData.learning_type === 'ngebut' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`} />
             <div className="text-center">
               <p className="text-sm font-bold">Ngebut (SKS)</p>
-              <p className="text-[10px] text-slate-500">To the point & intensif</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400">To the point & intensif</p>
             </div>
           </button>
           <button
@@ -142,14 +142,14 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
             onClick={() => setFormData({ ...formData, learning_type: 'santai' })}
             className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
               formData.learning_type === 'santai'
-                ? 'border-emerald-600 bg-emerald-50'
-                : 'border-slate-100 bg-white hover:border-slate-200'
+                ? 'border-emerald-600 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10'
+                : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 hover:border-slate-200 dark:border-slate-700'
             }`}
           >
-            <Coffee className={`w-6 h-6 ${formData.learning_type === 'santai' ? 'text-emerald-600' : 'text-slate-400'}`} />
+            <Coffee className={`w-6 h-6 ${formData.learning_type === 'santai' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`} />
             <div className="text-center">
               <p className="text-sm font-bold">Santai (Binge-Watch)</p>
-              <p className="text-[10px] text-slate-500">Mendalam & terstruktur</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400">Mendalam & terstruktur</p>
             </div>
           </button>
         </div>
@@ -160,7 +160,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 rounded-2xl shadow-lg shadow-indigo-200 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
+        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 rounded-2xl shadow-lg dark:shadow-none shadow-indigo-200 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
       >
         {isLoading ? (
           <Loader2 className="w-5 h-5 animate-spin" />

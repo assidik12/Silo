@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { LayoutDashboard, PlusCircle, History, LogOut, CheckCircle2, Menu, X, User, MessageCircle, BookOpen } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +49,7 @@ export default function Sidebar() {
       {/* Mobile Toggle Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 left-4 z-[60] bg-white p-2 rounded-xl shadow-sm border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+        className="lg:hidden fixed top-4 left-4 z-[60] bg-white dark:bg-slate-900 p-2 rounded-xl shadow-sm dark:shadow-none border border-gray-200 dark:border-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
       >
         {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
@@ -63,17 +64,18 @@ export default function Sidebar() {
 
       {/* Sidebar Panel */}
       <div 
-        className={`fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-200 z-50 flex flex-col transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 left-0 h-screen w-64 bg-white dark:bg-slate-950 border-r border-gray-200 dark:border-slate-800 z-50 flex flex-col transform transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0`}
       >
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center h-20">
-          <h2 className="text-2xl font-extrabold text-indigo-600 flex items-center gap-2">
-            <div className="bg-indigo-600 p-1 rounded-md">
+        <div className="p-6 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center h-20">
+          <h2 className="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
+            <div className="bg-indigo-600 dark:bg-indigo-500 p-1 rounded-md">
               <CheckCircle2 className="w-5 h-5 text-white" />
             </div>
             DoJo
           </h2>
+          <ThemeToggle />
         </div>
         
         <div className="flex-1 py-6 px-4 space-y-2 overflow-y-auto">
@@ -87,8 +89,8 @@ export default function Sidebar() {
                 onClick={closeSidebar} // Tutup sidebar otomatis saat menu diklik di HP
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${
                   isActive 
-                    ? 'bg-indigo-50 text-indigo-700' 
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400' 
+                    : 'text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800/50 hover:text-gray-900 dark:hover:text-slate-200'
                 }`}
               >
                 <Icon className="w-5 h-5" />
@@ -98,17 +100,17 @@ export default function Sidebar() {
           })}
         </div>
 
-        <div className="p-4 border-t border-gray-100">
+        <div className="p-4 border-t border-gray-100 dark:border-slate-800">
           <button 
             onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-3 w-full rounded-xl font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+            className="flex items-center gap-3 px-4 py-3 w-full rounded-xl font-medium text-gray-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 transition-colors"
           >
             <LogOut className="w-5 h-5" />
             Logout
           </button>
           <Link 
             href="/privacy-policy" 
-            className="flex items-center gap-3 px-4 py-2 mt-2 w-full rounded-xl text-xs font-bold text-slate-300 uppercase tracking-widest hover:text-indigo-400 transition-colors"
+            className="flex items-center gap-3 px-4 py-2 mt-2 w-full rounded-xl text-xs font-bold text-slate-300 dark:text-slate-600 uppercase tracking-widest hover:text-indigo-400 dark:hover:text-indigo-500 transition-colors"
           >
             Privacy Policy
           </Link>
