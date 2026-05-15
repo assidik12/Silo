@@ -7,9 +7,9 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  REGION: asia-southeast1 # Ubah ke region terdekat, misal jakarta
+  REGION: asia-southeast2
   SERVICE_NAME: dojo-app
-  REPOSITORY: dojo-repo # Nama repository di Artifact Registry
+  REPOSITORY: dojo-repo
 
 jobs:
   deploy:
@@ -48,7 +48,6 @@ jobs:
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.REGION }}
           image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
-          # Menambahkan env vars saat runtime
           env_vars: |
             GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
             CLIENT_ID=${{ secrets.CLIENT_ID }}
