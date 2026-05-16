@@ -125,7 +125,7 @@ export default async function LandingPage() {
       </section>
 
       {/* 3. PROBLEM SECTION */}
-      <section className="py-24 bg-slate-100/50 dark:bg-slate-900/20">
+      <section className="py-24 bg-slate-100/50 dark:bg-slate-900/20" id="problem">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Relate nggak sih?</h2>

@@ -152,8 +152,8 @@ export default function TaskCard({ task }: { task: Task }) {
                 className="w-full text-sm p-2 border rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-900 resize-none" 
               />
               <div className="flex gap-2">
-                <button onClick={handleSaveEdit} className="text-xs font-bold bg-indigo-50 dark:bg-indigo-500/100 hover:bg-indigo-600 text-white px-3 py-1.5 rounded-lg transition-colors">Simpan</button>
-                <button onClick={() => setIsEditingTask(false)} className="text-xs font-bold bg-slate-200 hover:bg-slate-300 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-lg transition-colors">Batal</button>
+                <button onClick={handleSaveEdit} className="text-xs font-bold bg-indigo-500 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-200 px-3 py-2 rounded-xl transition-colors disabled:opacity-50">Simpan</button>
+                <button onClick={() => setIsEditingTask(false)} className="text-xs font-bold bg-slate-900 dark:bg-slate-700/50 text-slate-50 dark:text-slate-400 hover:bg-slate-800 hover:text-slate-200 px-3 py-2 rounded-xl transition-colors disabled:opacity-50">Batal</button>
               </div>
             </div>
           ) : (
@@ -250,7 +250,7 @@ export default function TaskCard({ task }: { task: Task }) {
             <button 
               type="submit" 
               disabled={!newSubTaskTitle.trim() || isUpdating}
-              className="text-xs font-bold bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-200 px-3 py-2 rounded-xl transition-colors disabled:opacity-50"
+              className="text-xs font-bold bg-slate-900 dark:bg-slate-700/50 text-slate-50 dark:text-slate-400 hover:bg-slate-800 hover:text-slate-200 px-3 py-2 rounded-xl transition-colors disabled:opacity-50"  
             >
               Add
             </button>
@@ -278,24 +278,24 @@ export default function TaskCard({ task }: { task: Task }) {
               <Trash2 className="w-8 h-8" />
             </div>
             
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
+            <h3 className="text-xl font-bold text-gray-900 mb-2 dark:text-gray-200">
               Hapus Tugas?
             </h3>
             
             <p className="text-gray-600 dark:text-slate-300 mb-8 leading-relaxed text-sm">
-              Kamu yakin mau menghapus tugas <span className="font-bold text-gray-800">"{task.title}"</span>? Tugas yang udah dihapus gak bisa dibalikin lagi, lho.
+              Kamu yakin mau menghapus tugas <span className="font-bold text-gray-800 dark:text-gray-200">"{task.title}"</span>? Tugas yang udah dihapus gak bisa dibalikin lagi, lho.
             </p>
             
             <div className="flex gap-3">
               <button
                 onClick={() => setShowModal(false)}
-                className="flex-1 py-3 rounded-2xl font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition-colors"
+                className="flex-1 py-3 rounded-2xl font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
               >
                 Batal
               </button>
               <button
                 onClick={confirmDelete}
-                className="flex-1 py-3 rounded-2xl font-bold text-white bg-red-50 dark:bg-red-500/100 hover:bg-red-600 shadow-lg dark:shadow-none shadow-red-200 transition-colors"
+                className="flex-1 py-3 rounded-2xl font-bold text-white bg-red-500 hover:bg-red-600 shadow-lg dark:shadow-none shadow-red-200 transition-colors"
               >
                 Ya, Hapus!
               </button>
@@ -309,7 +309,7 @@ export default function TaskCard({ task }: { task: Task }) {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
           <div className="bg-white dark:bg-slate-900/50 rounded-3xl p-8 max-w-lg w-full shadow-2xl transform transition-all animate-fade-in">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center gap-2">
+              <h3 className="text-xl font-bold text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-indigo-600 flex items-center gap-2">
                 <Wand2 className="w-6 h-6 text-purple-600" />
                 AI Strategist
               </h3>
