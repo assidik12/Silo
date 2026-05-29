@@ -411,7 +411,7 @@ export default async function LandingPage() {
           </div>
           <div className="flex gap-8 items-center">
             <Link href="/privacy-policy" className="hover:text-indigo-600 transition-colors">Privacy Policy</Link>
-            <a href="#" className="hover:text-indigo-600 transition-colors">Terms of Service</a>
+            <Link href="/terms-of-service" className="hover:text-indigo-600 transition-colors">Terms of Service</Link>
             <a href="mailto:sofi.sidik12@gmail.com" className="hover:text-indigo-600 transition-colors">Contact</a>
           </div>
         </div>
