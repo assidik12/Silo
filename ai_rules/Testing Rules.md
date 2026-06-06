@@ -11,10 +11,10 @@ Dokumen ini mendefinisikan standar pembuatan testing untuk DoJo guna memastikan 
 
 ## **2\. Struktur & Penamaan**
 
-* File tes harus diletakkan di folder \_\_tests\_\_ yang relevan dengan lokasi kodenya atau menggunakan suffix .test.ts(x) di samping file sumber.  
+* File tes harus diletakkan di folder `__tests__` yang relevan dengan lokasi kodenya, dan wajib mencerminkan struktur *Feature-First* sesuai dengan referensi arsitektur `docs/adr/0001-architecture-and-tech-stack.md`.
 * **Contoh:**  
-  * utils/gamification.ts ➡️ \_\_tests\_\_/gamification.test.ts  
-  * components/TaskCard.tsx ➡️ components/TaskCard.test.tsx
+  * `utils/gamification.ts` ➡️ `__tests__/gamification.test.ts`  
+  * `components/tasks/TaskCard.tsx` ➡️ `components/tasks/TaskCard.test.tsx`
 
 ## **3\. Aturan Berdasarkan Kategori**
 
@@ -62,4 +62,4 @@ Semua fungsi kalkulasi harus memiliki cakupan tes 100%.
 
 Gunakan prompt ini jika ingin meminta AI membuatkan tes untuk fitur baru:
 
-*"Berdasarkan file TESTING\_RULES.md, buatkan unit test lengkap menggunakan Jest untuk file \[path\_file\]. Pastikan mencakup skenario sukses, skenario error, dan mock semua dependensi eksternal seperti Supabase atau API lainnya. Gunakan TypeScript yang ketat."*
+*"Berdasarkan file `TESTING_RULES.md` dan struktur `docs/adr/0001-architecture-and-tech-stack.md`, buatkan unit test lengkap menggunakan Jest untuk file [path_file]. Pastikan lokasi dan struktur tesnya mengikuti arsitektur Feature-First, mencakup skenario sukses, skenario error, dan mock semua dependensi eksternal seperti Supabase atau API lainnya. Gunakan TypeScript yang ketat."*
