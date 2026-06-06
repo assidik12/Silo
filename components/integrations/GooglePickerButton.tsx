@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { HardDrive, Loader2 } from 'lucide-react';
 
 declare global {

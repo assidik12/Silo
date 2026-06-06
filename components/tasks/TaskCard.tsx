@@ -5,9 +5,9 @@ import { deleteTask, toggleTaskStatus, saveSubTasks, generateTaskBreakdown, upda
 import { useState } from 'react';
 import { Trash2, Wand2, CheckCircle2, Circle } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import PomodoroTimer from './PomodoroTimer';
-import { useModal } from '@/components/ModalProvider';
-import FeedbackModal from './FeedbackModal';
+import PomodoroTimer from '../learning/PomodoroTimer';
+import { useModal } from '../providers/ModalProvider'; 
+import FeedbackModal from '../feedback/FeedbackModal';
 
 export default function TaskCard({ task }: { task: Task }) {
   const [isDeleting, setIsDeleting] = useState(false);

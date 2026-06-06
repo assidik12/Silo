@@ -2,10 +2,9 @@ import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { User, Medal, Settings, Mail, GraduationCap, MapPin } from 'lucide-react';
-import ProfileForm from '@/components/ProfileForm';
-import ShareButton from '@/components/ShareButton';
-import AvatarUpload from '@/components/AvatarUpload';
-
+import ProfileForm from '@/components/profile/ProfileForm';
+import AvatarUpload from '@/components/profile/AvatarUpload';
+import ShareButton from '@/components/shared/ShareButton';
 
 export const dynamic = 'force-dynamic';
 

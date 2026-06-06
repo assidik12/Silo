@@ -1,12 +1,12 @@
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import TaskCard from '@/components/TaskCard';
-import GamificationStats from '@/components/GamificationStats';
-import WeeklyInsightChart from '@/components/WeeklyInsightChart';
+import TaskCard from '@/components/tasks/TaskCard';
+import GamificationStats from '@/components/dashboard/GamificationStats';
+import WeeklyInsightChart from '@/components/dashboard/WeeklyInsightChart';
 import { Task } from '@/types';
-import PersonalizationTrigger from '@/components/PersonalizationTrigger';
-import MilestoneFeedbackTrigger from '@/components/MilestoneFeedbackTrigger';
+import PersonalizationTrigger from '@/components/profile/PersonalizationTrigger';
+import MilestoneFeedbackTrigger from '@/components/feedback/MilestoneFeedbackTrigger';
 
 export const dynamic = 'force-dynamic';
 

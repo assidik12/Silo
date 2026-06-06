@@ -14,8 +14,8 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
-import { ThemeToggle } from '@/components/ThemeToggle';
-import { NavLinks } from '@/components/NavLinks';
+import { ThemeToggle } from '@/components/preferences/ThemeToggle';
+import { NavLinks } from '@/components/dashboard/NavLinks';
 
 export default async function LandingPage() {
   const cookieStore = await cookies();

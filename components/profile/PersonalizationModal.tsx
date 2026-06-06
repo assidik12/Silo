@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Sparkles, Brain, Clock, GraduationCap, Heart, Zap, Coffee } from 'lucide-react';
 import { updateUserProfile } from '@/app/actions/user.actions';
-import { useModal } from '@/components/ModalProvider';
+import { useModal } from '@/components/providers/ModalProvider';
 
 interface PersonalizationModalProps {
   isOpen: boolean;

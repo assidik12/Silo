@@ -23,14 +23,14 @@ jest.mock("next/cache", () => ({
 }));
 
 // ─── Mock: lib/gamification ───────────────────────────────────────────────────
-jest.mock("@/lib/gamification", () => ({
+jest.mock("@/utils/gamification", () => ({
   calculateXp: jest.fn().mockReturnValue({ earnedXp: 20, isEarlyBonus: false }),
   calculateStreak: jest.fn().mockReturnValue({ newStreakCount: 1, newLastActiveDate: "2026-05-05" }),
 }));
 
 // ─── Mock: lib/ai-config (getAiResponse) ─────────────────────────────────────
 const getAiResponseMock = jest.fn();
-jest.mock("@/lib/ai-config", () => ({
+jest.mock("@/lib/ai/config", () => ({
   getAiResponse: (...args: unknown[]) => getAiResponseMock(...args),
   aiClient: {},
   AI_MODELS: {
@@ -42,7 +42,7 @@ jest.mock("@/lib/ai-config", () => ({
 
 // ─── Mock: lib/limiter (checkAiLimit) ────────────────────────────────────────
 const checkAiLimitMock = jest.fn();
-jest.mock("@/lib/limiter", () => ({
+jest.mock("@/lib/supabase/limiter", () => ({
   checkAiLimit: (...args: unknown[]) => checkAiLimitMock(...args),
 }));
 

@@ -29,7 +29,7 @@ jest.mock("next/cache", () => ({
 const calculateXpMock = jest.fn().mockReturnValue({ earnedXp: 20, isEarlyBonus: false });
 const calculateStreakMock = jest.fn().mockReturnValue({ newStreakCount: 3, newLastActiveDate: "2026-05-05" });
 
-jest.mock("@/lib/gamification", () => ({
+jest.mock("@/utils/gamification", () => ({
   calculateXp: (...args: unknown[]) => calculateXpMock(...args),
   calculateStreak: (...args: unknown[]) => calculateStreakMock(...args),
 }));
@@ -37,7 +37,7 @@ jest.mock("@/lib/gamification", () => ({
 // ─── Mock lib/ai-config (used by analyzeTaskWithAI & generateTaskBreakdown) ──
 const getAiResponseMock = jest.fn();
 
-jest.mock("@/lib/ai-config", () => ({
+jest.mock("@/lib/ai/config", () => ({
   getAiResponse: (...args: unknown[]) => getAiResponseMock(...args),
   aiClient: {},
   AI_MODELS: { PRIMARY_GENERATION: "gemini-2.5-flash", FALLBACK_GENERATION: "gemini-pro", EMBEDDING: "gemini-embedding-2" },
@@ -46,7 +46,7 @@ jest.mock("@/lib/ai-config", () => ({
 // ─── Mock lib/limiter (used by analyzeTaskWithAI & generateTaskBreakdown) ────
 const checkAiLimitMock = jest.fn().mockResolvedValue({ allowed: true, remaining: 9 });
 
-jest.mock("@/lib/limiter", () => ({
+jest.mock("@/lib/supabase/limiter", () => ({
   checkAiLimit: (...args: unknown[]) => checkAiLimitMock(...args),
 }));
 

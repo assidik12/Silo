@@ -4,9 +4,9 @@ import { ActionResponse, LearningHistoryItem, Episode } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { google } from "googleapis";
-import { getAiResponse, getEmbedding, aiClient } from "@/lib/ai-config";
+import { getAiResponse, getEmbedding, aiClient } from "@/lib/ai/config";
 import { parsePdfBuffer, chunkText } from "@/utils/pdfParser";
-import { createEvent } from "@/lib/googleCalendar";
+import { createEvent } from "@/lib/google/calendar";
 
 export async function syncGoogleDriveFolder(driveUrl: string): Promise<ActionResponse<{ filesCount: number; folderName: string; dbFolderId: string }>> {
   try {

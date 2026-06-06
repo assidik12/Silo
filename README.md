@@ -35,15 +35,9 @@ Fitur andalannya:
 
 ---
 
-## 🛠️ Tech Stack di Balik DoJo
+## 🛠️ Architecture & Tech Stack
 
-Biar app ini tetep sat-set, ringan, dan gampang di-*scale*, DoJo dibangun pakai senjata mematikan ini:
-
-- **Frontend & Framework**: [Next.js 14](https://nextjs.org/) (App Router) + [React](https://react.dev/)
-- **Bahasa**: [TypeScript](https://www.typescriptlang.org/) *(Biar strict dan nggak gampang error)*
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + [Lucide Icons](https://lucide.dev/) *(Buat UI yang clean & cakep)*
-- **Database & Auth**: [Supabase](https://supabase.com/) *(PostgreSQL & Google OAuth)*
-- **External API**: Google Calendar API
+Untuk detail arsitektur teknis, *schema database*, dan *blueprint* teknologi di balik DoJo, silakan baca dokumentasi [Architecture Decision Records (ADR) kami di folder `/docs/adr`](docs/adr/0001-architecture-and-tech-stack.md).
 
 ---
 

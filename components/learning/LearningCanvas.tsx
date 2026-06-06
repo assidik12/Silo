@@ -4,8 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import { BookOpen, MessageSquare, ChevronRight, Send, Loader2, Calendar, Edit3, Check } from "lucide-react";
 import { chatWithTutor, getQuarterChatHistory, syncLearningPlanToCalendar } from "@/app/actions/learning.actions";
 import { Episode } from "@/types";
-import FeedbackModal from "./FeedbackModal";
-import { useModal } from "./ModalProvider";
+import FeedbackModal from "../feedback/FeedbackModal";
+import { useModal } from "../providers/ModalProvider";
 
 interface SksCanvasProps {
   content: string;

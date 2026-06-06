@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { MessageSquareHeart, Send, Sparkles } from 'lucide-react';
 import { sendFeedback } from '@/app/actions/feedback.actions';
-import { useModal } from '@/components/ModalProvider';
+import { useModal } from '@/components/providers/ModalProvider';
 
 export default function FeedbackPage() {
   const { showModal } = useModal();

@@ -4,9 +4,9 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { ActionResponse, Task } from "@/types";
-import { calculateXp, calculateStreak } from "@/lib/gamification";
-import { getAiResponse } from "@/lib/ai-config";
-import { checkAiLimit } from "@/lib/limiter";
+import { calculateXp, calculateStreak } from "@/utils/gamification";
+import { getAiResponse } from "@/lib/ai/config";
+import { checkAiLimit } from "@/lib/supabase/limiter";
 
 export async function getTasks(): Promise<Task[]> {
   const cookieStore = await cookies();

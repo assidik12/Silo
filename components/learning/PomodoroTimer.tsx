@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw, Coffee, Brain } from 'lucide-react';
-import { useModal } from '@/components/ModalProvider';
+import { useModal } from '../providers/ModalProvider';
 
 export default function PomodoroTimer() {
   const [isEnabled, setIsEnabled] = useState(true);

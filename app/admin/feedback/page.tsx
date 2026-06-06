@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { MessageSquare, Star, Bug, Lightbulb, Heart, ArrowLeft, User, Download, Mail } from 'lucide-react';
 import Link from 'next/link';
-import ExportFeedbackButton from '@/components/ExportFeedbackButton';
+import ExportFeedbackButton from '@/components/feedback/ExportFeedbackButton';
 
 export const dynamic = 'force-dynamic';
 

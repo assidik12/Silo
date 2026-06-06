@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import { HardDrive, Zap, BookOpen, BrainCircuit, RefreshCw, CheckCircle2, ChevronRight, MessageSquare, Save, History, Edit2, Trash2 } from "lucide-react";
 import { syncGoogleDriveFolder, generateSKSSummary, generateBingeWatchPlan, saveLearningHistory, getLearningHistory, deleteLearningHistory, updateLearningHistoryTitle } from "@/app/actions/learning.actions";
 import { LearningHistoryItem, Episode } from "@/types";
-import { SksCanvas, BingeWatchCanvas } from "@/components/LearningCanvas";
-import { useModal } from "@/components/ModalProvider";
-import GooglePickerButton from "@/components/GooglePickerButton";
+import { SksCanvas, BingeWatchCanvas } from "@/components/learning/LearningCanvas";
+import { useModal } from "@/components/providers/ModalProvider";
+import GooglePickerButton from "@/components/integrations/GooglePickerButton";
 
 export default function LearningPage() {
   const { showModal } = useModal();

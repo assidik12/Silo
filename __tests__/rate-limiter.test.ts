@@ -36,7 +36,7 @@ jest.mock("@/utils/supabase/server", () => ({
 }));
 
 // ─── Import after mocks ────────────────────────────────────────────────────────
-import { checkAiLimit } from "@/lib/limiter";
+import { checkAiLimit } from "@/lib/supabase/limiter";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const DAILY_LIMIT = 10; // must match lib/limiter.ts

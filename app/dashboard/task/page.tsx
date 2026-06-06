@@ -1,5 +1,5 @@
-import TaskCard from '@/components/TaskCard';
-import TaskForm from '@/components/TaskForm';
+import TaskCard from '@/components/tasks/TaskCard';
+import TaskForm from '@/components/tasks/TaskForm';
 import { Task } from '@/types';
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';

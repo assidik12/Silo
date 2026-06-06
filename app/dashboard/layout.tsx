@@ -1,5 +1,5 @@
-import Sidebar from '@/components/Sidebar';
-import FeedbackWidget from '@/components/FeedbackWidget';
+import Sidebar from '@/components/dashboard/Sidebar';
+import FeedbackWidget from '@/components/feedback/FeedbackWidget';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createTask, analyzeTaskWithAI } from '@/app/actions/task.actions';
 import { CheckCircle2, XCircle, Sparkles, Bot } from 'lucide-react';
-import { useModal } from '@/components/ModalProvider';
+import { useModal } from '../providers/ModalProvider';
 
 export default function TaskForm() {
   const router = useRouter();

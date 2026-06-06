@@ -49,7 +49,7 @@ jest.mock("googleapis", () => ({
 const getAiResponseMock = jest.fn();
 const getEmbeddingMock = jest.fn();
 
-jest.mock("@/lib/ai-config", () => ({
+jest.mock("@/lib/ai/config", () => ({
   getAiResponse: (...args: unknown[]) => getAiResponseMock(...args),
   getEmbedding: (...args: unknown[]) => getEmbeddingMock(...args),
   aiClient: {},
@@ -67,7 +67,7 @@ jest.mock("@/utils/pdfParser", () => ({
 
 // ─── Mock: lib/googleCalendar ─────────────────────────────────────────────────
 const createEventMock = jest.fn();
-jest.mock("@/lib/googleCalendar", () => ({
+jest.mock("@/lib/google/calendar", () => ({
   createEvent: (...args: unknown[]) => createEventMock(...args),
 }));
 
