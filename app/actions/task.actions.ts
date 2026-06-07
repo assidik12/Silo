@@ -3,6 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { createEvent } from "@/lib/google/calendar";
 import { ActionResponse, Task } from "@/types";
 import { calculateXp, calculateStreak } from "@/utils/gamification";
 import { getAiResponse } from "@/lib/ai/config";
@@ -49,6 +50,30 @@ export async function createTask(formData: FormData): Promise<ActionResponse> {
     });
 
     if (error) throw error;
+
+    // Sync ke Google Calendar
+    let providerToken: string | null | undefined = cookieStore.get("g_provider_token")?.value;
+    if (!providerToken) {
+      const { data: { session } } = await supabase.auth.getSession();
+      providerToken = session?.provider_token;
+    }
+
+    if (providerToken) {
+      try {
+        const startDate = new Date(scheduled_time);
+        const endDate = new Date(startDate.getTime() + duration_estimate_minutes * 60000);
+        await createEvent(providerToken, {
+          summary: `[DoJo] ${title}`,
+          description: description || 'Tugas dari DoJo App.',
+          start: { dateTime: startDate.toISOString() },
+          end: { dateTime: endDate.toISOString() },
+          colorId: '5', // Yellow marker
+          reminders: { useDefault: true }
+        });
+      } catch (err) {
+        console.error("Google Calendar sync failed:", err);
+      }
+    }
 
     revalidatePath("/dashboard");
     return { success: true };

@@ -199,7 +199,7 @@ export default function LearningPage() {
           {mode === "selection" && (
             <div className="grid md:grid-cols-2 gap-6 mt-8">
               {/* SKS Mode Card */}
-              <button onClick={selectSKSMode} className="text-left bg-white dark:bg-slate-900/50 p-8 rounded-3xl border-2 border-transparent hover:border-yellow-400 shadow-sm dark:shadow-none hover:shadow-xl dark:shadow-none transition-all group relative overflow-hidden">
+              <button onClick={selectSKSMode} className="text-left bg-white dark:bg-slate-900/50 p-8 rounded-3xl border-2 border-transparent hover:border-yellow-400 shadow-sm dark:shadow-none hover:shadow-xl  transition-all group relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-100 dark:bg-yellow-900/20 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110" />
                 <div className="w-14 h-14 bg-yellow-100 dark:bg-yellow-900/50 text-yellow-600 dark:text-yellow-400 rounded-2xl flex items-center justify-center mb-6 relative z-10">
                   <Zap className="w-7 h-7" />
@@ -209,7 +209,7 @@ export default function LearningPage() {
               </button>
 
               {/* Binge-Watch Mode Card */}
-              <button onClick={selectBingeMode} className="text-left bg-white dark:bg-slate-900/50 p-8 rounded-3xl border-2 border-transparent hover:border-indigo-400 shadow-sm dark:shadow-none hover:shadow-xl dark:shadow-none transition-all group relative overflow-hidden">
+              <button onClick={selectBingeMode} className="text-left bg-white dark:bg-slate-900/50 p-8 rounded-3xl border-2 border-transparent hover:border-indigo-400 shadow-sm dark:shadow-none hover:shadow-xl  transition-all group relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-100 dark:bg-indigo-900/50 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110" />
                 <div className="w-14 h-14 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center mb-6 relative z-10">
                   <BookOpen className="w-7 h-7" />
@@ -320,7 +320,7 @@ export default function LearningPage() {
         ) : (
           <div className="grid md:grid-cols-2 gap-4">
             {learningHistory.map((item) => (
-              <div key={item.id} className="bg-white dark:bg-slate-900/50 p-5 rounded-2xl shadow-sm dark:shadow-none border border-gray-200 dark:border-slate-800 hover:shadow-md dark:shadow-none transition-shadow relative group">
+              <div key={item.id} className="bg-white dark:bg-slate-900/50 p-5 rounded-2xl shadow-sm dark:shadow-none border border-gray-200 dark:border-slate-800 hover:shadow-md  transition-shadow relative group">
                 <div className="absolute top-4 right-4 flex opacity-0 group-hover:opacity-100 transition-opacity gap-2 bg-white dark:bg-slate-900/50 pl-2">
                   <button
                     onClick={() => {

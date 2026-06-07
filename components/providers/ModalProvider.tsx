@@ -41,7 +41,7 @@ export function ModalProvider({ children }: { children: ReactNode }) {
     <ModalContext.Provider value={{ showModal }}>
       {children}
       {isOpen && options && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-200 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white dark:bg-slate-900/50 rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center transform scale-100 transition-all flex flex-col items-center animate-in fade-in zoom-in duration-200">
             {options.type === 'error' && <AlertCircle className="w-16 h-16 text-red-500 mb-4" />}
             {options.type === 'success' && <CheckCircle2 className="w-16 h-16 text-green-500 mb-4" />}

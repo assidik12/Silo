@@ -49,7 +49,7 @@ export function SksCanvas({ content, onChange }: SksCanvasProps) {
           <div className="flex justify-end gap-2">
             <button 
               onClick={() => { setIsEditing(false); setLocalContent(content); }}
-              className="px-4 py-2 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-200"
+              className="px-4 py-2 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-700 "
             >
               Cancel
             </button>
@@ -240,7 +240,7 @@ export function BingeWatchCanvas({ episodes, folderId, courseTitle, onEpisodesCh
         <button 
           onClick={handleSyncToCalendar}
           disabled={isSyncing}
-          className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900/50 text-indigo-600 dark:text-indigo-400 border border-indigo-100 rounded-xl text-sm font-bold hover:bg-indigo-50 dark:bg-indigo-500/10 transition-all shadow-sm dark:shadow-none disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900/50 text-indigo-600 dark:text-indigo-400 border border-indigo-100 rounded-xl text-sm font-bold hover:bg-indigo-50  transition-all shadow-sm dark:shadow-none disabled:opacity-50"
         >
           {isSyncing ? (
             <Loader2 className="w-4 h-4 animate-spin" />

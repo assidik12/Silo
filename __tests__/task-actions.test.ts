@@ -71,7 +71,7 @@ function makeAwaitable<T>(execMock: jest.Mock, result: T): Promise<T> {
 function makeSupabaseMock(): SupabaseMock {
   return {
     auth: {
-      getSession: jest.fn(),
+      getSession: jest.fn().mockResolvedValue({ data: { session: null } }),
       getUser: jest.fn(),
     },
     from: jest.fn(),

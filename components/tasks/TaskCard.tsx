@@ -8,6 +8,7 @@ import confetti from 'canvas-confetti';
 import PomodoroTimer from '../learning/PomodoroTimer';
 import { useModal } from '../providers/ModalProvider'; 
 import FeedbackModal from '../feedback/FeedbackModal';
+import { playSuccessSound } from '@/utils/audio';
 
 export default function TaskCard({ task }: { task: Task }) {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -116,6 +117,7 @@ export default function TaskCard({ task }: { task: Task }) {
     await toggleTaskStatus(task.id, task.status);
     
     // Trigger confetti since task was pending and is now being marked as done
+    playSuccessSound();
     confetti({
       particleCount: 100,
       spread: 70,
@@ -193,7 +195,7 @@ export default function TaskCard({ task }: { task: Task }) {
             <div className={`text-sm whitespace-pre-wrap relative overflow-hidden transition-all duration-300 ${task.status === 'done' ? 'text-green-700' : 'text-gray-600 dark:text-slate-300'} ${!isDescExpanded && task.description.length > 150 ? 'max-h-16' : 'max-h-[1000px]'}`}>
               {task.description}
               {!isDescExpanded && task.description.length > 150 && (
-                <div className={`absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t ${task.status === 'done' ? 'from-green-50 dark:from-green-900/20' : 'from-white dark:from-slate-900'} to-transparent`} />
+                <div className={`absolute bottom-0 left-0 w-full h-8 bg-linear-to-t ${task.status === 'done' ? 'from-green-50 dark:from-green-900/20' : 'from-white dark:from-slate-900'} to-transparent`} />
               )}
             </div>
             {task.description.length > 150 && (
@@ -212,7 +214,7 @@ export default function TaskCard({ task }: { task: Task }) {
             href={task.module_link} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="mt-4 inline-block w-fit px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 rounded-lg text-xs font-bold border border-indigo-100 hover:bg-indigo-100 dark:bg-indigo-900/50 transition-colors"
+            className="mt-4 inline-block w-fit px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-lg text-xs font-bold border border-indigo-100 hover:bg-indigo-100  transition-colors"
           >
             📎 Open Module
           </a>
@@ -262,7 +264,7 @@ export default function TaskCard({ task }: { task: Task }) {
         <div className="mt-5 flex justify-end">
           <button 
             onClick={handleBreakdownClick}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-xl text-sm font-bold shadow-md dark:shadow-none hover:shadow-lg dark:shadow-none transition-all hover:-translate-y-0.5"
+            className="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-purple-500 to-indigo-500 text-white rounded-xl text-sm font-bold shadow-md dark:shadow-none hover:shadow-lg  transition-all hover:-translate-y-0.5"
           >
             <Wand2 className="w-4 h-4" />
             {subTasks.length > 0 ? 'Edit AI Breakdown' : 'Breakdown with AI'}
@@ -306,7 +308,7 @@ export default function TaskCard({ task }: { task: Task }) {
 
       {/* AI BREAKDOWN MODAL */}
       {showAIModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
           <div className="bg-white dark:bg-slate-900/50 rounded-3xl p-8 max-w-lg w-full shadow-2xl transform transition-all animate-fade-in">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-indigo-600 flex items-center gap-2">
@@ -348,14 +350,14 @@ export default function TaskCard({ task }: { task: Task }) {
               </button>
               <button
                 onClick={generate}
-                className="flex-1 py-3 rounded-2xl font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 hover:bg-indigo-100 dark:bg-indigo-900/50 transition-colors disabled:opacity-50"
+                className="flex-1 py-3 rounded-2xl font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/50 border border-indigo-200 hover:bg-indigo-100  transition-colors disabled:opacity-50"
                 disabled={isGenerating || isUpdating}
               >
                 Regenerate 🎲
               </button>
               <button
                 onClick={saveDraft}
-                className="flex-1 py-3 rounded-2xl font-bold text-white bg-gradient-to-r from-purple-500 to-indigo-500 shadow-lg dark:shadow-none shadow-indigo-200 hover:shadow-xl dark:shadow-none hover:-translate-y-0.5 transition-all disabled:opacity-50"
+                className="flex-1 py-3 rounded-2xl font-bold text-white bg-linear-to-r from-purple-500 to-indigo-500 shadow-lg dark:shadow-none shadow-indigo-200 hover:shadow-xl  hover:-translate-y-0.5 transition-all disabled:opacity-50"
                 disabled={isGenerating || isUpdating || draftSubTasks.length === 0}
               >
                 {isUpdating ? 'Saving...' : 'Save ✅'}

@@ -59,14 +59,14 @@ export default async function LandingPage() {
       {/* 2. HERO SECTION */}
       <section className="pt-24 pb-20 px-6 overflow-hidden" id="home">
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-16">
-          <div className="flex-1 text-center lg:text-left">
+          <div className="flex-1 text-left lg:">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-sm font-medium mb-6 animate-fade-in">
               <Sparkles className="w-4 h-4" />
               🚀 Rilis fitur AI baru!
             </div>
             <h1 className="text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6 text-slate-900 dark:text-white">
               Tugas numpuk? <br className="hidden lg:block" /> 
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-violet-500">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-500 to-violet-500">
                 Santai, kita bantu beresin pelan-pelan.
               </span>
             </h1>
@@ -119,7 +119,7 @@ export default async function LandingPage() {
             </div>
             
             {/* Decorative background blur */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-indigo-200 to-violet-200 blur-3xl opacity-30 -z-10 rounded-full"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-linear-to-tr from-indigo-200 to-violet-200 blur-3xl opacity-30 -z-10 rounded-full"></div>
           </div>
         </div>
       </section>
@@ -315,11 +315,11 @@ export default async function LandingPage() {
           
           <div className="bg-white dark:bg-slate-900/50 rounded-3xl shadow-2xl dark:shadow-none shadow-slate-200/50 border border-slate-100 dark:border-slate-800 p-8 max-w-2xl mx-auto transform transition-all hover:scale-[1.01] duration-500">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-8">
-              <div className="text-left text-center sm:text-left w-full sm:w-auto">
+              <div className="text-left  sm:text-left w-full sm:w-auto">
                 <h3 className="text-slate-400 font-bold uppercase tracking-wide text-xs mb-1">Momentum Saat Ini</h3>
                 <div className="text-4xl font-extrabold text-slate-800 dark:text-slate-100">5 Hari!</div>
               </div>
-              <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white px-5 py-2.5 rounded-full font-bold flex items-center gap-2 shadow-lg shadow-orange-200 animate-pulse">
+              <div className="bg-linear-to-r from-orange-400 to-red-500 text-white px-5 py-2.5 rounded-full font-bold flex items-center gap-2 shadow-lg shadow-orange-200 animate-pulse">
                 🔥 Lo Sedang On Fire!
               </div>
             </div>
@@ -332,7 +332,7 @@ export default async function LandingPage() {
                 {/* Track Line */}
                 <div className="absolute left-6 right-6 top-5 -translate-y-1/2 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full z-0"></div>
                 {/* Active Track Line */}
-                <div className="absolute left-6 top-5 -translate-y-1/2 h-1.5 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full z-0 transition-all duration-1000" style={{ width: '65%' }}></div>
+                <div className="absolute left-6 top-5 -translate-y-1/2 h-1.5 bg-linear-to-r from-orange-400 to-orange-500 rounded-full z-0 transition-all duration-1000" style={{ width: '65%' }}></div>
                 
                 {/* Simulated 7 days */}
                 {['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'].map((day, i) => {
@@ -343,7 +343,7 @@ export default async function LandingPage() {
                     <div key={i} className="relative z-10 flex flex-col items-center gap-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-500 ${
                         isActive 
-                          ? 'bg-gradient-to-br from-orange-400 to-red-500 text-white shadow-md dark:shadow-none shadow-orange-200 scale-110' 
+                          ? 'bg-linear-to-br from-orange-400 to-red-500 text-white shadow-md dark:shadow-none shadow-orange-200 scale-110' 
                           : isToday 
                             ? 'bg-white dark:bg-slate-900 border-4 border-orange-300 dark:border-orange-500/50 text-orange-500 animate-bounce'
                             : 'bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-600 text-slate-300 dark:text-slate-500'

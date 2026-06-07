@@ -94,7 +94,7 @@ export default async function ProfilePage() {
           </div>
 
           {/* Achievements Snippet */}
-          <div className="bg-white dark:bg-slate-900/50 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800 shadow-lg dark:shadow-none shadow-slate-200/40">
+          <div className="bg-white dark:bg-slate-900/50 rounded-4xl p-6 border border-slate-100 dark:border-slate-800 shadow-lg dark:shadow-none shadow-slate-200/40">
              <div className="flex items-center gap-3 mb-4">
               <Medal className="w-5 h-5 text-amber-500" />
               <h3 className="font-bold text-slate-800 dark:text-slate-100">Pencapaian</h3>

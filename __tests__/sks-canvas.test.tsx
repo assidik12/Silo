@@ -33,19 +33,19 @@ jest.mock("@/app/actions/learning.actions", () => ({
 }));
 
 // ─── Mock FeedbackModal ────────────────────────────────────────────────────────
-jest.mock("@/components/FeedbackModal", () =>
+jest.mock("@/components/feedback/FeedbackModal", () =>
   function MockFeedbackModal() {
     return <div data-testid="feedback-modal" />;
   }
 );
 
 // ─── Mock ModalProvider (useModal hook) ───────────────────────────────────────
-jest.mock("@/components/ModalProvider", () => ({
+jest.mock("@/components/providers/ModalProvider", () => ({
   useModal: () => ({ showModal: jest.fn() }),
 }));
 
 // ─── Import after mocks ────────────────────────────────────────────────────────
-import { SksCanvas } from "@/components/LearningCanvas";
+import { SksCanvas } from "@/components/learning/LearningCanvas";
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 describe("SksCanvas (Q3 Phase 2.1: UI Canvas & SKS Edit)", () => {

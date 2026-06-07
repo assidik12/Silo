@@ -7,6 +7,7 @@ import { google } from "googleapis";
 import { getAiResponse, getEmbedding, aiClient } from "@/lib/ai/config";
 import { parsePdfBuffer, chunkText } from "@/utils/pdfParser";
 import { createEvent } from "@/lib/google/calendar";
+import { validateQueryWithGuardrails } from "@/lib/ai/guardrails";
 
 export async function syncGoogleDriveFolder(driveUrl: string): Promise<ActionResponse<{ filesCount: number; folderName: string; dbFolderId: string }>> {
   try {
@@ -211,21 +212,15 @@ export async function chatWithTutor(folderId: string | null, quarterId: string, 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { success: false, error: "Unauthorized" };
 
-    let contextStr = "";
-    if (folderId && userMessage.trim() !== "") {
-      const embedding = await getEmbedding(userMessage);
-      if (embedding) {
-        const { data: chunks } = await supabase.rpc("match_document_chunks", {
-          query_embedding: embedding,
-          match_threshold: 0.7,
-          match_count: 3,
-          p_folder_id: folderId,
-        });
-        if (chunks && chunks.length > 0) {
-          contextStr = "REFERENSI MATERI TERKAIT (DARI FILE PDF USER):\n" + chunks.map((c: any) => c.content).join("\n---\n");
-        }
-      }
+    const guardrailResult = await validateQueryWithGuardrails(userMessage, folderId);
+    if (!guardrailResult.allowed) {
+      await supabase.from("learning_chat_history").insert([
+        { user_id: user.id, folder_id: folderId, quarter_id: quarterId, role: 'user', content: userMessage },
+        { user_id: user.id, folder_id: folderId, quarter_id: quarterId, role: 'ai', content: guardrailResult.fallbackMessage }
+      ]);
+      return { success: true, data: guardrailResult.fallbackMessage! };
     }
+    const contextStr = guardrailResult.contextStr || "";
 
     const { data: profile } = await supabase.from('users').select('major, interests, learning_type').eq('id', user.id).single();
     const userContext = profile ? `\nContext User:\n- Jurusan: ${profile.major}\n- Minat: ${profile.interests || 'Umum'}\n- Tipe Belajar: ${profile.learning_type === 'ngebut' ? 'Ngebut/Speedrunner' : 'Santai/Chill'}` : "";

@@ -74,7 +74,7 @@ export default function PomodoroTimer() {
       <div className="flex gap-2 w-full justify-center">
         <button 
           onClick={toggleTimer}
-          className={`flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all flex-1 max-w-[120px] ${isRunning ? 'bg-orange-50 dark:bg-orange-500/100 hover:bg-orange-600 shadow-orange-200' : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200'} shadow-md dark:shadow-none hover:-translate-y-0.5`}
+          className={`flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all flex-1 max-w-[120px] ${isRunning ? 'bg-orange-50 dark:bg-orange-500 hover:bg-orange-600 shadow-orange-200' : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200'} shadow-md dark:shadow-none hover:-translate-y-0.5`}
         >
           {isRunning ? <Pause className="w-4 h-4 dark:text-white" /> : <Play className="w-4 h-4 dark:text-white" />}
           {isRunning ? 'Pause' : 'Mulai'}

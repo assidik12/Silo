@@ -24,7 +24,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(({ userData }, ref)
   return (
     <div 
       ref={ref}
-      className="w-[390px] h-[844px] bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-8 flex flex-col justify-between text-white relative overflow-hidden"
+      className="w-[390px] h-[844px] bg-linear-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-8 flex flex-col justify-between text-white relative overflow-hidden"
       style={{ fontFamily: 'sans-serif' }} // Ensure a clean font for capture
     >
       {/* Background Decorative Elements */}
@@ -79,7 +79,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(({ userData }, ref)
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900/50/10 backdrop-blur-md rounded-[2rem] p-6 border border-white/10">
+        <div className="bg-white dark:bg-slate-900/50/10 backdrop-blur-md rounded-4xl p-6 border border-white/10">
           <h3 className="text-xs font-black uppercase tracking-widest text-white/60 mb-4 text-center">Unlocked Badges</h3>
           <div className="flex justify-center gap-4">
             {badges.map((badge, i) => (
@@ -104,7 +104,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(({ userData }, ref)
 
       {/* Footer / CTA */}
       <div className="text-center space-y-4 z-10">
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+        <div className="h-px w-full bg-linear-to-r from-transparent via-white/30 to-transparent"></div>
         <p className="text-sm font-medium text-indigo-100/80 italic px-6">
           "{userData.bio || 'Belajar jadi lebih asik dan produktif di DoJo.'}"
         </p>

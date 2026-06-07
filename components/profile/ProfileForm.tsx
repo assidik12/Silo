@@ -128,7 +128,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
             className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
               formData.learning_type === 'ngebut'
                 ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-500/10'
-                : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 hover:border-slate-200 dark:border-slate-700'
+                : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 hover:border-slate-200 '
             }`}
           >
             <Zap className={`w-6 h-6 ${formData.learning_type === 'ngebut' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`} />
@@ -143,7 +143,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
             className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
               formData.learning_type === 'santai'
                 ? 'border-emerald-600 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10'
-                : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 hover:border-slate-200 dark:border-slate-700'
+                : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 hover:border-slate-200 '
             }`}
           >
             <Coffee className={`w-6 h-6 ${formData.learning_type === 'santai' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`} />

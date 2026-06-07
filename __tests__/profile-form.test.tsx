@@ -32,7 +32,7 @@ jest.mock("@/app/actions/user.actions", () => ({
 }));
 
 // ─── Import after mocks ────────────────────────────────────────────────────────
-import ProfileForm from "@/components/ProfileForm";
+import ProfileForm from "@/components/profile/ProfileForm";
 
 // ─── Test data ────────────────────────────────────────────────────────────────
 const initialData = {

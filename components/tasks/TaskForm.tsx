@@ -102,7 +102,7 @@ export default function TaskForm() {
                 type="button" 
                 onClick={handleAnalyzeAI}
                 disabled={analyzing}
-                className="flex items-center gap-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:bg-indigo-900/50 px-3 py-1 rounded-full transition-colors disabled:opacity-50"
+                className="flex items-center gap-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/50 hover:bg-indigo-100  px-3 py-1 rounded-full transition-colors disabled:opacity-50"
               >
                 <Bot className="w-4 h-4" />
                 {analyzing ? 'Menganalisis...' : 'Analisis AI'}

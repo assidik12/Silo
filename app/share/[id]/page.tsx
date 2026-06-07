@@ -81,12 +81,12 @@ export default async function SharePage({ params }: Props) {
   const streak = userData.streak_count || 0;
 
   return (
-    <div className="min-h-screen bg-indigo-600 flex flex-col items-center justify-center p-4 bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600">
+    <div className="min-h-screen bg-indigo-600 flex flex-col items-center justify-center p-4 bg-linear-to-br from-indigo-600 via-violet-600 to-fuchsia-600">
       <div className="max-w-md w-full bg-white rounded-[2.5rem] overflow-hidden shadow-2xl animate-scale-in">
         <div className="p-8 text-center space-y-6">
           <div className="inline-flex mb-2">
             {userData.avatar_url ? (
-              <div className="w-24 h-24 rounded-[2rem] overflow-hidden border-4 border-indigo-50 shadow-lg">
+              <div className="w-24 h-24 rounded-4xl overflow-hidden border-4 border-indigo-50 shadow-lg">
                 <img src={userData.avatar_url} alt={name} className="w-full h-full object-cover" />
               </div>
             ) : (
@@ -114,7 +114,7 @@ export default async function SharePage({ params }: Props) {
             </div>
           </div>
 
-          <div className="bg-slate-900 text-white p-6 rounded-[2rem] space-y-4">
+          <div className="bg-slate-900 text-white p-6 rounded-4xl space-y-4">
             <p className="text-sm font-medium opacity-80 italic">
               "{userData.bio || 'Belajar jadi lebih asik dan produktif di DoJo.'}"
             </p>

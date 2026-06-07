@@ -7,6 +7,9 @@ import WeeklyInsightChart from '@/components/dashboard/WeeklyInsightChart';
 import { Task } from '@/types';
 import PersonalizationTrigger from '@/components/profile/PersonalizationTrigger';
 import MilestoneFeedbackTrigger from '@/components/feedback/MilestoneFeedbackTrigger';
+import InlineCalendar from '@/components/dashboard/InlineCalendar';
+import OngoingTasks from '@/components/dashboard/OngoingTasks';
+import DynamicGreeting from '@/components/dashboard/DynamicGreeting';
 
 export const dynamic = 'force-dynamic';
 
@@ -73,49 +76,45 @@ export default async function DashboardPage() {
   const weeklyProgress = totalWeekTasks === 0 ? 0 : Math.round((doneWeekTasks / totalWeekTasks) * 100);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8">
       <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-          <p className="text-sm text-gray-600 dark:text-slate-300 mt-1">Welcome back, {name}</p>
+          <DynamicGreeting name={name} streak={streak} />
         </div>
-        
-        <GamificationStats streak={streak} xp={xp} />
+
+        <GamificationStats userId={user.id} name={name} streak={streak} xp={xp} />
       </header>
 
-      {/* Weekly Progress Bar */}
-      <div className="bg-white dark:bg-slate-900/50 p-6 rounded-2xl shadow-sm dark:shadow-none border border-gray-200 dark:border-slate-800">
-        <div className="flex justify-between text-sm font-medium mb-3">
-          <span className="text-gray-700 dark:text-slate-200">Weekly Task Completion</span>
-          <span className="text-indigo-600 dark:text-indigo-400">{weeklyProgress}% ({doneWeekTasks}/{totalWeekTasks} tasks)</span>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left Column: Weekly Stats */}
+        <div className="lg:col-span-5 space-y-8">
+          {/* Weekly Progress Bar */}
+          <div className="bg-white dark:bg-slate-900/50 p-6 rounded-2xl shadow-sm dark:shadow-none border border-gray-200 dark:border-slate-800">
+            <div className="flex justify-between text-sm font-medium mb-3">
+              <span className="text-gray-700 dark:text-slate-200">Weekly Task Completion</span>
+              <span className="text-indigo-600 dark:text-indigo-400">{weeklyProgress}% ({doneWeekTasks}/{totalWeekTasks} tasks)</span>
+            </div>
+            <div className="w-full bg-gray-100 dark:bg-slate-800 rounded-full h-3">
+              <div
+                className="bg-indigo-600 h-3 rounded-full transition-all duration-500"
+                style={{ width: `${weeklyProgress}%` }}
+              ></div>
+            </div>
+          </div>
+
+          <WeeklyInsightChart recentTasks={recentTasks || []} recentLearning={recentLearning || []} />
         </div>
-        <div className="w-full bg-gray-100 dark:bg-slate-800 rounded-full h-3">
-          <div 
-            className="bg-indigo-600 h-3 rounded-full transition-all duration-500" 
-            style={{ width: `${weeklyProgress}%` }}
-          ></div>
+
+        {/* Right Column: Tasks & Calendar */}
+        <div className="lg:col-span-7 space-y-8">
+          <OngoingTasks tasks={tasks || []} />
+
+          {/* Inline Google Calendar UI & Theme Customization */}
+          <InlineCalendar />
         </div>
       </div>
 
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-slate-100">Ongoing Tasks</h2>
-        
-        {!tasks || tasks.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-gray-300 dark:border-slate-700 p-12 text-center bg-white dark:bg-slate-900/50">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">You're all caught up!</h3>
-            <p className="text-gray-500 dark:text-slate-400 mb-6">No ongoing tasks right now. Time to chill or schedule a new one.</p>
-          </div>
-        ) : (
-          <div className="grid gap-4">
-            {tasks.map((task: Task) => (
-              <TaskCard key={task.id} task={task} />
-            ))}
-          </div>
-        )}
-      </div>
-
-      <WeeklyInsightChart recentTasks={recentTasks || []} recentLearning={recentLearning || []} />
-      
       <PersonalizationTrigger completed={onboardingCompleted} />
       <MilestoneFeedbackTrigger />
     </div>

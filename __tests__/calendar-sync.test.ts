@@ -11,7 +11,7 @@
  * The actual fetch() call is mocked via jest.spyOn so no real HTTP request is made.
  */
 
-import { createEvent, updateEvent, deleteEvent } from '@/lib/googleCalendar';
+import { createEvent, updateEvent, deleteEvent } from '@/lib/google/calendar';
 
 // ---------------------------------------------------------------------------
 // Helpers

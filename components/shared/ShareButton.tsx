@@ -84,7 +84,7 @@ export default function ShareButton({ userId, userData }: ShareButtonProps) {
           <Button 
             onClick={() => handleShare('ig')} 
             disabled={isGenerating}
-            className="bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] hover:opacity-90 text-white font-bold py-7 rounded-2xl shadow-lg dark:shadow-none flex items-center justify-center gap-2 transition-all active:scale-95 border-none"
+            className="bg-linear-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] hover:opacity-90 text-white font-bold py-7 rounded-2xl shadow-lg dark:shadow-none flex items-center justify-center gap-2 transition-all active:scale-95 border-none"
           >
             {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <InstagramIcon />}
             Story

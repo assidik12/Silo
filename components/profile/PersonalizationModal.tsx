@@ -49,7 +49,7 @@ export default function PersonalizationModal({ isOpen, onClose }: Personalizatio
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fade-in">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fade-in">
       <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] w-full max-w-lg shadow-2xl overflow-hidden transform transition-all scale-100">
         {/* Progress Bar */}
         <div className="h-2 bg-gray-100 dark:bg-slate-800 flex">
@@ -147,7 +147,7 @@ export default function PersonalizationModal({ isOpen, onClose }: Personalizatio
                 <button 
                   onClick={handleNext}
                   disabled={!formData.productive_hours.trim() || !formData.interests.trim()}
-                  className="flex-[2] py-4 bg-gray-900 dark:bg-indigo-600 hover:bg-black dark:hover:bg-indigo-700 text-white rounded-2xl font-bold shadow-xl dark:shadow-none transition-all disabled:opacity-50"
+                  className="flex-2 py-4 bg-gray-900 dark:bg-indigo-600 hover:bg-black dark:hover:bg-indigo-700 text-white rounded-2xl font-bold shadow-xl dark:shadow-none transition-all disabled:opacity-50"
                 >
                   Gasss 🚀
                 </button>
@@ -206,7 +206,7 @@ export default function PersonalizationModal({ isOpen, onClose }: Personalizatio
                 <button 
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="flex-[2] py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold shadow-xl dark:shadow-none shadow-indigo-200 transition-all flex items-center justify-center gap-2"
+                  className="flex-2 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold shadow-xl dark:shadow-none shadow-indigo-200 transition-all flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" />

@@ -38,7 +38,7 @@ export default function LoginPage() {
 
       <div className="relative z-10 w-full max-w-md p-6">
         {/* Card */}
-        <div className="bg-white/90 backdrop-blur-xl rounded-[2rem] p-10 shadow-2xl shadow-indigo-100 border border-white/50 text-center transform transition-all hover:scale-[1.02] duration-500">
+        <div className="bg-white/90 backdrop-blur-xl rounded-4xl p-10 shadow-2xl shadow-indigo-100 border border-white/50 text-center transform transition-all hover:scale-[1.02] duration-500">
           
           <div className="mx-auto w-20 h-20 bg-indigo-500 rounded-3xl rotate-6 flex items-center justify-center shadow-xl shadow-indigo-200 mb-8 transition-transform hover:rotate-12 duration-300">
             <CheckCircle2 className="w-10 h-10 text-white -rotate-6" />

@@ -114,7 +114,7 @@ export default function WeeklyInsightChart({ recentTasks, recentLearning }: { re
                   className="w-full bg-indigo-300 transition-all duration-1000 ease-out flex items-center justify-center text-[10px] font-bold text-white relative"
                   style={{ height: `${learningHeight}%` }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/10 to-transparent" />
                 </div>
                 
                 {/* Tasks Bar */}
@@ -122,7 +122,7 @@ export default function WeeklyInsightChart({ recentTasks, recentLearning }: { re
                   className="w-full bg-indigo-600 transition-all duration-1000 ease-out flex items-center justify-center text-[10px] font-bold text-white shadow-[0_-2px_10px_rgba(79,70,229,0.3)] z-10 relative"
                   style={{ height: `${taskHeight}%` }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
                 </div>
               </div>
               
