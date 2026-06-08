@@ -20,6 +20,8 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
     interests: initialData?.interests || "",
     productive_hours: initialData?.productive_hours || "09:00",
     learning_type: (initialData?.learning_type as 'ngebut' | 'santai') || "santai",
+    semester: initialData?.semester || 1,
+    ai_persona: (initialData?.ai_persona as 'aesthetic' | 'savage' | 'mindful') || "mindful",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -73,6 +75,23 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
             onChange={(e) => setFormData({ ...formData, major: e.target.value })}
             className="w-full text-gray-700 dark:text-slate-200 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/50 focus:border-indigo-500 transition-all outline-none dark:bg-slate-900/50"
             placeholder="Misal: Teknik Informatika"
+          />
+        </div>
+
+        {/* Semester */}
+        <div className="space-y-2">
+          <label className="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+            <Clock className="w-4 h-4 text-indigo-500" /> Semester
+          </label>
+          <input
+            type="number"
+            min="1"
+            max="14"
+            required
+            value={formData.semester}
+            onChange={(e) => setFormData({ ...formData, semester: parseInt(e.target.value) || 1 })}
+            className="w-full text-gray-700 dark:text-slate-200 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/50 focus:border-indigo-500 transition-all outline-none dark:bg-slate-900/50"
+            placeholder="Misal: 5"
           />
         </div>
 
@@ -150,6 +169,55 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
             <div className="text-center">
               <p className="text-sm font-bold">Santai (Binge-Watch)</p>
               <p className="text-[10px] text-slate-500 dark:text-slate-400">Mendalam & terstruktur</p>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {/* AI Persona Selector */}
+      <div className="space-y-3">
+        <label className="text-sm font-bold text-slate-700 dark:text-slate-200">Gaya Bahasa AI Jurnal</label>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button
+            type="button"
+            onClick={() => setFormData({ ...formData, ai_persona: 'mindful' })}
+            className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
+              formData.ai_persona === 'mindful'
+                ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10'
+                : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 hover:border-slate-200 '
+            }`}
+          >
+            <div className="text-center">
+              <p className="text-sm font-bold">Mindful 💙</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400">Suportif & empati</p>
+            </div>
+          </button>
+          <button
+            type="button"
+            onClick={() => setFormData({ ...formData, ai_persona: 'savage' })}
+            className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
+              formData.ai_persona === 'savage'
+                ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
+                : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 hover:border-slate-200 '
+            }`}
+          >
+            <div className="text-center">
+              <p className="text-sm font-bold">Savage 🔥</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400">Blak-blakan & tegas</p>
+            </div>
+          </button>
+          <button
+            type="button"
+            onClick={() => setFormData({ ...formData, ai_persona: 'aesthetic' })}
+            className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
+              formData.ai_persona === 'aesthetic'
+                ? 'border-purple-500 bg-purple-50 dark:bg-purple-500/10'
+                : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 hover:border-slate-200 '
+            }`}
+          >
+            <div className="text-center">
+              <p className="text-sm font-bold">Aesthetic ✨</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400">Puitis & tenang</p>
             </div>
           </button>
         </div>

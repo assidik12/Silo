@@ -9,6 +9,8 @@ import PomodoroTimer from '../learning/PomodoroTimer';
 import { useModal } from '../providers/ModalProvider'; 
 import FeedbackModal from '../feedback/FeedbackModal';
 import { playSuccessSound } from '@/utils/audio';
+import { usePomodoro } from '../providers/PomodoroProvider';
+import { Timer } from 'lucide-react';
 
 export default function TaskCard({ task }: { task: Task }) {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -17,6 +19,7 @@ export default function TaskCard({ task }: { task: Task }) {
   const [isDescExpanded, setIsDescExpanded] = useState(false);
   
   const { showModal: showGlobalModal } = useModal();
+  const { startPomodoro, activeTaskId } = usePomodoro();
   const [isEditingTask, setIsEditingTask] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
   const [editDesc, setEditDesc] = useState(task.description || '');
@@ -259,7 +262,21 @@ export default function TaskCard({ task }: { task: Task }) {
           </form>
         </div>
 
-        {task.status !== 'done' && <PomodoroTimer />}
+        {task.status !== 'done' && (
+          <div className="mt-4">
+            <button 
+              onClick={() => startPomodoro(task.id, task.title)}
+              className={`flex items-center gap-2 px-4 py-2 w-full justify-center rounded-xl text-sm font-bold transition-all border ${
+                activeTaskId === task.id 
+                  ? 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/50 dark:text-indigo-300 dark:border-indigo-800' 
+                  : 'bg-white text-indigo-600 border-indigo-100 hover:bg-indigo-50 dark:bg-slate-800 dark:text-indigo-400 dark:border-slate-700 dark:hover:bg-slate-700'
+              }`}
+            >
+              <Timer className="w-4 h-4" />
+              {activeTaskId === task.id ? 'Pomodoro Aktif' : 'Mulai Pomodoro'}
+            </button>
+          </div>
+        )}
 
         <div className="mt-5 flex justify-end">
           <button 

@@ -9,10 +9,12 @@ import { createWelcomeTasks } from "./task.actions";
 export async function updateUserProfile(data: {
   name: string;
   major: string;
+  semester?: number;
   productive_hours: string;
   interests: string;
   learning_type: 'ngebut' | 'santai';
   bio?: string;
+  ai_persona?: 'aesthetic' | 'savage' | 'mindful';
 }): Promise<ActionResponse> {
   try {
     const cookieStore = await cookies();
@@ -32,10 +34,12 @@ export async function updateUserProfile(data: {
         email: user.email,
         name: data.name,
         major: data.major,
+        semester: data.semester || null,
         productive_hours: data.productive_hours,
         interests: data.interests,
         learning_type: data.learning_type,
         bio: data.bio || null,
+        ai_persona: data.ai_persona || 'mindful',
         onboarding_completed: true
       });
 

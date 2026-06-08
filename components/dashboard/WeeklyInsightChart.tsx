@@ -12,7 +12,15 @@ interface DailyData {
   total: number;
 }
 
-export default function WeeklyInsightChart({ recentTasks, recentLearning }: { recentTasks: any[], recentLearning: any[] }) {
+export default function WeeklyInsightChart({ 
+  recentTasks, 
+  recentLearning,
+  recentJournals
+}: { 
+  recentTasks: any[], 
+  recentLearning: any[],
+  recentJournals?: any[]
+}) {
   const data = useMemo(() => {
     const now = new Date();
     const past7Days = Array.from({ length: 7 }).map((_, i) => {
@@ -28,16 +36,21 @@ export default function WeeklyInsightChart({ recentTasks, recentLearning }: { re
       
       const tasksDone = recentTasks?.filter(t => t.status === 'done' && new Date(t.scheduled_time).toDateString() === date.toDateString()).length || 0;
       const learningDone = recentLearning?.filter(l => new Date(l.created_at).toDateString() === date.toDateString()).length || 0;
+      const journalsThatDay = recentJournals?.filter(j => new Date(j.created_at).toDateString() === date.toDateString()) || [];
+      const sentimentScore = journalsThatDay.length > 0
+        ? Math.round(journalsThatDay.reduce((acc, curr) => acc + curr.sentiment_score, 0) / journalsThatDay.length)
+        : null;
 
       return {
         day: dayName,
         tasksDone,
         learningDone,
+        sentimentScore,
         total: tasksDone + learningDone,
         isToday
       };
     });
-  }, [recentTasks, recentLearning]);
+  }, [recentTasks, recentLearning, recentJournals]);
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -138,10 +151,46 @@ export default function WeeklyInsightChart({ recentTasks, recentLearning }: { re
             </div>
           );
         })}
+        
+        {/* Draw SVG Line connecting the dots */}
+        <div className="absolute top-0 left-0 w-full h-48 pointer-events-none z-20 overflow-visible">
+          <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <polyline 
+              fill="none" 
+              stroke="#f59e0b" // amber-500
+              strokeWidth="2"
+              vectorEffect="non-scaling-stroke"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"
+              points={data.map((d, i) => {
+                if (d.sentimentScore === null) return '';
+                const xPercent = ((i + 0.5) / 7) * 100;
+                return `${xPercent},${100 - (d.sentimentScore * 10)}`;
+              }).filter(Boolean).join(' ')}
+            />
+            {data.map((d, i) => {
+              if (d.sentimentScore === null) return null;
+              const xPercent = ((i + 0.5) / 7) * 100;
+              const yPercent = 100 - (d.sentimentScore * 10);
+              return (
+                <circle 
+                  key={i}
+                  cx={xPercent} 
+                  cy={yPercent} 
+                  r="3" 
+                  fill="#f59e0b" 
+                  vectorEffect="non-scaling-stroke"
+                  className="drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]"
+                />
+              );
+            })}
+          </svg>
+        </div>
       </div>
       
       {/* Legend */}
-      <div className="flex items-center justify-center gap-6 mt-8 pt-6 border-t border-gray-100 dark:border-slate-800">
+      <div className="flex flex-wrap items-center justify-center gap-6 mt-8 pt-6 border-t border-gray-100 dark:border-slate-800">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-indigo-600 shadow-sm dark:shadow-none" />
           <span className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest">Tasks Done</span>
@@ -149,6 +198,10 @@ export default function WeeklyInsightChart({ recentTasks, recentLearning }: { re
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-indigo-300 shadow-sm dark:shadow-none" />
           <span className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest">Learning Sessions</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+          <span className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest">Mood Level</span>
         </div>
       </div>
     </div>

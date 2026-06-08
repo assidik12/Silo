@@ -11,10 +11,22 @@ Dokumen ini mendefinisikan standar pembuatan testing untuk DoJo guna memastikan 
 
 ## **2\. Struktur & Penamaan**
 
-* File tes harus diletakkan di folder `__tests__` yang relevan dengan lokasi kodenya, dan wajib mencerminkan struktur *Feature-First* sesuai dengan referensi arsitektur `docs/adr/0001-architecture-and-tech-stack.md`.
-* **Contoh:**  
-  * `utils/gamification.ts` ➡️ `__tests__/gamification.test.ts`  
-  * `components/tasks/TaskCard.tsx` ➡️ `components/tasks/TaskCard.test.tsx`
+Semua file tes **dipusatkan di folder `__tests__/` di root project**, dikelompokkan berdasarkan layer — bukan diletakkan di dekat source file-nya.
+
+```
+__tests__/
+├── actions/      → Server Actions (app/actions/*.ts)
+├── components/   → UI Components (components/**/*.tsx)
+├── lib/          → Utilities & AI Services (utils/*.ts, lib/ai/*.ts)
+└── routes/       → API Route Handlers (app/**/route.ts)
+```
+
+* **Konvensi penamaan:** nama file test mencerminkan nama file source-nya.
+  * `utils/gamification.ts` ➡️ `__tests__/lib/gamification.test.ts`
+  * `app/actions/journal.actions.ts` ➡️ `__tests__/actions/journal.actions.test.ts`
+  * `components/tasks/FloatingPomodoro.tsx` ➡️ `__tests__/components/FloatingPomodoro.test.tsx`
+  * `app/auth/callback/route.ts` ➡️ `__tests__/routes/auth-callback-route.test.ts`
+* **Jest auto-discovery:** Konfigurasi `jest.config.js` sudah di-set ke `**/__tests__/**/*.test.{ts,tsx}` sehingga semua subfolder terdeteksi otomatis tanpa konfigurasi tambahan.
 
 ## **3\. Aturan Berdasarkan Kategori**
 
@@ -62,4 +74,4 @@ Semua fungsi kalkulasi harus memiliki cakupan tes 100%.
 
 Gunakan prompt ini jika ingin meminta AI membuatkan tes untuk fitur baru:
 
-*"Berdasarkan file `TESTING_RULES.md` dan struktur `docs/adr/0001-architecture-and-tech-stack.md`, buatkan unit test lengkap menggunakan Jest untuk file [path_file]. Pastikan lokasi dan struktur tesnya mengikuti arsitektur Feature-First, mencakup skenario sukses, skenario error, dan mock semua dependensi eksternal seperti Supabase atau API lainnya. Gunakan TypeScript yang ketat."*
+*"Berdasarkan file `TESTING_RULES.md` dan struktur `docs/adr/0001-architecture-and-tech-stack.md`, buatkan unit test lengkap menggunakan Jest untuk file [path_file]. Letakkan file tes di `__tests__/[layer]/` sesuai tipe file-nya (actions → `__tests__/actions/`, utils/lib → `__tests__/lib/`, components → `__tests__/components/`, route handler → `__tests__/routes/`). Pastikan mencakup skenario sukses, skenario error, dan mock semua dependensi eksternal seperti Supabase atau Gemini API. Gunakan TypeScript yang ketat tanpa `any`."*

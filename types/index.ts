@@ -51,4 +51,17 @@ export interface UserProfile {
   productive_hours: string | null;
   interests: string | null;
   learning_type: 'ngebut' | 'santai' | null;
+  ai_persona?: 'aesthetic' | 'savage' | 'mindful' | null;
+  nickname?: string | null;
+  semester?: number | null;
+}
+
+export interface JournalEntry {
+  id: string;
+  user_id: string;
+  raw_text: string;
+  ai_reflection: string;
+  sentiment_score: number;
+  bg_color?: string | null;
+  created_at: string;
 }

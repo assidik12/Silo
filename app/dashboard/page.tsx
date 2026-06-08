@@ -10,6 +10,8 @@ import MilestoneFeedbackTrigger from '@/components/feedback/MilestoneFeedbackTri
 import InlineCalendar from '@/components/dashboard/InlineCalendar';
 import OngoingTasks from '@/components/dashboard/OngoingTasks';
 import DynamicGreeting from '@/components/dashboard/DynamicGreeting';
+import MentalEnergyWidget from '@/components/dashboard/mental-energy-widget';
+import { JournalEntry } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -75,6 +77,14 @@ export default async function DashboardPage() {
   const doneWeekTasks = recentTasks?.filter(t => t.status === 'done').length || 0;
   const weeklyProgress = totalWeekTasks === 0 ? 0 : Math.round((doneWeekTasks / totalWeekTasks) * 100);
 
+  // Fetch recent journal entries for Sentiment Chart
+  const { data: recentJournals } = await supabase
+    .from('journal_entries')
+    .select('*')
+    .eq('user_id', user.id)
+    .gte('created_at', startDateStr)
+    .order('created_at', { ascending: false });
+
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
@@ -87,10 +97,10 @@ export default async function DashboardPage() {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Column: Weekly Stats */}
-        <div className="lg:col-span-5 space-y-8">
+        {/* Left Column: Weekly Stats & Sentiment */}
+        <div className="lg:col-span-5 space-y-8 flex flex-col">
           {/* Weekly Progress Bar */}
-          <div className="bg-white dark:bg-slate-900/50 p-6 rounded-2xl shadow-sm dark:shadow-none border border-gray-200 dark:border-slate-800">
+          <div className="bg-white dark:bg-slate-900/50 p-6 rounded-2xl shadow-sm dark:shadow-none border border-gray-200 dark:border-slate-800 flex-shrink-0">
             <div className="flex justify-between text-sm font-medium mb-3">
               <span className="text-gray-700 dark:text-slate-200">Weekly Task Completion</span>
               <span className="text-indigo-600 dark:text-indigo-400">{weeklyProgress}% ({doneWeekTasks}/{totalWeekTasks} tasks)</span>
@@ -101,6 +111,10 @@ export default async function DashboardPage() {
                 style={{ width: `${weeklyProgress}%` }}
               ></div>
             </div>
+          </div>
+
+          <div className="flex-1 min-h-[300px]">
+            <MentalEnergyWidget recentEntries={(recentJournals as JournalEntry[]) || []} />
           </div>
 
           <WeeklyInsightChart recentTasks={recentTasks || []} recentLearning={recentLearning || []} />
