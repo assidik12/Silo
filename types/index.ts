@@ -53,6 +53,7 @@ export interface UserProfile {
   learning_type: 'ngebut' | 'santai' | null;
   ai_persona?: 'aesthetic' | 'savage' | 'mindful' | null;
   nickname?: string | null;
+  name?: string | null;
   semester?: number | null;
 }
 
