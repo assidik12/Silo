@@ -10,6 +10,7 @@ export interface Task {
   status: "pending" | "done";
   created_at: string;
   sub_tasks?: { id: string; title: string; done: boolean }[] | null;
+  learning_history_id?: string | null;
 }
 
 export interface ActionResponse<T = unknown> {

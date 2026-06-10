@@ -57,9 +57,13 @@ export default function OngoingTasks({ tasks }: OngoingTasksProps) {
         )}
       </div>
       
-      <div className="grid gap-4">
+      <div className="flex flex-col md:flex-row md:flex-wrap gap-4">
         {currentTasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
+          <div key={task.id} className="w-full md:w-[calc(50%-0.5rem)] xl:w-[calc(33.333%-0.67rem)] flex">
+            <div className="w-full">
+              <TaskCard task={task} />
+            </div>
+          </div>
         ))}
       </div>
     </div>

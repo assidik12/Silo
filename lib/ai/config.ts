@@ -41,11 +41,25 @@ export async function getAiResponse(prompt: string, systemInstruction: string, i
       }
 
       console.warn(`AI Generation failed for ${modelName}:`, err.message);
-      if (err.message?.includes("404") || err.message?.includes("not found")) continue;
-      throw err; 
+      if (
+        err.message?.includes("404") || 
+        err.message?.includes("not found") || 
+        err.message?.includes("503") || 
+        err.message?.includes("UNAVAILABLE") ||
+        err.message?.includes("high demand")
+      ) {
+        continue;
+      }
+      
+      let cleanMessage = err.message;
+      try {
+        const parsed = JSON.parse(cleanMessage.substring(cleanMessage.indexOf("{")));
+        if (parsed.error?.message) cleanMessage = parsed.error.message;
+      } catch(e) {}
+      throw new Error(`AI Error: ${cleanMessage}`); 
     }
   }
-  return null;
+  throw new Error("Layanan AI saat ini sedang sibuk. Silakan coba beberapa saat lagi.");
 }
 
 /**
@@ -74,6 +88,15 @@ export async function getEmbedding(text: string, retryCount = 0): Promise<number
     }
 
     console.error(`AI Embedding Error (${AI_MODELS.EMBEDDING}):`, err.message);
-    throw err;
+    let cleanMessage = err.message;
+    try {
+      const parsed = JSON.parse(cleanMessage.substring(cleanMessage.indexOf("{")));
+      if (parsed.error?.message) cleanMessage = parsed.error.message;
+    } catch(e) {}
+    
+    if (cleanMessage.includes("503") || cleanMessage.includes("UNAVAILABLE") || cleanMessage.includes("high demand")) {
+      throw new Error("Layanan AI saat ini sedang sibuk. Silakan coba beberapa saat lagi.");
+    }
+    throw new Error(`AI Embedding Error: ${cleanMessage}`);
   }
 }

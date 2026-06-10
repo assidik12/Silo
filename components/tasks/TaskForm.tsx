@@ -6,7 +6,7 @@ import { createTask, analyzeTaskWithAI } from '@/app/actions/task.actions';
 import { CheckCircle2, XCircle, Sparkles, Bot } from 'lucide-react';
 import { useModal } from '../providers/ModalProvider';
 
-export default function TaskForm() {
+export default function TaskForm({ learningModules = [] }: { learningModules?: any[] }) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState(false);
@@ -128,6 +128,22 @@ export default function TaskForm() {
               className="block w-full rounded-2xl border-none bg-slate-100 dark:bg-slate-800/80 px-5 py-4 text-slate-700 dark:text-slate-200 font-medium placeholder-slate-400 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/50 transition-all shadow-sm dark:shadow-none"
               placeholder="https://drive.google.com/..."
             />
+          </div>
+
+          <div>
+            <label htmlFor="learning_history_id" className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">
+              Tautkan ke Learning Module (SKS Mode) <span className="text-slate-400 font-medium normal-case">(Opsional)</span>
+            </label>
+            <select
+              name="learning_history_id"
+              id="learning_history_id"
+              className="block w-full rounded-2xl border-none bg-slate-100 dark:bg-slate-800/80 px-5 py-4 text-slate-700 dark:text-slate-200 font-medium focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/50 transition-all shadow-sm dark:shadow-none"
+            >
+              <option value="">Pilih materi belajar...</option>
+              {learningModules.map((mod: any) => (
+                <option key={mod.id} value={mod.id}>{mod.title}</option>
+              ))}
+            </select>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

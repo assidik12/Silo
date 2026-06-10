@@ -1,13 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
-import { 
-  CheckCircle2, 
-  Clock, 
-  Zap, 
-  Smartphone, 
-  FileX, 
-  MessageSquare, 
-  TrendingUp, 
+import {
+  CheckCircle2,
+  Clock,
+  Zap,
+  Smartphone,
+  FileX,
+  MessageSquare,
+  TrendingUp,
   Sparkles,
   ArrowRight,
   User
@@ -16,6 +16,7 @@ import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { ThemeToggle } from '@/components/preferences/ThemeToggle';
 import { NavLinks } from '@/components/dashboard/NavLinks';
+import TestimonialSlider from '@/components/home/TestimonialSlider';
 
 export default async function LandingPage() {
   const cookieStore = await cookies();
@@ -24,7 +25,7 @@ export default async function LandingPage() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans selection:bg-indigo-100 dark:selection:bg-indigo-900/50">
-      
+
       {/* 1. NAVBAR */}
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -62,22 +63,42 @@ export default async function LandingPage() {
           <div className="flex-1 text-left lg:">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-sm font-medium mb-6 animate-fade-in">
               <Sparkles className="w-4 h-4" />
-              🚀 Rilis fitur AI baru!
+              🚀 Coming Soon: Tukar XP dengan Fitur Rahasia!
             </div>
-            <h1 className="text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6 text-slate-900 dark:text-white">
-              Tugas numpuk? <br className="hidden lg:block" /> 
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6 text-slate-900 dark:text-white">
+              Ubah Tugas Kuliahmu <br className="hidden lg:block" />
               <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-500 to-violet-500">
-                Santai, kita bantu beresin pelan-pelan.
+                Jadi Game Seru.
               </span>
             </h1>
-            <p className="text-lg text-slate-500 dark:text-slate-400 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              DoJo bantu lo ngatur tugas, ngingetin deadline, dan bikin proses belajar jadi lebih seru pake sistem reward + AI assistant.
+            <p className="text-lg text-slate-500 dark:text-slate-400 mb-6 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              Dapatkan XP, Bangun Streak, dan Berhenti Menunda-nunda. DoJo bantu lo ngatur tugas pake sistem reward + asisten AI biar nugas nggak kerasa berat lagi.
             </p>
+            <ul className="space-y-3 mb-8 text-left max-w-md mx-auto lg:mx-0">
+              <li className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
+                <div className="bg-indigo-50 dark:bg-indigo-900/30 p-1 rounded-md">
+                  <CheckCircle2 className="w-4 h-4 text-indigo-500" />
+                </div>
+                <span>Auto-sync jadwal sama Google Calendar</span>
+              </li>
+              <li className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
+                <div className="bg-amber-50 dark:bg-amber-900/30 p-1 rounded-md">
+                  <Zap className="w-4 h-4 text-amber-500" />
+                </div>
+                <span>Dapet XP & level up tiap kali nugas</span>
+              </li>
+              <li className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
+                <div className="bg-purple-50 dark:bg-purple-900/30 p-1 rounded-md">
+                  <Sparkles className="w-4 h-4 text-purple-500" />
+                </div>
+                <span>AI bantuin mecah tugas gede jadi gampang</span>
+              </li>
+            </ul>
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
               <Link href={user ? "/dashboard" : "/login"} className="w-full sm:w-auto bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-3.5 rounded-full font-medium shadow-lg shadow-indigo-200 dark:shadow-none hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
                 {user ? 'Ke Dashboard' : 'Coba Gratis'} <ArrowRight className="w-4 h-4" />
               </Link>
-              <a href="#fitur" className="w-full sm:w-auto bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 px-8 py-3.5 rounded-full font-medium transition-all hover:-translate-y-1 text-center">
+              <a href="#cara-kerja" className="w-full sm:w-auto bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 px-8 py-3.5 rounded-full font-medium transition-all hover:-translate-y-1 text-center">
                 Lihat Cara Kerja
               </a>
             </div>
@@ -117,7 +138,7 @@ export default async function LandingPage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Decorative background blur */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-linear-to-tr from-indigo-200 to-violet-200 blur-3xl opacity-30 -z-10 rounded-full"></div>
           </div>
@@ -183,8 +204,8 @@ export default async function LandingPage() {
               <div className="w-20 h-20 mx-auto bg-amber-50 dark:bg-amber-500/10 rounded-full flex items-center justify-center mb-6 text-amber-500 dark:text-amber-400 group-hover:scale-110 transition-transform">
                 <Zap className="w-8 h-8" />
               </div>
-              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2">🎮 Gamification</h3>
-              <p className="text-slate-500 dark:text-slate-400">Setiap tugas selesai = dapet XP & streak. Bikin ketagihan produktif!</p>
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2">🎮 Gamification & Rewards</h3>
+              <p className="text-slate-500 dark:text-slate-400">Setiap tugas selesai = dapet XP & streak. Kumpulin XP-nya buat ditukar sama fitur misterius!</p>
             </div>
           </div>
         </div>
@@ -259,33 +280,33 @@ export default async function LandingPage() {
             <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Gimana Cara Kerjanya?</h2>
             <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto">Simple banget. Lo tinggal masukin tugas, sisanya kita yang urus.</p>
           </div>
-          
+
           <div className="grid md:grid-cols-4 gap-8 relative">
             {/* Connecting Line */}
             <div className="hidden md:block absolute top-10 left-[10%] right-[10%] h-0.5 bg-slate-100 dark:bg-slate-800 z-0"></div>
-            
+
             {[
-              { 
-                step: "01", 
-                title: "Login & Sync", 
+              {
+                step: "01",
+                title: "Login & Sync",
                 desc: "Masuk pake akun Google, otomatis kalender lo bakal sinkron sama DoJo.",
                 icon: <Smartphone className="w-6 h-6" />
               },
-              { 
-                step: "02", 
-                title: "Input Tugas", 
+              {
+                step: "02",
+                title: "Input Tugas",
                 desc: "Masukin detail tugas lo, deadline, dan link materi. AI kita bisa bantu pecah tugas.",
                 icon: <CheckCircle2 className="w-6 h-6" />
               },
-              { 
-                step: "03", 
-                title: "Kerjain Santai", 
+              {
+                step: "03",
+                title: "Kerjain Santai",
                 desc: "Kita bakal ingetin lo sesuai jadwal optimal. Tinggal duduk dan kerjain.",
                 icon: <Clock className="w-6 h-6" />
               },
-              { 
-                step: "04", 
-                title: "Dapet Reward", 
+              {
+                step: "04",
+                title: "Dapet Reward",
                 desc: "Tugas kelar, lo dapet XP dan nambah streak. Semakin sering, semakin level up!",
                 icon: <Zap className="w-6 h-6" />
               }
@@ -309,10 +330,10 @@ export default async function LandingPage() {
       <section className="py-24 px-6 bg-white dark:bg-slate-950 overflow-hidden">
         <div className="max-w-4xl mx-auto text-center relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-orange-50/50 dark:bg-orange-900/10 blur-3xl rounded-full -z-10"></div>
-          
+
           <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight">Bangun habit tanpa kerasa berat</h2>
           <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto mb-12">Fitur <span className="font-bold text-orange-500 dark:text-orange-400">Streak</span> dirancang dengan pendekatan psikologis buat ngasih lo dopamin instan setiap kali ngerjain tugas.</p>
-          
+
           <div className="bg-white dark:bg-slate-900/50 rounded-3xl shadow-2xl dark:shadow-none shadow-slate-200/50 border border-slate-100 dark:border-slate-800 p-8 max-w-2xl mx-auto transform transition-all hover:scale-[1.01] duration-500">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-8">
               <div className="text-left  sm:text-left w-full sm:w-auto">
@@ -323,31 +344,30 @@ export default async function LandingPage() {
                 🔥 Lo Sedang On Fire!
               </div>
             </div>
-            
+
             {/* Streak Timeline Graphic */}
             <div className="mb-8 p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700">
               <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6">Jangan Biarin Api Ini Padam</h4>
-              
+
               <div className="flex justify-between items-center relative px-2">
                 {/* Track Line */}
                 <div className="absolute left-6 right-6 top-5 -translate-y-1/2 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full z-0"></div>
                 {/* Active Track Line */}
                 <div className="absolute left-6 top-5 -translate-y-1/2 h-1.5 bg-linear-to-r from-orange-400 to-orange-500 rounded-full z-0 transition-all duration-1000" style={{ width: '65%' }}></div>
-                
+
                 {/* Simulated 7 days */}
                 {['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'].map((day, i) => {
                   const isActive = i < 5; // 5 days streak
                   const isToday = i === 5;
-                  
+
                   return (
                     <div key={i} className="relative z-10 flex flex-col items-center gap-3">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-500 ${
-                        isActive 
-                          ? 'bg-linear-to-br from-orange-400 to-red-500 text-white shadow-md dark:shadow-none shadow-orange-200 scale-110' 
-                          : isToday 
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-500 ${isActive
+                          ? 'bg-linear-to-br from-orange-400 to-red-500 text-white shadow-md dark:shadow-none shadow-orange-200 scale-110'
+                          : isToday
                             ? 'bg-white dark:bg-slate-900 border-4 border-orange-300 dark:border-orange-500/50 text-orange-500 animate-bounce'
                             : 'bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-600 text-slate-300 dark:text-slate-500'
-                      }`}>
+                        }`}>
                         {isActive ? '✓' : (isToday ? '?' : '')}
                       </div>
                       <span className={`text-xs font-bold ${isActive ? 'text-orange-600 dark:text-orange-400' : isToday ? 'text-slate-800 dark:text-slate-200' : 'text-slate-400 dark:text-slate-500'}`}>{day}</span>
@@ -355,33 +375,21 @@ export default async function LandingPage() {
                   );
                 })}
               </div>
-              
+
               <div className="mt-8 bg-orange-100/50 dark:bg-orange-500/10 p-4 rounded-xl border border-orange-100 dark:border-orange-500/20">
                 <p className="text-sm text-orange-800 dark:text-orange-300 font-medium leading-relaxed">
                   Cuma butuh <span className="font-extrabold bg-orange-200 dark:bg-orange-500/20 px-2 py-0.5 rounded">1 Tugas Selesai</span> hari ini untuk ngelanjutin streak lo. Sayang banget kan kalau harus ngulang dari 0 lagi?
                 </p>
               </div>
             </div>
-            
+
           </div>
         </div>
       </section>
 
       {/* 7. TESTIMONIAL */}
-      <section id="testimoni" className="py-24 px-6 bg-slate-50 dark:bg-slate-900/20">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="text-indigo-300 dark:text-indigo-500/50 mb-6">
-            <svg className="w-12 h-12 mx-auto" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-            </svg>
-          </div>
-          <h3 className="text-2xl md:text-3xl font-medium text-slate-800 dark:text-slate-200 italic leading-relaxed mb-8">
-            "Awalnya iseng nyoba karena warnanya lucu, sekarang malah jadi kebiasaan tiap hari buka ini buat nge-track tugas."
-          </h3>
-          <p className="text-slate-500 dark:text-slate-400 font-medium">
-            — Mahasiswa Semester 4, UI/UX Enthusiast.
-          </p>
-        </div>
+      <section id="testimoni" className="py-24 bg-slate-50 dark:bg-slate-900/20">
+        <TestimonialSlider />
       </section>
 
       {/* 8. CTA AKHIR & FOOTER */}
@@ -389,7 +397,7 @@ export default async function LandingPage() {
         {/* Decorative Blobs */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/40 dark:bg-indigo-500/10 blur-3xl rounded-full"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-violet-200/40 dark:bg-violet-500/10 blur-3xl rounded-full"></div>
-        
+
         <div className="max-w-3xl mx-auto text-center relative z-10">
           <div className="inline-block bg-white dark:bg-slate-900 px-4 py-2 rounded-full shadow-sm text-sm font-bold text-orange-500 dark:text-orange-400 mb-8 border border-slate-100 dark:border-slate-800">
             🔥 Streak kamu hari ini: 0... yuk mulai bangun habitnya

@@ -26,6 +26,8 @@ export default function LearningPage() {
   // History State
   const [learningHistory, setLearningHistory] = useState<LearningHistoryItem[]>([]);
   const [selectedHistory, setSelectedHistory] = useState<LearningHistoryItem | null>(null);
+  const [linkedTasks, setLinkedTasks] = useState<any[]>([]);
+  const [isLoadingTasks, setIsLoadingTasks] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
@@ -33,6 +35,26 @@ export default function LearningPage() {
   useEffect(() => {
     loadHistory();
   }, []);
+
+  useEffect(() => {
+    if (selectedHistory) {
+      loadLinkedTasks(selectedHistory.id);
+    } else {
+      setLinkedTasks([]);
+    }
+  }, [selectedHistory]);
+
+  const loadLinkedTasks = async (historyId: string) => {
+    setIsLoadingTasks(true);
+    try {
+      const { getTasksByLearningHistoryId } = await import('@/app/actions/task.actions');
+      const tasks = await getTasksByLearningHistoryId(historyId);
+      setLinkedTasks(tasks || []);
+    } catch (e) {
+      console.error(e);
+    }
+    setIsLoadingTasks(false);
+  };
 
   const loadHistory = async () => {
     const res = await getLearningHistory();
@@ -386,12 +408,50 @@ export default function LearningPage() {
               </button>
             </div>
 
-            <div className="p-6 flex-1 overflow-y-auto bg-gray-50/50">
-              {selectedHistory.type === "sks" ? (
-                <SksCanvas content={typeof selectedHistory.content === "string" ? selectedHistory.content : JSON.stringify(selectedHistory.content)} />
-              ) : (
-                <BingeWatchCanvas episodes={typeof selectedHistory.content === "string" ? JSON.parse(selectedHistory.content) : selectedHistory.content} folderId={selectedHistory.folder_id || undefined} courseTitle={selectedHistory.title} />
-              )}
+            <div className="p-6 flex-1 overflow-y-auto bg-gray-50/50 flex flex-col gap-6">
+              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-5">
+                {selectedHistory.type === "sks" ? (
+                  <SksCanvas content={typeof selectedHistory.content === "string" ? selectedHistory.content : JSON.stringify(selectedHistory.content)} />
+                ) : (
+                  <BingeWatchCanvas episodes={typeof selectedHistory.content === "string" ? JSON.parse(selectedHistory.content) : selectedHistory.content} folderId={selectedHistory.folder_id || undefined} courseTitle={selectedHistory.title} />
+                )}
+              </div>
+
+              {/* Linked Tasks Section */}
+              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-6">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-indigo-500" />
+                  Tugas Terkait ({linkedTasks.length})
+                </h3>
+                
+                {isLoadingTasks ? (
+                  <div className="flex justify-center items-center py-6">
+                    <RefreshCw className="w-6 h-6 text-indigo-500 animate-spin" />
+                  </div>
+                ) : linkedTasks.length > 0 ? (
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {linkedTasks.map(task => (
+                      <div key={task.id} className="p-4 border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-800/50">
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="font-semibold text-gray-800 dark:text-slate-200 line-clamp-1">{task.title}</h4>
+                          <span className={`text-[10px] px-2 py-1 rounded-full font-bold uppercase ${task.status === 'done' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
+                            {task.status}
+                          </span>
+                        </div>
+                        {task.description && <p className="text-xs text-gray-500 dark:text-slate-400 line-clamp-2 mb-3">{task.description}</p>}
+                        <div className="text-[10px] text-gray-400 font-medium">
+                          {task.duration_estimate_minutes} mins • {new Date(task.scheduled_time).toLocaleDateString('id-ID')}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-6 text-gray-500 dark:text-slate-400 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-dashed border-gray-300 dark:border-slate-700 text-sm">
+                    Belum ada tugas yang dikaitkan dengan modul ini. <br/>
+                    <a href="/dashboard/task" className="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline mt-2 inline-block">Buat Tugas Baru</a>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

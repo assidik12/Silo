@@ -25,6 +25,13 @@ export default async function CreateTaskPage() {
     .eq('status', 'done')
     .order('scheduled_time', { ascending: false });
 
+  // Fetch learning modules for linking
+  const { data: learningHistory } = await supabase
+    .from('learning_history')
+    .select('id, title')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       <header>
@@ -33,7 +40,7 @@ export default async function CreateTaskPage() {
       </header>
       
       <div className="bg-white dark:bg-slate-900/50 p-6 rounded-2xl shadow-sm dark:shadow-none border border-gray-200">
-        <TaskForm />
+        <TaskForm learningModules={learningHistory || []} />
       </div>
 
       {/* History Section merged into Dashboard */}

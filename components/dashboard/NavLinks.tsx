@@ -31,27 +31,8 @@ export function NavLinks() {
 
     const yOffset = -96; // Offset for sticky navbar
     const targetY = element.getBoundingClientRect().top + window.scrollY + yOffset;
-    const startY = window.scrollY;
-    const distance = targetY - startY;
-    const duration = 800; // ms
-    let startTime: number | null = null;
-
-    const easeInOutCubic = (t: number) => 
-      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-
-    const animation = (currentTime: number) => {
-      if (startTime === null) startTime = currentTime;
-      const timeElapsed = currentTime - startTime;
-      const progress = Math.min(timeElapsed / duration, 1);
-      
-      window.scrollTo(0, startY + distance * easeInOutCubic(progress));
-
-      if (timeElapsed < duration) {
-        requestAnimationFrame(animation);
-      }
-    };
-
-    requestAnimationFrame(animation);
+    
+    window.scrollTo({ top: id === "home" ? 0 : targetY, behavior: "smooth" });
   };
 
   return (

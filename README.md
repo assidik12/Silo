@@ -26,12 +26,18 @@ Fitur andalannya:
 - **Task Management Chill**: Catet tugas, deskripsi, estimasi waktu, plus *link* modul (Google Drive) di satu tempat yang rapi.
 - **Magic Google Calendar Sync**: Sekali klik *Create Task*, tugas lo otomatis nangkring di Google Calendar lo!
 - **AI-Powered Learning Hub (SKS Mode)**: Generate materi belajar instan yang bisa lo *edit* langsung biar makin sesuai kebutuhan.
+- **Linked Tasks Ecosystem**: Sinkronisasi ciamik antara materi di Learning Hub dan Tugas yang lo buat. Nggak akan ada lagi yang ketinggalan!
 - **Google Picker Integration**: Pilih folder materi langsung dari Drive tanpa ribet *copy-paste* link! 📁
 - **Social Share (Flex Your Progress)**: Bagikan pencapaian, badge, dan *streak* lo langsung ke Instagram atau WhatsApp! 🔥
 - **Gamification (XP & Streak)**: Tiap kelarin tugas = dapet XP. Kerjain tiap hari = *Streak* lo bertambah.
+- **Secret Reward Ecosystem**: XP sekarang nggak cuma pamer, tapi bakal bisa ditukarkan dengan fitur istimewa yang masih dirahasiakan! 🤫
 - **Advanced Profile Settings**: Atur preferensi belajar lo (Morning/Night Owl) dan *focus duration* biar makin personal.
+- **Interactive Onboarding & Proactive Check-in**: Modal harian cerdas yang langsung nyapa dan nanyain fokus hari ini begitu lo login.
+- **DojoBot AI (RAG Chatbot)**: Asisten cerdas di dalam dashboard buat nemenin onboarding dan ngejawab semua FAQ seputar DoJo.
+- **AI Task Breakdown**: Pecah tugas besar jadi sub-tasks yang actionable dalam hitungan detik.
+- **Professional Guide Page**: Dokumentasi lengkap penggunaan aplikasi untuk user awam.
 - **Smart Rate Limiting**: Penggunaan AI yang lebih stabil dan terkontrol biar nggak gampang *limit*.
-- **Dashboard Aesthetic**: UX/UI yang *clean, calm*, dan *playful* biar mata lo nggak capek.
+- **Dashboard Aesthetic**: UX/UI yang *clean, calm*, dan *playful* dengan *collapsible sidebar* dinamis biar mata lo nggak capek.
 
 ---
 

@@ -1,7 +1,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { User, Medal, Settings, Mail, GraduationCap, MapPin } from 'lucide-react';
+import { User, Medal, Settings, Mail, GraduationCap, MapPin, Sparkles } from 'lucide-react';
 import ProfileForm from '@/components/profile/ProfileForm';
 import AvatarUpload from '@/components/profile/AvatarUpload';
 import ShareButton from '@/components/shared/ShareButton';
@@ -112,6 +112,22 @@ export default async function ProfilePage() {
                   {badge.icon}
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Secret Reward / Tukar XP Snippet */}
+          <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-4xl p-6 border border-indigo-400 shadow-lg shadow-indigo-500/30 text-white relative overflow-hidden group">
+            <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-xl group-hover:bg-white/20 transition-all duration-500"></div>
+            <div className="flex flex-col relative z-10">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="font-bold text-lg flex items-center gap-2"><Sparkles className="w-5 h-5 text-yellow-300" /> Tukar XP</h3>
+                <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-white/30 font-black text-yellow-300 shadow-sm text-sm">
+                  {xp} XP
+                </div>
+              </div>
+              <p className="text-xs text-indigo-100 mt-1 opacity-90 leading-relaxed">
+                <strong className="text-white">Coming Soon!</strong> Sebentar lagi kamu bisa menukarkan total XP-mu dengan fitur istimewa yang masih dirahasiakan. Tetap semangat kumpulin XP!
+              </p>
             </div>
           </div>
         </div>

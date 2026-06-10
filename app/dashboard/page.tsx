@@ -11,7 +11,9 @@ import InlineCalendar from '@/components/dashboard/InlineCalendar';
 import OngoingTasks from '@/components/dashboard/OngoingTasks';
 import DynamicGreeting from '@/components/dashboard/DynamicGreeting';
 import MentalEnergyWidget from '@/components/dashboard/mental-energy-widget';
+import { OnboardingTour } from '@/components/dashboard/OnboardingTour';
 import { JournalEntry } from '@/types';
+import DailyCheckinModal from '@/components/dashboard/DailyCheckinModal';
 
 export const dynamic = 'force-dynamic';
 
@@ -86,7 +88,8 @@ export default async function DashboardPage() {
     .order('created_at', { ascending: false });
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto space-y-8">
+      <OnboardingTour />
       <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
@@ -96,9 +99,9 @@ export default async function DashboardPage() {
         <GamificationStats userId={user.id} name={name} streak={streak} xp={xp} />
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Column: Weekly Stats & Sentiment */}
-        <div className="lg:col-span-5 space-y-8 flex flex-col">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        {/* Left Column: Weekly Stats & Insights */}
+        <div className="space-y-8 flex flex-col">
           {/* Weekly Progress Bar */}
           <div className="bg-white dark:bg-slate-900/50 p-6 rounded-2xl shadow-sm dark:shadow-none border border-gray-200 dark:border-slate-800 flex-shrink-0">
             <div className="flex justify-between text-sm font-medium mb-3">
@@ -113,23 +116,27 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          <div className="flex-1 min-h-[300px]">
-            <MentalEnergyWidget recentEntries={(recentJournals as JournalEntry[]) || []} />
-          </div>
-
           <WeeklyInsightChart recentTasks={recentTasks || []} recentLearning={recentLearning || []} />
         </div>
 
-        {/* Right Column: Tasks & Calendar */}
-        <div className="lg:col-span-7 space-y-8">
-          <OngoingTasks tasks={tasks || []} />
+        {/* Right Column: Energy & Calendar */}
+        <div className="space-y-8 flex flex-col">
+          <div className="min-h-[300px]">
+            <MentalEnergyWidget recentEntries={(recentJournals as JournalEntry[]) || []} />
+          </div>
 
           {/* Inline Google Calendar UI & Theme Customization */}
           <InlineCalendar />
         </div>
       </div>
 
+      {/* Ongoing Tasks Section (Full Width to support 3 cards per row) */}
+      <div className="w-full">
+        <OngoingTasks tasks={tasks || []} />
+      </div>
+
       <PersonalizationTrigger completed={onboardingCompleted} />
+      <DailyCheckinModal />
       <MilestoneFeedbackTrigger />
     </div>
   );

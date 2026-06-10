@@ -56,26 +56,18 @@ export default function ShareableCanvasModal({ userId, name, streak, xp }: Share
 
   return (
     <>
-      <button 
-        onClick={() => setIsOpen(true)}
-        className="flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-4 py-3 rounded-2xl shadow-sm transition-transform hover:scale-105 border border-pink-400/30"
-      >
-        <Camera className="w-5 h-5" />
-        <span className="font-bold text-sm tracking-wide">Flex Progress</span>
-      </button>
-
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative">
             <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 p-2 bg-gray-100 dark:bg-slate-800 rounded-full hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300 z-10">
               <X className="w-5 h-5" />
             </button>
-            
+
             <h3 className="text-xl font-bold mb-4 text-center text-gray-800 dark:text-white">Flex Your Progress! 🔥</h3>
 
             {/* The Canvas (IG Story Aspect Ratio 9:16 approx) */}
-            <div 
-              ref={canvasRef} 
+            <div
+              ref={canvasRef}
               className="w-full aspect-[9/16] rounded-2xl bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-900 relative overflow-hidden flex flex-col items-center justify-center text-white p-8 shadow-inner"
             >
               {/* Aesthetic Background Elements */}
@@ -87,7 +79,7 @@ export default function ShareableCanvasModal({ userId, name, streak, xp }: Share
                 <div className="bg-white/10 backdrop-blur-md border border-white/20 px-6 py-2 rounded-full">
                   <span className="font-mono text-xs tracking-widest text-indigo-200 uppercase">DoJo App</span>
                 </div>
-                
+
                 <div className="text-center w-full">
                   <h2 className="text-4xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-pink-300 to-purple-300 text-center">
                     {name}'s Stats
@@ -120,7 +112,7 @@ export default function ShareableCanvasModal({ userId, name, streak, xp }: Share
             </div>
 
             <div className="mt-6 flex flex-col gap-3">
-              <button 
+              <button
                 onClick={handleDownload}
                 disabled={downloading}
                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50"
@@ -133,7 +125,7 @@ export default function ShareableCanvasModal({ userId, name, streak, xp }: Share
                 )}
               </button>
 
-              <button 
+              <button
                 onClick={handleShareLink}
                 className="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all border border-slate-200 dark:border-slate-700"
               >

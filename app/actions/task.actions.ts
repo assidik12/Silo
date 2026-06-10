@@ -24,7 +24,22 @@ export async function getTasks(): Promise<Task[]> {
     
   return (data as Task[]) || [];
 }
+export async function getTasksByLearningHistoryId(learningHistoryId: string): Promise<Task[]> {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
 
+  const { data } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("user_id", user.id)
+    .eq("learning_history_id", learningHistoryId)
+    .order("scheduled_time", { ascending: true });
+    
+  return (data as Task[]) || [];
+}
 export async function createTask(formData: FormData): Promise<ActionResponse> {
   try {
     const cookieStore = await cookies();
@@ -38,6 +53,7 @@ export async function createTask(formData: FormData): Promise<ActionResponse> {
     const scheduled_time = formData.get("scheduled_time") as string;
     const duration_estimate_minutes = parseInt(formData.get("duration_estimate_minutes") as string);
     const module_link = formData.get("module_link") as string;
+    const learning_history_id = formData.get("learning_history_id") as string | null;
 
     const { error } = await supabase.from("tasks").insert({
       user_id: user.id,
@@ -46,6 +62,7 @@ export async function createTask(formData: FormData): Promise<ActionResponse> {
       scheduled_time,
       duration_estimate_minutes,
       module_link,
+      learning_history_id: learning_history_id || null,
       status: 'pending'
     });
 
@@ -190,10 +207,11 @@ Link: ${moduleLink}
 
 Kembalikan respon JSON dengan keys: "summary" (string), "estimatedMinutes" (number).`;
 
-    const result = await getAiResponse(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.");
+    const result = await getAiResponse(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni TANPA markdown block.");
     if (!result) return { success: false, error: "Gagal memproses analisis AI." };
 
-    const parsedData = JSON.parse(result || "{}");
+    const cleanResult = result.replace(/```json/g, "").replace(/```/g, "").trim();
+    const parsedData = JSON.parse(cleanResult || "{}");
     return { success: true, data: parsedData };
   } catch (err: any) {
     console.error("AI Analysis Error:", err);
@@ -212,10 +230,11 @@ Deskripsi: ${description}
 
 Kembalikan respon JSON array of strings murni. Contoh: ["Langkah 1", "Langkah 2"]`;
 
-    const result = await getAiResponse(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.");
+    const result = await getAiResponse(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON array of strings murni TANPA markdown block.");
     if (!result) return { success: false, error: "Gagal memproses breakdown AI." };
 
-    const parsedData = JSON.parse(result || "[]");
+    const cleanResult = result.replace(/```json/g, "").replace(/```/g, "").trim();
+    const parsedData = JSON.parse(cleanResult || "[]");
     return { success: true, data: parsedData };
   } catch (err: any) {
     console.error("AI Breakdown Error:", err);
