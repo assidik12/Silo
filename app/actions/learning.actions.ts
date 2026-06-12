@@ -4,7 +4,8 @@ import { ActionResponse, LearningHistoryItem, Episode } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { google } from "googleapis";
-import { getAiResponse, getEmbedding, aiClient } from "@/lib/ai/config";
+import { getEmbedding, aiClient } from "@/lib/ai/config";
+import { generateDeterministicContent, generateFastResponse } from "@/lib/ai";
 import { parsePdfBuffer, chunkText } from "@/utils/pdfParser";
 import { createEvent } from "@/lib/google/calendar";
 import { validateQueryWithGuardrails } from "@/lib/ai/guardrails";
@@ -157,7 +158,7 @@ Kembalikan respon DALAM FORMAT JSON murni (tanpa markdown backticks) dengan dua 
 ${userContext}
 Materi:\n${contextText}`;
 
-    const result = await getAiResponse(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.");
+    const result = await generateDeterministicContent(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.");
     if (!result) return { success: false, error: "Gagal memproses analisis AI." };
 
     const parsedData = JSON.parse(result);
@@ -195,7 +196,7 @@ Kembalikan respon DALAM FORMAT JSON murni (tanpa markdown backticks) dengan dua 
 ${userContext}
 Materi:\n${contextText}`;
 
-    const result = await getAiResponse(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.");
+    const result = await generateDeterministicContent(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni.");
     if (!result) return { success: false, error: "Gagal memproses roadmap AI." };
 
     const parsedData = JSON.parse(result);
@@ -239,7 +240,7 @@ Aturan gaya bahasa:
       ? `Histori Chat Sebelumnya:\n${historyStr}\n\nUser: ${userMessage}\nNeko:`
       : `User: ${userMessage}\nNeko:`;
 
-    const result = await getAiResponse(fullPrompt, systemInstruction, false);
+    const result = await generateFastResponse(fullPrompt, systemInstruction, false);
     if (!result) return { success: false, error: "Gagal memproses chat AI." };
 
     await supabase.from("learning_chat_history").insert([

@@ -2,7 +2,7 @@
 
 import { Task } from '@/types';
 import { deleteTask, toggleTaskStatus, saveSubTasks, generateTaskBreakdown, updateTaskDetails } from '@/app/actions/task.actions';
-import { useState } from 'react';
+import { useState, useOptimistic, startTransition } from 'react';
 import { Trash2, Wand2, CheckCircle2, Circle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import PomodoroTimer from '../learning/PomodoroTimer';
@@ -15,6 +15,11 @@ import { Timer } from 'lucide-react';
 export default function TaskCard({ task }: { task: Task }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  
+  const [optimisticTask, addOptimisticTask] = useOptimistic(
+    task,
+    (state: Task, updatedFields: Partial<Task>) => ({ ...state, ...updatedFields })
+  );
   const [showModal, setShowModal] = useState(false);
   const [isDescExpanded, setIsDescExpanded] = useState(false);
   
@@ -111,13 +116,14 @@ export default function TaskCard({ task }: { task: Task }) {
   };
 
   const handleToggle = async () => {
-    if (task.status === 'done') {
+    if (optimisticTask.status === 'done') {
       setIsEditingTask(true);
       return;
     }
 
-    setIsUpdating(true);
-    await toggleTaskStatus(task.id, task.status);
+    startTransition(() => {
+      addOptimisticTask({ status: 'done' });
+    });
     
     // Trigger confetti since task was pending and is now being marked as done
     playSuccessSound();
@@ -127,7 +133,7 @@ export default function TaskCard({ task }: { task: Task }) {
       origin: { y: 0.6 }
     });
     
-    setIsUpdating(false);
+    await toggleTaskStatus(task.id, task.status);
   };
 
   const handleSaveEdit = async () => {
@@ -140,7 +146,7 @@ export default function TaskCard({ task }: { task: Task }) {
   return (
     <>
       <div className={`flex flex-col rounded-2xl border p-5 shadow-sm dark:shadow-none transition-colors ${
-        task.status === 'done' ? 'border-green-200 dark:border-green-500/20 bg-green-50 dark:bg-green-500/10' : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900/50'
+        optimisticTask.status === 'done' ? 'border-green-200 dark:border-green-500/20 bg-green-50 dark:bg-green-500/10' : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900/50'
       }`}>
         <div className="flex items-start justify-between">
           {isEditingTask ? (
@@ -163,8 +169,8 @@ export default function TaskCard({ task }: { task: Task }) {
             </div>
           ) : (
             <div>
-              <h4 className={`font-bold text-lg ${task.status === 'done' ? 'text-green-800 dark:text-green-400 line-through' : 'text-gray-900 dark:text-white'}`}>
-                {task.title}
+              <h4 className={`font-bold text-lg ${optimisticTask.status === 'done' ? 'text-green-800 dark:text-green-400 line-through' : 'text-gray-900 dark:text-white'}`}>
+                {optimisticTask.title}
               </h4>
               <p className="text-sm text-indigo-500 font-medium mt-1">
                 {new Date(task.scheduled_time).toLocaleString()} • {task.duration_estimate_minutes} mins
@@ -176,12 +182,12 @@ export default function TaskCard({ task }: { task: Task }) {
               onClick={handleToggle} 
               disabled={isUpdating || isDeleting}
               className={`px-4 py-1.5 text-xs font-bold rounded-full border transition-all ${
-                task.status === 'done' 
+                optimisticTask.status === 'done' 
                   ? 'bg-green-100 text-green-800 border-green-300 hover:bg-green-200 shadow-sm dark:shadow-none' 
                   : 'bg-yellow-100 text-yellow-800 border-yellow-300 hover:bg-yellow-200 shadow-sm dark:shadow-none'
               }`}
             >
-              {isUpdating ? '...' : (task.status === 'done' ? 'EDIT' : 'DONE')}
+              {optimisticTask.status === 'done' ? 'EDIT' : 'DONE'}
             </button>
             <button 
               onClick={handleDeleteClick}
@@ -193,15 +199,15 @@ export default function TaskCard({ task }: { task: Task }) {
           </div>
         </div>
         
-        {task.description && (
+        {optimisticTask.description && (
           <div className="mt-3">
-            <div className={`text-sm whitespace-pre-wrap relative overflow-hidden transition-all duration-300 ${task.status === 'done' ? 'text-green-700' : 'text-gray-600 dark:text-slate-300'} ${!isDescExpanded && task.description.length > 150 ? 'max-h-16' : 'max-h-[1000px]'}`}>
-              {task.description}
-              {!isDescExpanded && task.description.length > 150 && (
-                <div className={`absolute bottom-0 left-0 w-full h-8 bg-linear-to-t ${task.status === 'done' ? 'from-green-50 dark:from-green-900/20' : 'from-white dark:from-slate-900'} to-transparent`} />
+            <div className={`text-sm whitespace-pre-wrap relative overflow-hidden transition-all duration-300 ${optimisticTask.status === 'done' ? 'text-green-700' : 'text-gray-600 dark:text-slate-300'} ${!isDescExpanded && optimisticTask.description.length > 150 ? 'max-h-16' : 'max-h-[1000px]'}`}>
+              {optimisticTask.description}
+              {!isDescExpanded && optimisticTask.description.length > 150 && (
+                <div className={`absolute bottom-0 left-0 w-full h-8 bg-linear-to-t ${optimisticTask.status === 'done' ? 'from-green-50 dark:from-green-900/20' : 'from-white dark:from-slate-900'} to-transparent`} />
               )}
             </div>
-            {task.description.length > 150 && (
+            {optimisticTask.description.length > 150 && (
               <button 
                 onClick={() => setIsDescExpanded(!isDescExpanded)}
                 className="text-xs font-bold text-indigo-500 hover:text-indigo-700 dark:text-indigo-300 mt-1 uppercase tracking-wider"
@@ -262,7 +268,7 @@ export default function TaskCard({ task }: { task: Task }) {
           </form>
         </div>
 
-        {task.status !== 'done' && (
+        {optimisticTask.status !== 'done' && (
           <div className="mt-4">
             <button 
               onClick={() => startPomodoro(task.id, task.title)}

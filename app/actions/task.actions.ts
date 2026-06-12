@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { createEvent } from "@/lib/google/calendar";
 import { ActionResponse, Task } from "@/types";
 import { calculateXp, calculateStreak } from "@/utils/gamification";
-import { getAiResponse } from "@/lib/ai/config";
+import { generateFastResponse } from "@/lib/ai";
 import { checkAiLimit } from "@/lib/supabase/limiter";
 
 export async function getTasks(): Promise<Task[]> {
@@ -207,7 +207,7 @@ Link: ${moduleLink}
 
 Kembalikan respon JSON dengan keys: "summary" (string), "estimatedMinutes" (number).`;
 
-    const result = await getAiResponse(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni TANPA markdown block.");
+    const result = await generateFastResponse(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON murni TANPA markdown block.", true);
     if (!result) return { success: false, error: "Gagal memproses analisis AI." };
 
     const cleanResult = result.replace(/```json/g, "").replace(/```/g, "").trim();
@@ -230,7 +230,7 @@ Deskripsi: ${description}
 
 Kembalikan respon JSON array of strings murni. Contoh: ["Langkah 1", "Langkah 2"]`;
 
-    const result = await getAiResponse(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON array of strings murni TANPA markdown block.");
+    const result = await generateFastResponse(prompt, "Kamu adalah AI asisten yang hanya merespon dalam format JSON array of strings murni TANPA markdown block.", true);
     if (!result) return { success: false, error: "Gagal memproses breakdown AI." };
 
     const cleanResult = result.replace(/```json/g, "").replace(/```/g, "").trim();

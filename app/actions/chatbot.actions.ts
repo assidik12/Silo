@@ -1,7 +1,7 @@
 "use server";
 
 import { checkAiLimit } from "@/lib/supabase/limiter";
-import { getAiResponse } from "@/lib/ai/config";
+import { generateFastResponse } from "@/lib/ai";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 
@@ -37,7 +37,7 @@ Berikut adalah context (boundaries) tentang aplikasi Silo:
     const prompt = `User bertanya: ${message}`;
     
     // We expect a text response, not JSON
-    const result = await getAiResponse(prompt, systemInstruction, false);
+    const result = await generateFastResponse(prompt, systemInstruction, false);
     
     if (!result) {
       return { success: false, error: "Gagal mendapatkan respon dari AI." };

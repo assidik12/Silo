@@ -38,9 +38,10 @@ Fitur andalannya:
 - **Advanced Profile Settings**: Atur preferensi belajar lo (Morning/Night Owl) dan *focus duration* biar makin personal.
 - **Interactive Onboarding & Proactive Check-in**: Modal harian cerdas yang langsung nyapa dan nanyain fokus hari ini begitu lo login.
 - **Neko AI Assistant (RAG Chatbot)**: Asisten pintar (mascot kucing) di dalam dashboard buat nemenin belajar dan ngejawab semua FAQ seputar materi & aplikasi.
-- **AI Task Breakdown**: Pecah tugas besar jadi sub-tasks yang actionable dalam hitungan detik.
+- **Hybrid AI Engine & Caching**: Kombinasi Gemini (dengan *Caching*) untuk materi berat dan Groq/Llama 3 untuk *task breakdown* dan ngobrol instan.
+- **PWA & Offline Ready**: Bisa di-*install* langsung ke HP (tanpa App Store), lengkap dengan *Push Notification* (Streak Reminder) biar lo nggak bolos nugas.
+- **Optimistic UI**: Interaksi penyelesaian *task* super cepat dengan *zero-latency loading*.
 - **Professional Guide Page**: Dokumentasi lengkap penggunaan aplikasi untuk user awam.
-- **Smart Rate Limiting**: Penggunaan AI yang lebih stabil dan terkontrol biar nggak gampang *limit*.
 - **Dashboard Aesthetic**: UX/UI yang *clean, calm*, dan *playful* dengan *collapsible sidebar* dinamis biar mata lo nggak capek.
 
 ---

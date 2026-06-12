@@ -1,4 +1,4 @@
-import { getAiResponse } from "./config";
+import { generateFastResponse } from "./index";
 import { UserProfile } from "@/types";
 
 export interface JournalReflectionResponse {
@@ -48,7 +48,7 @@ Kamu harus merespons dalam format JSON dengan struktur berikut:
 `;
 
   try {
-    const responseJson = await getAiResponse(rawText, systemInstruction, true);
+    const responseJson = await generateFastResponse(rawText, systemInstruction, true);
     if (!responseJson) return null;
 
     const parsed = JSON.parse(responseJson) as JournalReflectionResponse;
