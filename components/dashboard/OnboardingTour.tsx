@@ -30,7 +30,7 @@ export function OnboardingTour() {
 
   useEffect(() => {
     // Check if user already completed onboarding
-    const hasCompleted = localStorage.getItem("dojo_onboarding_completed");
+    const hasCompleted = localStorage.getItem("silo_onboarding_completed");
     if (!hasCompleted) {
       // Delay slightly for better UX
       const timer = setTimeout(() => setIsVisible(true), 1500);
@@ -40,7 +40,7 @@ export function OnboardingTour() {
 
   const completeOnboarding = () => {
     setIsVisible(false);
-    localStorage.setItem("dojo_onboarding_completed", "true");
+    localStorage.setItem("silo_onboarding_completed", "true");
   };
 
   const nextStep = () => {
@@ -81,9 +81,14 @@ export function OnboardingTour() {
             </span>
           </div>
 
-          <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
-            {STEPS[currentStep].title}
-          </h3>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 bg-indigo-50 dark:bg-slate-800 rounded-full flex items-center justify-center border border-indigo-100 dark:border-slate-700 overflow-hidden shrink-0">
+              <img src="/assets/mascots/neko_greeting_time_1781150921927.png" alt="Neko" className="w-full h-full object-contain drop-shadow-sm p-1" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">
+              {STEPS[currentStep].title}
+            </h3>
+          </div>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
             {STEPS[currentStep].desc}
           </p>

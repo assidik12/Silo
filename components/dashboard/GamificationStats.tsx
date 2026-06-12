@@ -19,8 +19,16 @@ export default function GamificationStats({ userId, name, streak, xp }: { userId
     <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4">
 
       <div className="flex items-center gap-4">
-        <div className="bg-orange-50 dark:bg-orange-500/10 px-4 py-3 rounded-2xl border border-orange-100 flex items-center gap-3">
-          <span className="text-2xl">🔥</span>
+        <div className="bg-orange-50 dark:bg-orange-500/10 px-4 py-3 rounded-2xl border border-orange-100 flex items-center gap-3 relative overflow-hidden group">
+          <div className="relative w-10 h-10 flex-shrink-0">
+            {streak >= 3 ? (
+              <img src="/assets/mascots/neko_win_streak_1781150980793.png" alt="Win Streak" className="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform" />
+            ) : streak === 0 ? (
+              <img src="/assets/mascots/neko_lose_streak_1781150949147.png" alt="Lose Streak" className="w-full h-full object-contain drop-shadow-md opacity-90" />
+            ) : (
+              <span className="text-3xl flex items-center justify-center w-full h-full">🔥</span>
+            )}
+          </div>
           <div>
             <p className="text-xs font-bold text-orange-400 uppercase tracking-wider">Streak</p>
             <p className="text-xl font-extrabold text-orange-600 dark:text-orange-400">{streak} Days</p>

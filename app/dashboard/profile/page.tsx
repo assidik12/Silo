@@ -29,7 +29,7 @@ export default async function ProfilePage() {
   const xp = userData?.xp || 0;
   const streak = userData?.streak_count || 0;
   const major = userData?.major || 'Belum diatur';
-  const bio = userData?.bio || 'Mahasiswa produktif pengguna DoJo.';
+  const bio = userData?.bio || 'Mahasiswa produktif pengguna Silo.';
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-fade-in pb-20">

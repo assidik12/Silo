@@ -225,22 +225,21 @@ export async function chatWithTutor(folderId: string | null, quarterId: string, 
     const { data: profile } = await supabase.from('users').select('major, interests, learning_type').eq('id', user.id).single();
     const userContext = profile ? `\nContext User:\n- Jurusan: ${profile.major}\n- Minat: ${profile.interests || 'Umum'}\n- Tipe Belajar: ${profile.learning_type === 'ngebut' ? 'Ngebut/Speedrunner' : 'Santai/Chill'}` : "";
 
-    const systemInstruction = `Kamu adalah DoJo Tutor, asisten AI Gen-Z yang santuy, asik, suportif, dan sangat afirmatif. 
-Tugasmu adalah ngebantu user belajar materi dari quarter ini: "${quarterTitle}" (${quarterDescription}).
+    const systemInstruction = `Kamu adalah Neko, maskot kucing AI pintar dari Silo yang santuy, asik, suportif, dan sangat afirmatif. 
+Tugasmu adalah menemani dan ngebantu user belajar materi dari quarter ini: "${quarterTitle}" (${quarterDescription}).
 ${contextStr ? `\nGunakan referensi ini untuk menjawab jika relevan dengan pertanyaan:\n${contextStr}\n` : ""}
 ${userContext}
 Aturan gaya bahasa:
-- Pake bahasa gaul lo/gue yang natural, tapi tetap mendidik dan objektif.
-- Sering kasih apresiasi, validasi, dan afirmasi positif.
-- Jika pesan user adalah "Gue siap belajar materi ini", beri sapaan hangat yang asik, kasih overview singkat banget apa yang bakal dipelajari di quarter ini.`;
+- Pake bahasa gaul lo/gue yang natural, layaknya teman belajar (atau kucing peliharaan yang cerdas), tetap mendidik dan objektif.
+- Sering kasih apresiasi, validasi, dan afirmasi positif biar user nggak gampang nyerah. Boleh selipkan gaya kucing lucu sesekali.
+- Jika pesan user adalah "Gue siap belajar materi ini", beri sapaan hangat yang asik dari Neko, kasih overview singkat banget apa yang bakal dipelajari di quarter ini.`;
 
-    const contents = history.map(h => ({
-      role: h.role === "ai" ? "model" : "user",
-      parts: [{ text: h.content }]
-    }));
-    contents.push({ role: "user", parts: [{ text: userMessage }] });
+    const historyStr = history.slice(-4).map(h => `${h.role === 'ai' ? 'Neko' : 'User'}: ${h.content}`).join("\n");
+    const fullPrompt = historyStr 
+      ? `Histori Chat Sebelumnya:\n${historyStr}\n\nUser: ${userMessage}\nNeko:`
+      : `User: ${userMessage}\nNeko:`;
 
-    const result = await getAiResponse(userMessage, systemInstruction, false);
+    const result = await getAiResponse(fullPrompt, systemInstruction, false);
     if (!result) return { success: false, error: "Gagal memproses chat AI." };
 
     await supabase.from("learning_chat_history").insert([
@@ -358,8 +357,8 @@ export async function syncLearningPlanToCalendar(courseTitle: string, episodes: 
       const endDate = new Date(scheduledDate.getTime() + 60 * 60000);
 
       await createEvent(provider_token, {
-        summary: `[DoJo Learning] ${courseTitle}: ${episode.title}`,
-        description: `Binge-watch episode from DoJo Learning Hub.\n\n${episode.description}`,
+        summary: `[Silo Learning] ${courseTitle}: ${episode.title}`,
+        description: `Binge-watch episode from Silo Learning Hub.\n\n${episode.description}`,
         start: { dateTime: scheduledDate.toISOString() },
         end: { dateTime: endDate.toISOString() },
         colorId: '9',

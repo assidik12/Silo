@@ -48,7 +48,7 @@ export async function validateQueryWithGuardrails(
     // Use 0.35 as threshold for guardrails (P1 requirement)
     const { data: chunks, error } = await supabase.rpc("match_document_chunks", {
       query_embedding: embedding,
-      match_threshold: 0.35, 
+      match_threshold: 0.55, 
       match_count: 3,
       p_folder_id: folderId,
     });

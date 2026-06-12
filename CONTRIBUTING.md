@@ -1,6 +1,6 @@
-# 🤝 Panduan Kontribusi DoJo
+# 🤝 Panduan Kontribusi Silo
 
-Hai! Terima kasih udah tertarik buat ikutan *develop* **DoJo**! 🌿 
+Hai! Terima kasih udah tertarik buat ikutan *develop* **Silo**! 🌿 
 Karena aplikasi ini dibangun dari keresahan bersama mahasiswa, kami terbuka banget buat kontribusi lo. Biar kolaborasi kita tetep rapi, *codebase* nggak *messy*, dan *review* PR-nya enak, tolong baca panduan di bawah ini dulu ya.
 
 ---
@@ -52,7 +52,7 @@ Tolong gunakan standar **Conventional Commits** biar gampang di-*track* dan *gen
 4. Jalankan `npm run dev` dan pastikan nggak ada *error* di konsol.
 5. Jalankan `npm test` untuk memastikan lo nggak ngerusak fitur lain (*zero regressions*).
 6. *Commit* dan *push* kode lo ke repositori lo sendiri.
-7. Buka *Pull Request* (PR) dari *branch* lo ke *branch* `dev` repositori DoJo.
+7. Buka *Pull Request* (PR) dari *branch* lo ke *branch* `dev` repositori Silo.
 8. Kasih deskripsi PR yang jelas: apa yang lo ubah, alasan perubahannya, dan *screenshot* (kalau ada perubahan UI).
 
 ---

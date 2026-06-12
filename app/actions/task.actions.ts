@@ -80,8 +80,8 @@ export async function createTask(formData: FormData): Promise<ActionResponse> {
         const startDate = new Date(scheduled_time);
         const endDate = new Date(startDate.getTime() + duration_estimate_minutes * 60000);
         await createEvent(providerToken, {
-          summary: `[DoJo] ${title}`,
-          description: description || 'Tugas dari DoJo App.',
+          summary: `[Silo] ${title}`,
+          description: description || 'Tugas dari Silo App.',
           start: { dateTime: startDate.toISOString() },
           end: { dateTime: endDate.toISOString() },
           colorId: '5', // Yellow marker
@@ -250,7 +250,7 @@ export async function createWelcomeTasks(userId: string): Promise<ActionResponse
     const welcomeTasks = [
       {
         user_id: userId,
-        title: "👋 Eksplor DoJo Dashboard",
+        title: "👋 Eksplor Silo Dashboard",
         description: "Lihat statistik XP, Streak, dan grafik produktivitas mingguan kamu di sini.",
         duration_estimate_minutes: 15,
         status: 'pending',

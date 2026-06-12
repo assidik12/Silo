@@ -157,7 +157,7 @@ export default function LearningPage() {
             <HardDrive className="w-8 h-8" />
           </div>
           <h2 className="text-xl font-bold text-gray-800 mb-2 dark:text-gray-200">Connect Google Drive</h2>
-          <p className="text-gray-500 mb-8 max-w-md mx-auto text-sm dark:text-gray-400">Paste link folder Google Drive kamu. DoJo bakal nge-scan PDF/Docs di dalamnya dan nyiapin vektor embedding biar kamu bisa belajar lebih gampang.</p>
+          <p className="text-gray-500 mb-8 max-w-md mx-auto text-sm dark:text-gray-400">Paste link folder Google Drive kamu. Silo bakal nge-scan PDF/Docs di dalamnya dan nyiapin vektor embedding biar kamu bisa belajar lebih gampang.</p>
 
           <form onSubmit={handleSyncDrive} className="max-w-xl mx-auto flex flex-col gap-4">
             <div className="flex gap-2">

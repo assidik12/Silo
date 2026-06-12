@@ -30,6 +30,9 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(({ userData }, ref)
       {/* Background Decorative Elements */}
       <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-white dark:bg-slate-900/50/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-[-5%] left-[-5%] w-80 h-80 bg-fuchsia-400/20 rounded-full blur-3xl"></div>
+      
+      {/* Mascot Neko */}
+      <img src="/assets/mascots/neko_share_card_1781151393640.png" alt="Neko Flex" className="absolute bottom-16 right-[-20px] w-48 h-48 object-contain opacity-95 rotate-[-5deg] z-0 drop-shadow-2xl" />
 
       {/* Header Branding */}
       <div className="flex justify-between items-center z-10">
@@ -37,7 +40,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(({ userData }, ref)
           <div className="w-10 h-10 bg-white dark:bg-slate-900/50 rounded-xl flex items-center justify-center shadow-lg dark:shadow-none">
             <span className="text-indigo-600 dark:text-indigo-400 font-black text-xl italic">D</span>
           </div>
-          <span className="font-black text-2xl tracking-tighter">DoJo</span>
+          <span className="font-black text-2xl tracking-tighter">Silo</span>
         </div>
         <div className="bg-white dark:bg-slate-900/50/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/30 text-[10px] font-bold uppercase tracking-widest">
           Q3 Achievement
@@ -106,10 +109,10 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(({ userData }, ref)
       <div className="text-center space-y-4 z-10">
         <div className="h-px w-full bg-linear-to-r from-transparent via-white/30 to-transparent"></div>
         <p className="text-sm font-medium text-indigo-100/80 italic px-6">
-          "{userData.bio || 'Belajar jadi lebih asik dan produktif di DoJo.'}"
+          "{userData.bio || 'Belajar jadi lebih asik dan produktif di Silo.'}"
         </p>
         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 pt-4">
-          Join the Dojo @ dojo-app.vercel.app
+          Join the Silo @ silo.app
         </p>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Quicksand } from "next/font/google";
 import "./globals.css";
 import { ModalProvider } from '@/components/providers/ModalProvider';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
@@ -14,22 +14,27 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const quicksand = Quicksand({
+  variable: "--font-quicksand",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-  title: "DoJo | Gamify Your Student Life",
-  description: "Dojo adalah asisten produktivitas mahasiswa berbasis AI dengan sistem gamifikasi XP & Streak. Kelola tugas, rapihin materi kuliah, dan belajar bareng AI Tutor.",
-  keywords: ["productivity", "student", "gamification", "AI tutor", "study assistant", "task management"],
-  authors: [{ name: "DoJo Team" }],
+  title: "Silo | Gamify Your Student Life",
+  description: "Silo adalah asisten produktivitas mahasiswa berbasis AI dengan sistem gamifikasi XP & Streak. Kelola tugas, rapihin materi kuliah, dan belajar bareng Neko, AI Tutor kamu.",
+  keywords: ["productivity", "student", "gamification", "AI tutor", "neko", "study assistant", "task management"],
+  authors: [{ name: "Silo Team" }],
   openGraph: {
-    title: "DoJo | Gamify Your Student Life",
+    title: "Silo | Gamify Your Student Life",
     description: "Tingkatkan produktivitas belajar lo dengan gaya Gen Z. Gamifikasi tugas, AI breakdown, dan Learning Hub dalam satu aplikasi.",
     url: "https://do-jo-wheat.vercel.app/",
-    siteName: "DoJo",
+    siteName: "Silo",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "DoJo - Gamify Your Studies",
+        alt: "Silo - Gamify Your Studies",
       },
     ],
     locale: "id_ID",
@@ -37,13 +42,13 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "DoJo | Gamify Your Student Life",
+    title: "Silo | Gamify Your Student Life",
     description: "Tingkatkan produktivitas belajar lo dengan gaya Gen Z. Gamifikasi tugas, AI breakdown, dan Learning Hub dalam satu aplikasi.",
     images: ["/og-image.png"],
   },
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-icon.png",
+    icon: "/assets/mascots/neko_icon.png",
+    apple: "/assets/mascots/neko_icon.png",
   },
   verification: {
     google: "MvB63igIQjEO8xCinb6FrMC5k6J41WAfVSaa_HsvEm4",
@@ -69,7 +74,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased scroll-smooth scroll-pt-24`}
+      className={`${geistSans.variable} ${geistMono.variable} ${quicksand.variable} antialiased scroll-smooth scroll-pt-24`}
       suppressHydrationWarning
     >
       <body className="min-h-screen flex flex-col">

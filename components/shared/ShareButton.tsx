@@ -38,13 +38,13 @@ export default function ShareButton({ userId, userData }: ShareButtonProps) {
 
       if (!blob) throw new Error('Failed to generate image');
 
-      const fileName = `dojo-${platform || 'achievement'}.png`;
+      const fileName = `Silo-${platform || 'achievement'}.png`;
       const file = new File([blob], fileName, { type: 'image/png' });
 
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           files: [file],
-          title: 'My DoJo Achievement',
+          title: 'My Silo Achievement',
         });
       } else {
         const url = URL.createObjectURL(blob);

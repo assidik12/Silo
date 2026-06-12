@@ -79,7 +79,7 @@ export default function Sidebar({ isOpen = true, toggleSidebar }: SidebarProps) 
             <div className="bg-indigo-600 dark:bg-indigo-500 p-1 rounded-md shrink-0">
               <CheckCircle2 className="w-5 h-5 text-white" />
             </div>
-            {isOpen && <span>DoJo</span>}
+            {isOpen && <span>Silo</span>}
           </h2>
           {isOpen && <ThemeToggle />}
         </div>

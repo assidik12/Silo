@@ -29,7 +29,7 @@ const testimonials = [
     id: 4,
     name: "Diana Putri",
     role: "Mahasiswa Akuntansi",
-    text: "Dulu sering SKS (Sistem Kebut Semalam), sejak pake DoJo jadi lebih terstruktur karena ada AI yang ngingetin jadwal optimal.",
+    text: "Dulu sering SKS (Sistem Kebut Semalam), sejak pake Silo jadi lebih terstruktur karena ada AI yang ngingetin jadwal optimal.",
     avatar: "📊"
   },
   {
@@ -64,8 +64,8 @@ export default function TestimonialSlider() {
   return (
     <div className="max-w-6xl mx-auto px-6">
       <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Kata Mereka Tentang DoJo</h2>
-        <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto">Masih ragu? Dengerin langsung dari mahasiswa yang udah ngerasain bedanya nugas pake DoJo.</p>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Kata Mereka Tentang Silo</h2>
+        <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto">Masih ragu? Dengerin langsung dari mahasiswa yang udah ngerasain bedanya nugas pake Silo.</p>
       </div>
 
       <div className="relative">

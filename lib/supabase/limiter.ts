@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 
 /**
- * AI Rate Limiter for DoJo
+ * AI Rate Limiter for Silo
  * Default: 10 requests per day per user
  */
 const DAILY_LIMIT = 10;

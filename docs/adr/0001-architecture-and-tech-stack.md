@@ -4,7 +4,7 @@
 **Date:** 2026-06-06  
 
 ## Context & Problem
-Aplikasi DoJo (Gamified Productivity App) membutuhkan arsitektur yang kuat dan bisa di-*scale* untuk mendukung fitur *multi-role* (student, lecturer), *gamification* (XP & Streak), sinkronisasi kalender, serta sistem *Retrieval-Augmented Generation* (RAG) untuk AI Learning Hub (SKS Mode). Codebase sebelumnya mencampuradukkan *layering* dan sulit dimaintain.
+Aplikasi Silo (Gamified Productivity App) membutuhkan arsitektur yang kuat dan bisa di-*scale* untuk mendukung fitur *multi-role* (student, lecturer), *gamification* (XP & Streak), sinkronisasi kalender, serta sistem *Retrieval-Augmented Generation* (RAG) untuk AI Learning Hub (SKS Mode). Codebase sebelumnya mencampuradukkan *layering* dan sulit dimaintain.
 
 ## Decision
 

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { X, Brain, Send, MessageSquareText, RefreshCw } from 'lucide-react';
-import { askDojoBot } from '@/app/actions/chatbot.actions';
+import { askNeko } from '@/app/actions/chatbot.actions';
 
 export default function FeedbackWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +11,7 @@ export default function FeedbackWidget() {
   
   // Chat state
   const [messages, setMessages] = useState<{role: 'user'|'bot', text: string}[]>([
-    { role: 'bot', text: 'Hai! Gue DoJo Bot. Ada yang pengen lo tanyain seputar cara pakai DoJo?' }
+    { role: 'bot', text: 'Hai! Gue Neko. Ada yang pengen lo tanyain seputar cara pakai Silo?' }
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +32,7 @@ export default function FeedbackWidget() {
     setInputMessage('');
     setIsLoading(true);
 
-    const res = await askDojoBot(userText);
+    const res = await askNeko(userText);
     
     setMessages(prev => [
       ...prev, 
@@ -43,7 +43,7 @@ export default function FeedbackWidget() {
   };
 
   const faqs = [
-    { q: "Apa itu DoJo?", a: "DoJo adalah platform gamifikasi produktivitas untuk membantumu fokus belajar dan mengerjakan tugas layaknya bermain game." },
+    { q: "Apa itu Silo?", a: "Silo adalah platform gamifikasi produktivitas untuk membantumu fokus belajar dan mengerjakan tugas layaknya bermain game." },
     { q: "Bagaimana cara dapat XP?", a: "Selesaikan tugas (Task), gunakan Pomodoro timer, atau selesaikan modul di Learning Hub untuk mendapatkan XP dan naik level." },
     { q: "Apa gunanya SKS Mode?", a: "SKS Mode menggunakan AI untuk merangkum otomatis materi dokumen/PDF dari Google Drive kamu ke dalam satu kanvas ringkas." },
     { q: "Kenapa Streak saya hilang?", a: "Streak akan reset jika kamu tidak menyelesaikan minimal 1 tugas dalam 1 hari. Tetap konsisten!" }
@@ -59,7 +59,7 @@ export default function FeedbackWidget() {
             <div className="flex justify-between items-center mb-3">
               <h4 className="font-bold flex items-center gap-2">
                 <Brain className="w-5 h-5" />
-                DoJo Assistant
+                Neko Assistant
               </h4>
               <button onClick={() => setIsOpen(false)} className="text-white/80 hover:text-white transition-colors bg-black/10 rounded-full p-1">
                 <X className="w-4 h-4" />
@@ -111,8 +111,13 @@ export default function FeedbackWidget() {
               <div className="flex flex-col h-full min-h-[300px]">
                 <div className="flex-1 p-4 space-y-4 overflow-y-auto custom-scrollbar">
                   {messages.map((msg, i) => (
-                    <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm ${
+                    <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                      {msg.role === 'bot' && (
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 overflow-hidden bg-indigo-50 border border-indigo-100">
+                          <img src="/assets/mascots/neko_ask_task_1781150994594.png" alt="Neko" className="w-full h-full object-contain p-0.5" />
+                        </div>
+                      )}
+                      <div className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
                         msg.role === 'user' 
                           ? 'bg-indigo-600 text-white rounded-tr-sm' 
                           : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-slate-200 rounded-tl-sm shadow-sm'
@@ -137,7 +142,7 @@ export default function FeedbackWidget() {
                       type="text"
                       value={inputMessage}
                       onChange={(e) => setInputMessage(e.target.value)}
-                      placeholder="Tanya DoJo Bot..."
+                      placeholder="Tanya Neko..."
                       className="flex-1 bg-gray-100 dark:bg-slate-800 border-none rounded-full pl-4 pr-10 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 dark:text-white"
                       disabled={isLoading}
                     />
@@ -157,10 +162,14 @@ export default function FeedbackWidget() {
       ) : (
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-indigo-600 text-white p-3.5 rounded-full shadow-lg dark:shadow-none hover:bg-indigo-700 transition-transform hover:scale-105 flex items-center justify-center animate-bounce-soft"
-          title="Bantuan & AI Bot"
+          className="fixed bottom-6 right-6 p-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-2xl transition-transform hover:scale-110 z-50 flex items-center justify-center gap-2 group border border-indigo-400"
         >
-          <Brain className="w-6 h-6" />
+          <div className="w-8 h-8 rounded-full overflow-hidden bg-white/20 p-0.5">
+            <img src="/assets/mascots/neko_greeting_login_1781150904124.png" alt="Neko" className="w-full h-full object-contain animate-pulse" />
+          </div>
+          <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-500 ease-in-out font-medium pr-0 group-hover:pr-2">
+            Tanya Neko
+          </span>
         </button>
       )}
     </div>

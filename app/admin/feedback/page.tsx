@@ -61,7 +61,7 @@ export default async function AdminFeedbackPage() {
               <ArrowLeft className="w-4 h-4" /> Back to Dashboard
             </Link>
             <h1 className="text-3xl font-black text-slate-900">Admin Feedback <span className="text-indigo-600">Monitoring</span></h1>
-            <p className="text-slate-500">Evaluasi performa DoJo dari kacamata user.</p>
+            <p className="text-slate-500">Evaluasi performa Silo dari kacamata user.</p>
           </div>
           <div className="flex items-center gap-4">
             <ExportFeedbackButton />
@@ -166,7 +166,7 @@ export default async function AdminFeedbackPage() {
                       <td className="px-6 py-4 text-right">
                         {isGeneral && item.users?.email && (
                           <a 
-                            href={`mailto:${item.users.email}?subject=Update dari DoJo: ${item.category === 'idea' ? 'Ide Fitur Kamu' : 'Masukan Kamu'}&body=Halo ${item.users.name},%0D%0A%0D%0AGue mau ngasih tau kalau masukan lo tentang "${item.message}" udah kita terima dan lagi diproses/selesai dibuat!%0D%0A%0D%0AKeep nugas and stay productive!🚀`}
+                            href={`mailto:${item.users.email}?subject=Update dari Silo: ${item.category === 'idea' ? 'Ide Fitur Kamu' : 'Masukan Kamu'}&body=Halo ${item.users.name},%0D%0A%0D%0AGue mau ngasih tau kalau masukan lo tentang "${item.message}" udah kita terima dan lagi diproses/selesai dibuat!%0D%0A%0D%0AKeep nugas and stay productive!🚀`}
                             className="inline-flex items-center gap-2 bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white px-3 py-1.5 rounded-xl text-[10px] font-black transition-all border border-indigo-100 shadow-sm hover:shadow-md"
                           >
                             <Mail className="w-3 h-3" />

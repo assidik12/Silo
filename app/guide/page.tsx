@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { ArrowLeft, Book, Calendar, Zap, Brain, CheckCircle2 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Panduan Penggunaan - DoJo',
-  description: 'Dokumentasi dan panduan penggunaan aplikasi DoJo.',
+  title: 'Panduan Penggunaan - Silo',
+  description: 'Dokumentasi dan panduan penggunaan aplikasi Silo.',
 };
 
 export default function GuidePage() {
@@ -21,7 +21,7 @@ export default function GuidePage() {
               <div className="bg-indigo-500 dark:bg-indigo-600 p-1.5 rounded-lg">
                 <Book className="w-4 h-4 text-white" />
               </div>
-              <span className="font-bold tracking-tight text-slate-900 dark:text-white">DoJo Guide</span>
+              <span className="font-bold tracking-tight text-slate-900 dark:text-white">Silo Guide</span>
             </div>
           </div>
           <Link href="/dashboard" className="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors">
@@ -61,9 +61,9 @@ export default function GuidePage() {
         <main className="flex-1 max-w-3xl space-y-16">
           
           <header>
-            <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white mb-4">Selamat datang di DoJo!</h1>
+            <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white mb-4">Selamat datang di Silo!</h1>
             <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
-              Panduan resmi ini akan membantu Anda memahami cara menggunakan DoJo untuk mengalahkan kebiasaan menunda-nunda dan mengubah proses belajar menjadi lebih menyenangkan lewat sistem gamifikasi dan AI.
+              Panduan resmi ini akan membantu Anda memahami cara menggunakan Silo untuk mengalahkan kebiasaan menunda-nunda dan mengubah proses belajar menjadi lebih menyenangkan lewat sistem gamifikasi dan AI.
             </p>
           </header>
 
@@ -76,7 +76,7 @@ export default function GuidePage() {
             </div>
             
             <div className="prose prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-300">
-              <p>Di DoJo, Anda tidak perlu lagi mengingat-ingat tugas. Semua terstruktur di satu tempat.</p>
+              <p>Di Silo, Anda tidak perlu lagi mengingat-ingat tugas. Semua terstruktur di satu tempat.</p>
               
               <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 my-6 shadow-sm">
                 <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
@@ -106,7 +106,7 @@ export default function GuidePage() {
             </div>
             
             <div className="prose prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-300">
-              <p>DoJo menggunakan pendekatan psikologis yang ringan agar tugas tidak terasa berat. Semakin konsisten Anda, semakin tinggi hadiahnya.</p>
+              <p>Silo menggunakan pendekatan psikologis yang ringan agar tugas tidak terasa berat. Semakin konsisten Anda, semakin tinggi hadiahnya.</p>
               
               <ul className="space-y-4 my-6">
                 <li className="flex gap-4">
@@ -138,7 +138,7 @@ export default function GuidePage() {
             </div>
             
             <div className="prose prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-300">
-              <p>Butuh "Guru Les Pribadi"? Learning Hub adalah ruang belajar cerdas di DoJo yang ditenagai oleh kecerdasan buatan.</p>
+              <p>Butuh "Guru Les Pribadi"? Learning Hub adalah ruang belajar cerdas di Silo yang ditenagai oleh kecerdasan buatan.</p>
               
               <div className="grid md:grid-cols-2 gap-6 my-6">
                 <div className="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">

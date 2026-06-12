@@ -24,7 +24,7 @@ export async function generateMetadata(
     .single();
 
   if (!userData) {
-    return { title: 'DoJo Achievement' };
+    return { title: 'Silo Achievement' };
   }
 
   const name = userData.name || 'User';
@@ -33,7 +33,7 @@ export async function generateMetadata(
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL 
     ? (process.env.NEXT_PUBLIC_BASE_URL.startsWith('http') ? process.env.NEXT_PUBLIC_BASE_URL : `http://${process.env.NEXT_PUBLIC_BASE_URL}`)
-    : 'https://dojo-app.vercel.app';
+    : 'https://silo.app';
 
   const ogUrl = new URL(`${baseUrl}/api/og`);
   ogUrl.searchParams.set('name', name);
@@ -43,8 +43,8 @@ export async function generateMetadata(
   ogUrl.searchParams.set('learningType', userData.learning_type || '');
 
   return {
-    title: `${name}'s Dojo Achievement`,
-    description: `Lihat progres produktivitas ${name} di DoJo! Total XP: ${xp}, Streak: ${streak} hari. 🔥`,
+    title: `${name}'s Silo Achievement`,
+    description: `Lihat progres produktivitas ${name} di Silo! Total XP: ${xp}, Streak: ${streak} hari. 🔥`,
     openGraph: {
       images: [ogUrl.toString()],
     },
@@ -116,7 +116,7 @@ export default async function SharePage({ params }: Props) {
 
           <div className="bg-slate-900 text-white p-6 rounded-4xl space-y-4">
             <p className="text-sm font-medium opacity-80 italic">
-              "{userData.bio || 'Belajar jadi lebih asik dan produktif di DoJo.'}"
+              "{userData.bio || 'Belajar jadi lebih asik dan produktif di Silo.'}"
             </p>
             <div className="flex justify-center gap-3">
                {[
@@ -134,20 +134,25 @@ export default async function SharePage({ params }: Props) {
             </div>
           </div>
 
-          <div className="pt-4 space-y-3">
-             <Button asChild className="w-full h-14 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg shadow-lg shadow-indigo-100">
+          <div className="pt-4 space-y-3 relative">
+             <Button asChild className="w-full h-14 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg shadow-lg shadow-indigo-100 relative z-10">
                 <Link href="/">
-                  Join the Dojo <ExternalLink className="w-5 h-5 ml-2" />
+                  Join the Silo <ExternalLink className="w-5 h-5 ml-2" />
                 </Link>
              </Button>
-             <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Build your productivity empire</p>
+             <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest relative z-10">Build your productivity empire</p>
+             
+             {/* Mascot Neko */}
+             <img src="/assets/mascots/neko_share_card_1781151393640.png" alt="Neko Flex" className="absolute -bottom-10 -right-10 w-32 h-32 object-contain opacity-95 rotate-[-10deg] z-0 pointer-events-none drop-shadow-2xl" />
           </div>
         </div>
       </div>
       
-      <footer className="mt-8 text-white/60 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-        <div className="w-6 h-6 bg-white/20 rounded flex items-center justify-center text-[10px]">D</div>
-        DoJo Productive App
+      <footer className="mt-8 text-white/60 text-xs font-bold uppercase tracking-widest flex items-center gap-2 z-10 relative">
+        <div className="w-6 h-6 bg-white/20 rounded flex items-center justify-center text-[10px] overflow-hidden">
+          <img src="/assets/mascots/neko_greeting_login_1781150904124.png" alt="Silo Logo" className="w-full h-full object-cover" />
+        </div>
+        Silo Productive App
       </footer>
     </div>
   );

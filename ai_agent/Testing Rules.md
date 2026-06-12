@@ -1,6 +1,6 @@
-# **🧪 DoJo Testing Rules & Standards**
+# **🧪 Silo Testing Rules & Standards**
 
-Dokumen ini mendefinisikan standar pembuatan testing untuk DoJo guna memastikan reliabilitas fitur gamifikasi, keamanan autentikasi, dan stabilitas integrasi AI.
+Dokumen ini mendefinisikan standar pembuatan testing untuk Silo guna memastikan reliabilitas fitur gamifikasi, keamanan autentikasi, dan stabilitas integrasi AI.
 
 ## **1\. Tooling & Environment**
 
@@ -19,6 +19,8 @@ __tests__/
 ├── components/   → UI Components (components/**/*.tsx)
 ├── lib/          → Utilities & AI Services (utils/*.ts, lib/ai/*.ts)
 └── routes/       → API Route Handlers (app/**/route.ts)
+
+tests/e2e/        → Playwright E2E Tests (*.spec.ts)
 ```
 
 * **Konvensi penamaan:** nama file test mencerminkan nama file source-nya.
@@ -74,4 +76,4 @@ Semua fungsi kalkulasi harus memiliki cakupan tes 100%.
 
 Gunakan prompt ini jika ingin meminta AI membuatkan tes untuk fitur baru:
 
-*"Berdasarkan file `TESTING_RULES.md` dan struktur `docs/adr/0001-architecture-and-tech-stack.md`, buatkan unit test lengkap menggunakan Jest untuk file [path_file]. Letakkan file tes di `__tests__/[layer]/` sesuai tipe file-nya (actions → `__tests__/actions/`, utils/lib → `__tests__/lib/`, components → `__tests__/components/`, route handler → `__tests__/routes/`). Pastikan mencakup skenario sukses, skenario error, dan mock semua dependensi eksternal seperti Supabase atau Gemini API. Gunakan TypeScript yang ketat tanpa `any`."*
+*"Berdasarkan file `TESTING_RULES.md` dan struktur `docs/adr/0001-architecture-and-tech-stack.md`, buatkan testing lengkap untuk file [path_file]. Pertama, buatkan Unit Test menggunakan Jest & React Testing Library (letakkan di `__tests__/[layer]/`). Kedua, jika fitur tersebut memiliki interaksi UI atau alur kritis, buatkan juga skenario End-to-End (E2E) Test menggunakan Playwright (letakkan di folder `tests/e2e/`). Pastikan mencakup skenario sukses, skenario error, dan mock semua dependensi eksternal pada unit test (Supabase, Gemini API). Gunakan TypeScript yang ketat tanpa `any`."*

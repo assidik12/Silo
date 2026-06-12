@@ -8,8 +8,8 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: asia-southeast2
-  SERVICE_NAME: dojo-app
-  REPOSITORY: dojo-repo
+  SERVICE_NAME: Silo-app
+  REPOSITORY: Silo-repo
 
 jobs:
   deploy:

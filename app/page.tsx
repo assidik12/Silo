@@ -30,10 +30,10 @@ export default async function LandingPage() {
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="bg-indigo-500 dark:bg-indigo-600 p-1.5 rounded-lg">
-              <CheckCircle2 className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-bold text-xl tracking-tight text-slate-900 dark:text-white">DoJo</span>
+            <span className="font-extrabold text-3xl sm:text-4xl tracking-tighter font-(family-name:--font-quicksand) flex items-baseline">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-600 via-fuchsia-600 to-rose-600 dark:from-violet-400 dark:via-fuchsia-400 dark:to-rose-400 drop-shadow-sm">silo</span>
+              <span className="text-amber-500 dark:text-amber-400 ml-0.5 animate-pulse">.</span>
+            </span>
           </div>
           <NavLinks />
           <div className="flex items-center gap-4">
@@ -72,7 +72,7 @@ export default async function LandingPage() {
               </span>
             </h1>
             <p className="text-lg text-slate-500 dark:text-slate-400 mb-6 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              Dapatkan XP, Bangun Streak, dan Berhenti Menunda-nunda. DoJo bantu lo ngatur tugas pake sistem reward + asisten AI biar nugas nggak kerasa berat lagi.
+              Dapatkan XP, Bangun Streak, dan Berhenti Menunda-nunda. Silo bantu lo ngatur tugas pake sistem reward + asisten AI biar nugas nggak kerasa berat lagi.
             </p>
             <ul className="space-y-3 mb-8 text-left max-w-md mx-auto lg:mx-0">
               <li className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
@@ -182,7 +182,7 @@ export default async function LandingPage() {
       <section id="fitur" className="py-24 px-6 bg-white dark:bg-slate-950">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Makanya kita bikin DoJo</h2>
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Makanya kita bikin Silo</h2>
             <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto">Dirancang khusus buat ngakalin kebiasaan menunda lo jadi lebih terstruktur.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -218,12 +218,12 @@ export default async function LandingPage() {
             <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-6">Belajar sesuai gaya lo</h2>
             <ul className="space-y-6">
               <li className="flex gap-4">
-                <div className="mt-1 bg-white dark:bg-slate-800 p-2 rounded-full shadow-sm dark:shadow-none text-indigo-500 dark:text-indigo-400 h-fit">
-                  <MessageSquare className="w-5 h-5" />
+                <div className="mt-1 bg-white dark:bg-slate-800 p-2 rounded-full shadow-sm dark:shadow-none text-indigo-500 dark:text-indigo-400 h-fit overflow-hidden">
+                  <img src="/assets/mascots/neko_greeting_time_1781150921927.png" alt="Neko" className="w-6 h-6 object-cover" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-800 dark:text-slate-100 text-lg">Personalized AI</h4>
-                  <p className="text-slate-500 dark:text-slate-400">AI nanya personality belajar lo buat ngasih saran yang paling pas.</p>
+                  <h4 className="font-bold text-slate-800 dark:text-slate-100 text-lg">Kenalan sama Neko, Asisten Lo</h4>
+                  <p className="text-slate-500 dark:text-slate-400">Neko adalah kucing AI pintar yang bakal nemenin elo nugas dan ngasih saran paling pas buat lo.</p>
                 </div>
               </li>
               <li className="flex gap-4">
@@ -255,8 +255,8 @@ export default async function LandingPage() {
                 </div>
               </div>
               <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center shrink-0">
-                  <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-slate-800 flex items-center justify-center shrink-0 overflow-hidden border border-indigo-100 dark:border-slate-700">
+                  <img src="/assets/mascots/neko_ask_task_1781150994594.png" alt="Neko AI" className="w-full h-full object-contain p-0.5" />
                 </div>
                 <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-300 p-4 rounded-2xl rounded-tl-sm text-sm shadow-sm space-y-3">
                   <p>Tenang, gue bantu pecah ya biar ngerjainnya chill:</p>
@@ -289,7 +289,7 @@ export default async function LandingPage() {
               {
                 step: "01",
                 title: "Login & Sync",
-                desc: "Masuk pake akun Google, otomatis kalender lo bakal sinkron sama DoJo.",
+                desc: "Masuk pake akun Google, otomatis kalender lo bakal sinkron sama Silo.",
                 icon: <Smartphone className="w-6 h-6" />
               },
               {
@@ -363,10 +363,10 @@ export default async function LandingPage() {
                   return (
                     <div key={i} className="relative z-10 flex flex-col items-center gap-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-500 ${isActive
-                          ? 'bg-linear-to-br from-orange-400 to-red-500 text-white shadow-md dark:shadow-none shadow-orange-200 scale-110'
-                          : isToday
-                            ? 'bg-white dark:bg-slate-900 border-4 border-orange-300 dark:border-orange-500/50 text-orange-500 animate-bounce'
-                            : 'bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-600 text-slate-300 dark:text-slate-500'
+                        ? 'bg-linear-to-br from-orange-400 to-red-500 text-white shadow-md dark:shadow-none shadow-orange-200 scale-110'
+                        : isToday
+                          ? 'bg-white dark:bg-slate-900 border-4 border-orange-300 dark:border-orange-500/50 text-orange-500 animate-bounce'
+                          : 'bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-600 text-slate-300 dark:text-slate-500'
                         }`}>
                         {isActive ? '✓' : (isToday ? '?' : '')}
                       </div>
@@ -399,8 +399,9 @@ export default async function LandingPage() {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-violet-200/40 dark:bg-violet-500/10 blur-3xl rounded-full"></div>
 
         <div className="max-w-3xl mx-auto text-center relative z-10">
-          <div className="inline-block bg-white dark:bg-slate-900 px-4 py-2 rounded-full shadow-sm text-sm font-bold text-orange-500 dark:text-orange-400 mb-8 border border-slate-100 dark:border-slate-800">
-            🔥 Streak kamu hari ini: 0... yuk mulai bangun habitnya
+          <div className="inline-flex items-center gap-2 bg-white dark:bg-slate-900 px-4 py-2 rounded-full shadow-sm text-sm font-bold text-orange-500 dark:text-orange-400 mb-8 border border-slate-100 dark:border-slate-800">
+            <img src="/assets/mascots/neko_win_streak_1781150980793.png" alt="Neko" className="w-5 h-5 object-contain" />
+            <span>🔥 Streak kamu hari ini: 0... Neko nungguin nih!</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-8 tracking-tight">
             Mulai jadi versi produktif lo hari ini
@@ -414,7 +415,7 @@ export default async function LandingPage() {
       <footer className="bg-white dark:bg-slate-950 py-12 border-t border-slate-100 dark:border-slate-800">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6 text-slate-400 text-sm font-medium">
           <div className="flex flex-col items-center md:items-start gap-2">
-            <p>&copy; 2026 DoJo App. Bikin nugas nggak kerasa berat lagi.</p>
+            <p>&copy; 2026 Silo App. Bikin nugas nggak kerasa berat lagi.</p>
             <p className="text-[10px] uppercase tracking-widest text-slate-300">Made with 🔥 for students</p>
           </div>
           <div className="flex gap-8 items-center">

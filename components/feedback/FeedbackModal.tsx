@@ -56,7 +56,7 @@ export default function FeedbackModal({ isOpen, onClose, type, title, descriptio
             <div className="text-center py-8 animate-slide-up">
               <div className="text-5xl mb-4">✨</div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Makasih Masukannya!</h3>
-              <p className="text-gray-500 dark:text-slate-400">Feedback lo bakal ngebantu DoJo jadi makin jenius buat lo.</p>
+              <p className="text-gray-500 dark:text-slate-400">Feedback lo bakal ngebantu Silo jadi makin jenius buat lo.</p>
             </div>
           ) : (
             <div className="space-y-6">

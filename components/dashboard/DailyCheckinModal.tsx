@@ -12,19 +12,37 @@ export default function DailyCheckinModal() {
   useEffect(() => {
     // Check if the user has already seen the modal today
     const today = new Date().toISOString().split('T')[0];
-    const lastCheckin = localStorage.getItem('dojo_daily_checkin');
+    const lastCheckin = localStorage.getItem('silo_daily_checkin');
 
     if (lastCheckin !== today) {
-      // Small delay to let the page load first
-      const timer = setTimeout(() => setIsOpen(true), 1500);
-      return () => clearTimeout(timer);
+      const hasCompletedInitially = localStorage.getItem("silo_onboarding_completed");
+      
+      if (hasCompletedInitially) {
+        // Normal flow for returning users
+        const timer = setTimeout(() => setIsOpen(true), 1500);
+        return () => clearTimeout(timer);
+      } else {
+        // New user: wait for onboarding to finish
+        let isSubscribed = true;
+        const interval = setInterval(() => {
+          if (localStorage.getItem("silo_onboarding_completed") && isSubscribed) {
+            clearInterval(interval);
+            setTimeout(() => setIsOpen(true), 800); // Smooth transition after tour ends
+          }
+        }, 500);
+        
+        return () => {
+          isSubscribed = false;
+          clearInterval(interval);
+        };
+      }
     }
   }, []);
 
   const handleSelection = (action: string) => {
     // Save to local storage so it doesn't show again today
     const today = new Date().toISOString().split('T')[0];
-    localStorage.setItem('dojo_daily_checkin', today);
+    localStorage.setItem('silo_daily_checkin', today);
     setIsOpen(false);
 
     if (action === 'task') router.push('/dashboard/task');
@@ -54,15 +72,15 @@ export default function DailyCheckinModal() {
             </button>
 
             <div className="p-8 pt-10 text-center relative z-10">
-              <div className="mx-auto w-20 h-20 bg-indigo-100 dark:bg-indigo-900/50 rounded-full flex items-center justify-center mb-6">
-                <Brain className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
+              <div className="mx-auto w-28 h-28 mb-4 relative drop-shadow-xl">
+                <img src="/assets/mascots/neko_ask_task_1781150994594.png" alt="Neko Ask Task" className="w-full h-full object-contain animate-bounce-slow" />
               </div>
               
               <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-2 flex justify-center items-center gap-2">
                 Halo! Hari ini mau apa? <Sparkles className="w-6 h-6 text-yellow-500" />
               </h2>
               <p className="text-gray-500 dark:text-slate-400 mb-8">
-                DoJo siap bantu kamu nge-grind hari ini. Pilih fokus utamamu supaya kita bisa langsung gass!
+                Silo siap bantu kamu nge-grind hari ini. Pilih fokus utamamu supaya kita bisa langsung gass!
               </p>
 
               <div className="grid gap-3">

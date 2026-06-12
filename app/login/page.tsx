@@ -40,15 +40,15 @@ export default function LoginPage() {
         {/* Card */}
         <div className="bg-white/90 backdrop-blur-xl rounded-4xl p-10 shadow-2xl shadow-indigo-100 border border-white/50 text-center transform transition-all hover:scale-[1.02] duration-500">
           
-          <div className="mx-auto w-20 h-20 bg-indigo-500 rounded-3xl rotate-6 flex items-center justify-center shadow-xl shadow-indigo-200 mb-8 transition-transform hover:rotate-12 duration-300">
-            <CheckCircle2 className="w-10 h-10 text-white -rotate-6" />
+          <div className="mx-auto w-24 h-24 mb-6 relative">
+            <img src="/assets/mascots/neko_greeting_login_1781150904124.png" alt="Neko Mascot" className="w-full h-full object-contain filter drop-shadow-xl hover:scale-110 transition-transform duration-300" />
           </div>
 
           <h2 className="text-4xl font-extrabold tracking-tight text-slate-900 mb-3">
             Siap Nugas?
           </h2>
           <p className="text-slate-500 mb-10 font-medium">
-            Masuk ke <span className="text-indigo-600 font-bold">DoJo</span>, kelarin tugas dapet XP & Streak! 🚀
+            Masuk ke <span className="text-indigo-600 font-bold">Silo</span>, kelarin tugas dapet XP & Streak! 🚀
           </p>
           
           {error && (
@@ -65,7 +65,7 @@ export default function LoginPage() {
             {loading ? (
               <span className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-indigo-500 animate-spin-slow" />
-                Nyiapin DoJo buat lo...
+                Nyiapin Silo buat lo...
               </span>
             ) : (
               <>
@@ -87,7 +87,7 @@ export default function LoginPage() {
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700">Beta Testing Notice</span>
             </div>
             <p className="text-[11px] text-amber-800 leading-relaxed">
-              DoJo masih dalam tahap verifikasi Google. Jika muncul peringatan <span className="font-bold">"Google belum memverifikasi"</span>, lo bisa klik <span className="font-bold">Lanjutan (Advanced)</span> &gt; <span className="font-bold">Buka DoJo (unsafe)</span> untuk lanjut. Data lo aman, kita cuma pake Google Calendar buat sinkron jadwal belajar lo!
+              Silo masih dalam tahap verifikasi Google. Jika muncul peringatan <span className="font-bold">"Google belum memverifikasi"</span>, lo bisa klik <span className="font-bold">Lanjutan (Advanced)</span> &gt; <span className="font-bold">Buka Silo (unsafe)</span> untuk lanjut. Data lo aman, kita cuma pake Google Calendar buat sinkron jadwal belajar lo!
             </p>
           </div>
 

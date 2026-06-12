@@ -33,8 +33,9 @@ export async function getAiResponse(prompt: string, systemInstruction: string, i
         return response.text;
       }
     } catch (err: any) {
-      // Handle Rate Limit (429)
-      if (err.message?.includes("429") && retryCount < 3) {
+      // Handle Rate Limit (429 / Too Many Requests)
+      const isRateLimit = err.message?.includes("429") || err.message?.toLowerCase().includes("too many requests") || err.message?.toLowerCase().includes("quota");
+      if (isRateLimit && retryCount < 3) {
         console.warn(`⚠️ Rate limit hit for ${modelName}. Retrying in 5s...`);
         await sleep(5000);
         return getAiResponse(prompt, systemInstruction, isJson, retryCount + 1);
@@ -79,8 +80,9 @@ export async function getEmbedding(text: string, retryCount = 0): Promise<number
     }
     return null;
   } catch (err: any) {
-    // Handle Rate Limit (429) - Sangat krusial buat embedding massal
-    if (err.message?.includes("429") && retryCount < 5) {
+    // Handle Rate Limit (429 / Too Many Requests) - Sangat krusial buat embedding massal
+    const isRateLimit = err.message?.includes("429") || err.message?.toLowerCase().includes("too many requests") || err.message?.toLowerCase().includes("quota");
+    if (isRateLimit && retryCount < 5) {
       const waitTime = 5000 * (retryCount + 1); // Exponential backoff
       console.warn(`⚠️ Embedding limit hit. Waiting ${waitTime/1000}s before retry...`);
       await sleep(waitTime);

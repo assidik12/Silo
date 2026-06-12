@@ -24,7 +24,7 @@ export default function MilestoneFeedbackTrigger() {
       onClose={() => setShow(false)}
       type="milestone"
       title="Wih, lo udah kelarin 5 tugas! 🎉"
-      description="Gimana rasanya nugas pake DoJo sejauh ini? Kasih tau kita dong biar makin mantap!"
+      description="Gimana rasanya nugas pake Silo sejauh ini? Kasih tau kita dong biar makin mantap!"
     />
   );
 }

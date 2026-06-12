@@ -1,8 +1,8 @@
-# Kebijakan Privasi DoJo
+# Kebijakan Privasi Silo
 
 **Terakhir Diperbarui: 12 Mei 2026**
 
-Selamat datang di DoJo. Kami sangat menghargai privasi Anda dan berkomitmen untuk melindungi data pribadi Anda. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi Anda saat Anda menggunakan aplikasi kami.
+Selamat datang di Silo. Kami sangat menghargai privasi Anda dan berkomitmen untuk melindungi data pribadi Anda. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi Anda saat Anda menggunakan aplikasi kami.
 
 ## 1. Informasi yang Kami Kumpulkan
 
@@ -13,14 +13,14 @@ Saat Anda mendaftar menggunakan Google Auth, kami mengumpulkan:
 *   Foto profil (jika Anda memilih untuk mengunggahnya)
 
 ### b. Data Google Drive
-DoJo meminta izin akses **Read-Only** ke Google Drive Anda melalui Google Picker. Kami hanya mengakses file yang Anda pilih secara spesifik (seperti PDF atau dokumen materi kuliah) untuk tujuan:
+Silo meminta izin akses **Read-Only** ke Google Drive Anda melalui Google Picker. Kami hanya mengakses file yang Anda pilih secara spesifik (seperti PDF atau dokumen materi kuliah) untuk tujuan:
 *   Menganalisis konten materi untuk pembuatan rangkuman AI.
 *   Menyusun roadmap pembelajaran berdasarkan materi Anda.
 *   **Kami tidak pernah menyimpan file asli Anda di server kami secara permanen.** Kami hanya menyimpan representasi vektor (embeddings) dari teks untuk keperluan AI Tutor.
 
 ## 2. Penggunaan Informasi
 Kami menggunakan informasi Anda untuk:
-*   Menyediakan fitur inti DoJo (Learning Hub, Task Management).
+*   Menyediakan fitur inti Silo (Learning Hub, Task Management).
 *   Personalisasi pengalaman belajar Anda berdasarkan gaya belajar yang Anda pilih.
 *   Menghasilkan gambar achievement untuk fitur Social Share.
 
@@ -49,4 +49,4 @@ Jika Anda memiliki pertanyaan tentang Kebijakan Privasi ini, silakan hubungi kam
 
 ---
 
-Dengan menggunakan DoJo, Anda menyetujui syarat-syarat dalam Kebijakan Privasi ini.
+Dengan menggunakan Silo, Anda menyetujui syarat-syarat dalam Kebijakan Privasi ini.

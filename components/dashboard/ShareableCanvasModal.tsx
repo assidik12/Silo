@@ -22,7 +22,7 @@ export default function ShareableCanvasModal({ userId, name, streak, xp }: Share
     try {
       const dataUrl = await htmlToImage.toJpeg(canvasRef.current, { quality: 0.95, pixelRatio: 2 });
       const link = document.createElement('a');
-      link.download = `dojo-progress-${name}.jpg`;
+      link.download = `Silo-progress-${name}.jpg`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
@@ -37,8 +37,8 @@ export default function ShareableCanvasModal({ userId, name, streak, xp }: Share
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${name}'s DoJo Stats`,
-          text: `Check out my productivity streak on DoJo! Can you beat my ${streak} days streak? 🔥`,
+          title: `${name}'s Silo Stats`,
+          text: `Check out my productivity streak on Silo! Can you beat my ${streak} days streak? 🔥`,
           url: shareUrl,
         });
       } catch (err) {
@@ -77,7 +77,7 @@ export default function ShareableCanvasModal({ userId, name, streak, xp }: Share
 
               <div className="z-10 flex flex-col items-center w-full h-full justify-between py-6">
                 <div className="bg-white/10 backdrop-blur-md border border-white/20 px-6 py-2 rounded-full">
-                  <span className="font-mono text-xs tracking-widest text-indigo-200 uppercase">DoJo App</span>
+                  <span className="font-mono text-xs tracking-widest text-indigo-200 uppercase">Silo App</span>
                 </div>
 
                 <div className="text-center w-full">

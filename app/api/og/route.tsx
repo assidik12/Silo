@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
 
-    const name = searchParams.get('name') || 'Dojo User';
+    const name = searchParams.get('name') || 'Silo User';
     const major = searchParams.get('major') || 'Mahasiswa';
     const xp = searchParams.get('xp') || '0';
     const streak = searchParams.get('streak') || '0';
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
             <div style={{ width: '40px', height: '40px', backgroundColor: 'white', borderRadius: '10px', display: 'flex', alignItems: 'center', justifySelf: 'center', justifyContent: 'center' }}>
               <span style={{ color: '#4f46e5', fontSize: '24px', fontWeight: 'bold', fontStyle: 'italic' }}>D</span>
             </div>
-            <span style={{ fontSize: '24px', fontWeight: '900', letterSpacing: '-1px' }}>DoJo</span>
+            <span style={{ fontSize: '24px', fontWeight: '900', letterSpacing: '-1px' }}>Silo</span>
           </div>
 
           <div style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px', backgroundColor: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '100px', marginBottom: '20px' }}>
@@ -70,7 +70,7 @@ export async function GET(req: NextRequest) {
           </div>
 
           <div style={{ position: 'absolute', bottom: '40px', fontSize: '12px', opacity: 0.6, fontWeight: 'bold', letterSpacing: '4px' }}>
-            DOJO-APP.VERCEL.APP
+            Silo-APP.VERCEL.APP
           </div>
         </div>
       ),

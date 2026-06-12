@@ -1,12 +1,16 @@
-# 🌿 DoJo: Gamified Productivity App
+# 🌿 Silo: Gamified Productivity App
 
 > *Bikin nugas nggak se-overwhelming itu lagi. Get things done, stay sane.* ✨
+
+<div align="center">
+  <img src="public/assets/mascots/neko_greeting_login_1781150904124.png" alt="Silo Mascot Neko Greeting" width="150" />
+</div>
 
 ---
 
 ## 💭 The Pain Point (Kenapa App Ini Ada?)
 
-Jujurly, ide bikin DoJo ini lahir dari keresahan *real* gue sebagai mahasiswa tingkat akhir. Lo tau kan rasanya:
+Jujurly, ide bikin Silo ini lahir dari keresahan *real* gue sebagai mahasiswa tingkat akhir. Lo tau kan rasanya:
 - Skripsi numpuk tapi *progress* stuck di Bab 1.
 - Tugas kuliah datang silih berganti dari berbagai matkul tanpa ampun.
 - Pikiran gampang banget ke-distract, cepet *burnout*, dan rasanya *overwhelmed* liat *to-do list* yang panjang banget.
@@ -14,13 +18,13 @@ Jujurly, ide bikin DoJo ini lahir dari keresahan *real* gue sebagai mahasiswa ti
 
 Dari situ, gue sadar kalau gue butuh sesuatu yang nggak cuma sekadar "buku catatan" tugas. Gue butuh sistem yang bisa ngasih gue **dopamin** dan bikin gue ngerasa "diapresiasi" setiap kali gue kelarin sekecil apapun progresnya. 
 
-Makanya, **DoJo** lahir buat nyelesain masalah itu.
+Makanya, **Silo** lahir buat nyelesain masalah itu.
 
 ---
 
-## 🚀 Apa itu DoJo?
+## 🚀 Apa itu Silo?
 
-DoJo adalah aplikasi produktivitas yang ngebawa konsep **Gamification** ke *daily routine* lo. Singkatnya: lo ngerjain tugas, lo dapet *XP (Experience Points)*, dan lo bisa ngebangun *Streak* harian layaknya main *game*.
+Silo adalah aplikasi produktivitas yang ngebawa konsep **Gamification** ke *daily routine* lo. Singkatnya: lo ngerjain tugas, lo dapet *XP (Experience Points)*, dan lo bisa ngebangun *Streak* harian layaknya main *game*.
 
 Fitur andalannya:
 - **Task Management Chill**: Catet tugas, deskripsi, estimasi waktu, plus *link* modul (Google Drive) di satu tempat yang rapi.
@@ -33,7 +37,7 @@ Fitur andalannya:
 - **Secret Reward Ecosystem**: XP sekarang nggak cuma pamer, tapi bakal bisa ditukarkan dengan fitur istimewa yang masih dirahasiakan! 🤫
 - **Advanced Profile Settings**: Atur preferensi belajar lo (Morning/Night Owl) dan *focus duration* biar makin personal.
 - **Interactive Onboarding & Proactive Check-in**: Modal harian cerdas yang langsung nyapa dan nanyain fokus hari ini begitu lo login.
-- **DojoBot AI (RAG Chatbot)**: Asisten cerdas di dalam dashboard buat nemenin onboarding dan ngejawab semua FAQ seputar DoJo.
+- **Neko AI Assistant (RAG Chatbot)**: Asisten pintar (mascot kucing) di dalam dashboard buat nemenin belajar dan ngejawab semua FAQ seputar materi & aplikasi.
 - **AI Task Breakdown**: Pecah tugas besar jadi sub-tasks yang actionable dalam hitungan detik.
 - **Professional Guide Page**: Dokumentasi lengkap penggunaan aplikasi untuk user awam.
 - **Smart Rate Limiting**: Penggunaan AI yang lebih stabil dan terkontrol biar nggak gampang *limit*.
@@ -43,20 +47,21 @@ Fitur andalannya:
 
 ## 🛠️ Architecture & Tech Stack
 
-Untuk detail arsitektur teknis, *schema database*, dan *blueprint* teknologi di balik DoJo, silakan baca dokumentasi [Architecture Decision Records (ADR) kami di folder `/docs/adr`](docs/adr/0001-architecture-and-tech-stack.md).
+Untuk detail arsitektur teknis, *schema database*, dan *blueprint* teknologi di balik Silo, silakan baca dokumentasi [Architecture Decision Records (ADR) kami di folder `/docs/adr`](docs/adr/0001-architecture-and-tech-stack.md).
 
 ---
 
 ## 🤝 Open Contribution!
 
-Karena aplikasi ini dibangun dari keresahan bersama, DoJo terbuka banget buat siapa aja yang mau ikut ngembangin! 🌱
+Karena aplikasi ini dibangun dari keresahan bersama, Silo terbuka banget buat siapa aja yang mau ikut ngembangin! 🌱
 
 Masih banyak banget ruang buat bikin app ini makin gila. Kalau lo punya keresahan yang sama, ngerasa *relate*, atau sekadar pengen *flexing* skill *coding* lo, **yuk bareng-bareng kontribusi!** 
 
 Beberapa ide fitur yang pengen banget di-develop ke depannya:
-- 🏆 **Global Leaderboard** biar bisa balapan XP sama user DoJo dari kampus lain.
+- 🏆 **Global Leaderboard** biar bisa balapan XP sama user Silo dari kampus lain.
 - 💬 **Social Accountability** biar bisa pamer *streak* atau balapan XP bareng temen se-angkatan.
 - 🍎 **Widget Support** buat pantau tugas langsung dari Home Screen HP.
+- 🐾 **Advanced Neko Interactions** untuk animasi transisi (*Framer Motion*) dan *Secret Rewards* dari Neko.
 
 ### Cara Ikutan Nge-Code:
 1. *Fork* repository ini.

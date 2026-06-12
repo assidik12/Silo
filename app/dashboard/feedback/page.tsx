@@ -45,7 +45,7 @@ export default function FeedbackPage() {
         <div className="w-16 h-16 bg-pink-100 dark:bg-pink-500/10 text-pink-500 dark:text-pink-400 rounded-full flex items-center justify-center mx-auto mb-4 ring-4 ring-pink-50 dark:ring-pink-500/5">
           <MessageSquareHeart className="w-8 h-8" />
         </div>
-        <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">Bantu DoJo Jadi Lebih Baik!</h1>
+        <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">Bantu Silo Jadi Lebih Baik!</h1>
         <p className="text-slate-500 dark:text-slate-400 mt-2">
           Punya ide fitur baru? Nemu bug? Atau sekadar mau bilang halo? Kirim aja ke sini!
         </p>
@@ -56,7 +56,7 @@ export default function FeedbackPage() {
           <div className="text-center py-10 animate-fade-in">
             <div className="text-5xl mb-4">🚀</div>
             <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">Makasih Banget!</h3>
-            <p className="text-slate-500 dark:text-slate-400">Feedback lo udah masuk. Kita bakal baca dan jadiin DoJo makin keren buat lo.</p>
+            <p className="text-slate-500 dark:text-slate-400">Feedback lo udah masuk. Kita bakal baca dan jadiin Silo makin keren buat lo.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">

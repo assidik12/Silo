@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { ArrowLeft, ShieldCheck, Lock, Eye, Database } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | DoJo',
-  description: 'Kebijakan privasi penggunaan layanan DoJo.',
+  title: 'Privacy Policy | Silo',
+  description: 'Kebijakan privasi penggunaan layanan Silo.',
 };
 
 export default function PrivacyPolicy() {
@@ -30,7 +30,7 @@ export default function PrivacyPolicy() {
             <section>
               <p className="font-bold text-slate-800 italic">Terakhir Diperbarui: 12 Mei 2026</p>
               <p className="mt-4">
-                Selamat datang di **DoJo**. Kami sangat menghargai privasi Anda dan berkomitmen untuk melindungi data pribadi Anda. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi Anda saat Anda menggunakan aplikasi kami.
+                Selamat datang di **Silo**. Kami sangat menghargai privasi Anda dan berkomitmen untuk melindungi data pribadi Anda. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi Anda saat Anda menggunakan aplikasi kami.
               </p>
             </section>
 
@@ -45,7 +45,7 @@ export default function PrivacyPolicy() {
                 </div>
                 <div>
                   <h3 className="font-bold text-slate-800">b. Data Google Drive</h3>
-                  <p>DoJo meminta izin akses **Read-Only** ke Google Drive Anda melalui Google Picker. Kami hanya mengakses file yang Anda pilih secara spesifik untuk tujuan analisis AI.</p>
+                  <p>Silo meminta izin akses **Read-Only** ke Google Drive Anda melalui Google Picker. Kami hanya mengakses file yang Anda pilih secara spesifik untuk tujuan analisis AI.</p>
                 </div>
               </div>
             </section>
@@ -55,7 +55,7 @@ export default function PrivacyPolicy() {
                 <Database className="w-5 h-5 text-indigo-500" /> 2. Penggunaan & Penyimpanan Data
               </div>
               <div className="pl-7 space-y-4">
-                <p>Kami menggunakan informasi Anda untuk menyediakan fitur inti DoJo, personalisasi pengalaman belajar, dan menghasilkan gambar achievement.</p>
+                <p>Kami menggunakan informasi Anda untuk menyediakan fitur inti Silo, personalisasi pengalaman belajar, dan menghasilkan gambar achievement.</p>
                 <p>Data Anda disimpan secara aman menggunakan infrastruktur **Supabase** dan diproses oleh layanan AI (Google Gemini) secara rahasia.</p>
               </div>
             </section>
@@ -79,7 +79,7 @@ export default function PrivacyPolicy() {
         </div>
 
         <footer className="mt-12 text-center text-slate-400 text-sm font-medium">
-          &copy; 2026 DoJo Productive App. Build for Students.
+          &copy; 2026 Silo Productive App. Build for Students.
         </footer>
       </div>
     </div>

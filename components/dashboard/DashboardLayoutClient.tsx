@@ -8,7 +8,7 @@ export default function DashboardLayoutClient({ children }: { children: React.Re
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem('dojo_sidebar_open');
+    const saved = localStorage.getItem('Silo_sidebar_open');
     if (saved !== null) {
       setIsSidebarOpen(saved === 'true');
     }
@@ -17,7 +17,7 @@ export default function DashboardLayoutClient({ children }: { children: React.Re
   const toggleSidebar = () => {
     const newState = !isSidebarOpen;
     setIsSidebarOpen(newState);
-    localStorage.setItem('dojo_sidebar_open', String(newState));
+    localStorage.setItem('Silo_sidebar_open', String(newState));
   };
 
   return (

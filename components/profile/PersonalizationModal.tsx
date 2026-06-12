@@ -34,7 +34,7 @@ export default function PersonalizationModal({ isOpen, onClose }: Personalizatio
     if (res.success) {
       showModal({
         title: 'Mantap!',
-        message: 'Personalisasi lo udah tersimpan. DoJo siap nemenin lo nugas makin asik! 🚀',
+        message: 'Personalisasi lo udah tersimpan. Silo siap nemenin lo nugas makin asik! 🚀',
         type: 'success'
       });
       onClose();
