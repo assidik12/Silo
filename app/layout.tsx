@@ -20,6 +20,7 @@ const quicksand = Quicksand({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://silo-student.vercel.app"),
   title: "Silo | Gamify Your Student Life",
   description: "Silo adalah asisten produktivitas mahasiswa berbasis AI dengan sistem gamifikasi XP & Streak. Kelola tugas, rapihin materi kuliah, dan belajar bareng Neko, AI Tutor kamu.",
   keywords: ["productivity", "student", "gamification", "AI tutor", "neko", "study assistant", "task management"],
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Silo | Gamify Your Student Life",
     description: "Tingkatkan produktivitas belajar lo dengan gaya Gen Z. Gamifikasi tugas, AI breakdown, dan Learning Hub dalam satu aplikasi.",
-    url: "https://do-jo-wheat.vercel.app/",
+    url: "https://silo-student.vercel.app/",
     siteName: "Silo",
     images: [
       {
