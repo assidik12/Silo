@@ -17,6 +17,7 @@ import { cookies } from 'next/headers';
 import { ThemeToggle } from '@/components/preferences/ThemeToggle';
 import { NavLinks } from '@/components/dashboard/NavLinks';
 import TestimonialSlider from '@/components/home/TestimonialSlider';
+import FaqSection from '@/components/home/FaqSection';
 
 export default async function LandingPage() {
   const cookieStore = await cookies();
@@ -392,7 +393,10 @@ export default async function LandingPage() {
         <TestimonialSlider />
       </section>
 
-      {/* 8. CTA AKHIR & FOOTER */}
+      {/* 8. FAQ SECTION */}
+      <FaqSection />
+
+      {/* 9. CTA AKHIR & FOOTER */}
       <section className="py-24 px-6 bg-indigo-50 dark:bg-indigo-950/20 relative overflow-hidden">
         {/* Decorative Blobs */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/40 dark:bg-indigo-500/10 blur-3xl rounded-full"></div>
@@ -419,6 +423,7 @@ export default async function LandingPage() {
             <p className="text-[10px] uppercase tracking-widest text-slate-300">Made with 🔥 for students</p>
           </div>
           <div className="flex gap-8 items-center">
+            <Link href="/blog" className="hover:text-indigo-600 transition-colors">Blog</Link>
             <Link href="/privacy-policy" className="hover:text-indigo-600 transition-colors">Privacy Policy</Link>
             <Link href="/terms-of-service" className="hover:text-indigo-600 transition-colors">Terms of Service</Link>
             <a href="mailto:sofi.sidik12@gmail.com" className="hover:text-indigo-600 transition-colors">Contact</a>

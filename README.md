@@ -26,23 +26,8 @@ Makanya, **Silo** lahir buat nyelesain masalah itu.
 
 Silo adalah aplikasi produktivitas yang ngebawa konsep **Gamification** ke *daily routine* lo. Singkatnya: lo ngerjain tugas, lo dapet *XP (Experience Points)*, dan lo bisa ngebangun *Streak* harian layaknya main *game*.
 
-Fitur andalannya:
-- **Task Management Chill**: Catet tugas, deskripsi, estimasi waktu, plus *link* modul (Google Drive) di satu tempat yang rapi.
-- **Magic Google Calendar Sync**: Sekali klik *Create Task*, tugas lo otomatis nangkring di Google Calendar lo!
-- **AI-Powered Learning Hub (SKS Mode)**: Generate materi belajar instan yang bisa lo *edit* langsung biar makin sesuai kebutuhan.
-- **Linked Tasks Ecosystem**: Sinkronisasi ciamik antara materi di Learning Hub dan Tugas yang lo buat. Nggak akan ada lagi yang ketinggalan!
-- **Google Picker Integration**: Pilih folder materi langsung dari Drive tanpa ribet *copy-paste* link! 📁
-- **Social Share (Flex Your Progress)**: Bagikan pencapaian, badge, dan *streak* lo langsung ke Instagram atau WhatsApp! 🔥
-- **Gamification (XP & Streak)**: Tiap kelarin tugas = dapet XP. Kerjain tiap hari = *Streak* lo bertambah.
-- **Secret Reward Ecosystem**: XP sekarang nggak cuma pamer, tapi bakal bisa ditukarkan dengan fitur istimewa yang masih dirahasiakan! 🤫
-- **Advanced Profile Settings**: Atur preferensi belajar lo (Morning/Night Owl) dan *focus duration* biar makin personal.
-- **Interactive Onboarding & Proactive Check-in**: Modal harian cerdas yang langsung nyapa dan nanyain fokus hari ini begitu lo login.
-- **Neko AI Assistant (RAG Chatbot)**: Asisten pintar (mascot kucing) di dalam dashboard buat nemenin belajar dan ngejawab semua FAQ seputar materi & aplikasi.
-- **Hybrid AI Engine & Caching**: Kombinasi Gemini (dengan *Caching*) untuk materi berat dan Groq/Llama 3 untuk *task breakdown* dan ngobrol instan.
-- **PWA & Offline Ready**: Bisa di-*install* langsung ke HP (tanpa App Store), lengkap dengan *Push Notification* (Streak Reminder) biar lo nggak bolos nugas.
-- **Optimistic UI**: Interaksi penyelesaian *task* super cepat dengan *zero-latency loading*.
-- **Professional Guide Page**: Dokumentasi lengkap penggunaan aplikasi untuk user awam.
-- **Dashboard Aesthetic**: UX/UI yang *clean, calm*, dan *playful* dengan *collapsible sidebar* dinamis biar mata lo nggak capek.
+📝 **Fitur Lengkap & Progres Development:**
+Untuk melihat daftar fitur lengkap yang sudah jadi di versi MVP ini, lo bisa langsung cek di **[Changelog Silo (docs/CHANGELOG.md)](docs/CHANGELOG.md)**.
 
 ---
 
@@ -58,11 +43,7 @@ Karena aplikasi ini dibangun dari keresahan bersama, Silo terbuka banget buat si
 
 Masih banyak banget ruang buat bikin app ini makin gila. Kalau lo punya keresahan yang sama, ngerasa *relate*, atau sekadar pengen *flexing* skill *coding* lo, **yuk bareng-bareng kontribusi!** 
 
-Beberapa ide fitur yang pengen banget di-develop ke depannya:
-- 🏆 **Global Leaderboard** biar bisa balapan XP sama user Silo dari kampus lain.
-- 💬 **Social Accountability** biar bisa pamer *streak* atau balapan XP bareng temen se-angkatan.
-- 🍎 **Widget Support** buat pantau tugas langsung dari Home Screen HP.
-- 🐾 **Advanced Neko Interactions** untuk animasi transisi (*Framer Motion*) dan *Secret Rewards* dari Neko.
+Ide-ide fitur seru yang bakal di-develop ke depannya juga bisa lo cek detailnya di bagian `🔜 Planned` pada file **[Changelog Silo (docs/CHANGELOG.md)](docs/CHANGELOG.md)**.
 
 ### Cara Ikutan Nge-Code:
 1. *Fork* repository ini.

@@ -309,18 +309,9 @@ export default function LearningPage() {
                     folderId={syncedFolder?.dbFolderId || undefined} 
                     courseTitle={bingePlan.courseTitle} 
                     onEpisodesChange={(newEpisodes) => setBingePlan(prev => ({ ...prev, episodes: newEpisodes }))}
+                    onClose={() => setMode("selection")}
+                    onSave={() => handleSaveNote(bingePlan.courseTitle || `${syncedFolder.folderName} - Binge-Watch Plan`, "binge", bingePlan.episodes)}
                   />
-
-                  <div className="mt-8 flex justify-end">
-                    <button
-                      onClick={() => handleSaveNote(bingePlan.courseTitle || `${syncedFolder.folderName} - Binge-Watch Plan`, "binge", bingePlan.episodes)}
-                      disabled={isSaving}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-colors disabled:opacity-70"
-                    >
-                      {isSaving ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-                      Simpan Roadmap
-                    </button>
-                  </div>
                 </>
               )}
             </div>
@@ -413,7 +404,12 @@ export default function LearningPage() {
                 {selectedHistory.type === "sks" ? (
                   <SksCanvas content={typeof selectedHistory.content === "string" ? selectedHistory.content : JSON.stringify(selectedHistory.content)} />
                 ) : (
-                  <BingeWatchCanvas episodes={typeof selectedHistory.content === "string" ? JSON.parse(selectedHistory.content) : selectedHistory.content} folderId={selectedHistory.folder_id || undefined} courseTitle={selectedHistory.title} />
+                  <BingeWatchCanvas 
+                    episodes={typeof selectedHistory.content === "string" ? JSON.parse(selectedHistory.content) : selectedHistory.content} 
+                    folderId={selectedHistory.folder_id || undefined} 
+                    courseTitle={selectedHistory.title} 
+                    onClose={() => setSelectedHistory(null)}
+                  />
                 )}
               </div>
 

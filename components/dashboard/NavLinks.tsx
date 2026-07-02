@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 
 export function NavLinks() {
   const [activeSection, setActiveSection] = useState<string>("home");
@@ -51,6 +52,12 @@ export function NavLinks() {
           {id === "cara-kerja" ? "Cara Kerja" : id}
         </a>
       ))}
+      <Link
+        href="/blog"
+        className="transition-colors cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400"
+      >
+        Blog
+      </Link>
     </div>
   );
 }

@@ -45,7 +45,7 @@ export default function Sidebar({ isOpen = true, toggleSidebar }: SidebarProps) 
   ];
 
   if (isAdmin) {
-    navLinks.push({ name: 'Admin Monitoring', href: '/admin/feedback', icon: History });
+    navLinks.push({ name: 'Admin Panel', href: '/admin/blog', icon: History });
   }
 
   const closeSidebar = () => setIsMobileOpen(false);
