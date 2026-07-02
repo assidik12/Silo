@@ -6,7 +6,7 @@ import { ArrowLeft, Loader2, Save, Globe } from 'lucide-react';
 import Link from 'next/link';
 import BlogEditor from '@/components/admin/BlogEditor';
 import { Post, PostStatus } from '@/types/blog';
-import { createPost, updatePost } from '@/app/actions/blog.action';
+import { createPost, updatePost } from '@/app/actions/blog.actions';
 
 interface PostFormProps {
   post?: Post; // If provided, we are in EDIT mode

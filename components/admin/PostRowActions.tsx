@@ -4,7 +4,7 @@ import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Edit2, Trash2, Globe, EyeOff, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { togglePublish, deletePost } from '@/app/actions/blog.action';
+import { togglePublish, deletePost } from '@/app/actions/blog.actions';
 import { PostStatus } from '@/types/blog';
 
 interface PostRowActionsProps {
