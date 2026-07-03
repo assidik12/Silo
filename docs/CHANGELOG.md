@@ -13,6 +13,13 @@ Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - 🚀 **SEO & Branding Optimization:** Migrasi ke domain baru (`silo.nexorabase.com`), implementasi *dynamic Sitemap*, dan pembaruan OG Image.
 - 🗃️ **Standardization:** Dokumentasi resmi *File Naming Convention* di Architecture Decision Record (ADR 0001).
 
+**Freemium & Seminar Acquisition:**
+- 💎 **Freemium Gating System:** Pembatasan akses fitur eksklusif (seperti *unlimited journaling*) khusus untuk *user* Premium.
+- 🎟️ **Admin Voucher Management:** Dashboard admin `/admin/vouchers` untuk meng-generate dan mendistribusikan kode voucher premium ke peserta seminar. Termasuk *monitoring* status dan kuota voucher.
+- 📈 **User Acquisition Tracking:** Sistem perekaman parameter `?ref=...` dari URL otomatis terhubung ke *signup source* database saat login via Google untuk pelacakan analitik.
+- 🤖 **Premium AI Model Selection:** Dropdown pemilih model AI (Groq Fast & Gemini Smart) eksklusif untuk *user* Premium di *Learning Canvas*.
+- ⚡ **Premium Gamification Boost:** Bonus instan 500 XP saat mengaktifkan voucher dan 2x XP Multiplier (*Double XP*) setiap menyelesaikan tugas bagi *user* Premium.
+
 **Core Task Management:**
 - 📝 **Task Management Chill:** Sistem pencatatan tugas dengan deskripsi, estimasi waktu, dan integrasi link modul (Google Drive).
 - 🔗 **Linked Tasks Ecosystem:** Sinkronisasi materi dari Learning Hub ke dalam sistem Task.
@@ -20,7 +27,7 @@ Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 **Integrasi Eksternal:**
 - 📅 **Magic Google Calendar Sync:** Sinkronisasi 1-klik dari Silo ke Google Calendar.
-- 📁 **Google Picker Integration:** Pemilihan file/folder modul langsung dari Google Drive di dalam app.
+- 📁 **Local PDF Upload:** Mengunggah dan memproses banyak file PDF lokal sekaligus ke dalam vektor AI secara langsung di *Learning Hub*.
 
 **Kecerdasan Buatan (AI Engine):**
 - 🧠 **Hybrid AI Engine:** Kombinasi Google Gemini (untuk *heavy tasks* dengan *caching*) dan Groq/Llama 3 (untuk respons instan dan *task breakdown*).

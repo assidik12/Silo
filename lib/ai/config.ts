@@ -6,6 +6,14 @@ export const AI_MODELS = {
   EMBEDDING: "gemini-embedding-2"
 };
 
+// Model tiers for premium gating
+export const FREE_TIER_MODELS = [AI_MODELS.PRIMARY_GENERATION]; // Only gemini-2.5-flash
+export const PREMIUM_TIER_MODELS = [
+  AI_MODELS.PRIMARY_GENERATION,   // gemini-2.5-flash
+  "gemini-1.5-flash",             // gemini-1.5-flash
+  AI_MODELS.FALLBACK_GENERATION,  // gemini-pro
+];
+
 export const aiClient = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 // Helper untuk menunggu (sleep)

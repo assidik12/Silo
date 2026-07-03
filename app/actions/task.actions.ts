@@ -135,13 +135,20 @@ export async function toggleTaskStatus(taskId: string, currentStatus: string): P
     if (error) throw error;
 
     if (newStatus === "done") {
-      const { data: userData } = await supabase.from("users").select("xp, streak_count, last_active_date").eq("id", user.id).single();
+      const { data: userData } = await supabase.from("users").select("xp, streak_count, last_active_date, is_premium, premium_expires_at").eq("id", user.id).single();
       if (userData) {
         const now = new Date();
         const subTasksTotal = task.sub_tasks ? task.sub_tasks.length : 0;
         const subTasksDone = task.sub_tasks ? task.sub_tasks.filter((st: any) => st.done).length : 0;
         
-        const { earnedXp } = calculateXp(now, new Date(task.scheduled_time), subTasksDone, subTasksTotal);
+        let { earnedXp } = calculateXp(now, new Date(task.scheduled_time), subTasksDone, subTasksTotal);
+        
+        // Premium Boost 2x
+        const isPremium = userData.is_premium && userData.premium_expires_at && new Date(userData.premium_expires_at) > now;
+        if (isPremium) {
+          earnedXp *= 2;
+        }
+
         const { newStreakCount, newLastActiveDate } = calculateStreak(userData.streak_count, userData.last_active_date, now);
 
         await supabase.from("users").update({ 

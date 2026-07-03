@@ -99,6 +99,8 @@ export function BingeWatchCanvas({ episodes, folderId, courseTitle, onEpisodesCh
   const [isEditingDesc, setIsEditingDesc] = useState(false);
   const [tempDesc, setTempDesc] = useState("");
   const [isDescExpanded, setIsDescExpanded] = useState(false);
+  const [isPremium, setIsPremium] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<"auto" | "groq" | "gemini">("auto");
 
   const [chats, setChats] = useState<Record<string, { role: "user" | "ai"; content: string }[]>>({});
   const [chatActive, setChatActive] = useState<Record<string, boolean>>({});
@@ -113,6 +115,23 @@ export function BingeWatchCanvas({ episodes, folderId, courseTitle, onEpisodesCh
 
   useEffect(() => {
     setMounted(true);
+    const checkPremium = async () => {
+      const { createClient } = await import('@/utils/supabase/client');
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: userData } = await supabase
+          .from("users")
+          .select("is_premium, premium_expires_at")
+          .eq("id", user.id)
+          .single();
+        if (userData) {
+          const isActive = userData.is_premium && userData.premium_expires_at && new Date(userData.premium_expires_at) > new Date();
+          setIsPremium(!!isActive);
+        }
+      }
+    };
+    checkPremium();
   }, []);
 
   useEffect(() => {
@@ -144,7 +163,7 @@ export function BingeWatchCanvas({ episodes, folderId, courseTitle, onEpisodesCh
       if (!quarter) return;
 
       setIsLoadingChat(true);
-      const res = await chatWithTutor(folderId || null, quarterId, quarter.title, quarter.description, "Gue siap belajar materi ini", []);
+      const res = await chatWithTutor(folderId || null, quarterId, quarter.title, quarter.description, "Gue siap belajar materi ini", [], selectedModel);
       setIsLoadingChat(false);
 
       if (res.success && res.data) {
@@ -178,7 +197,7 @@ export function BingeWatchCanvas({ episodes, folderId, courseTitle, onEpisodesCh
     if (!quarter) return;
 
     setIsLoadingChat(true);
-    const res = await chatWithTutor(folderId || null, activeQuarter, quarter.title, quarter.description, usermsg, chats[activeQuarter] || []);
+    const res = await chatWithTutor(folderId || null, activeQuarter, quarter.title, quarter.description, usermsg, chats[activeQuarter] || [], selectedModel);
     setIsLoadingChat(false);
 
     if (res.success && res.data) {
@@ -422,6 +441,26 @@ export function BingeWatchCanvas({ episodes, folderId, courseTitle, onEpisodesCh
                       placeholder="Tanya soal materi ini, minta contoh, atau quiz..."
                       className="flex-1 bg-transparent px-4 py-2 text-[15px] focus:outline-none text-gray-900 dark:text-white dark:placeholder-slate-400"
                     />
+                    
+                    {/* Model Info / Selection */}
+                    <div className="flex items-center mx-2 shrink-0">
+                      {isPremium ? (
+                        <select 
+                          value={selectedModel}
+                          onChange={(e) => setSelectedModel(e.target.value as any)}
+                          className="bg-slate-100 dark:bg-slate-700 text-xs text-indigo-700 dark:text-indigo-300 rounded-xl px-2 py-1.5 outline-none border border-slate-200 dark:border-slate-600 font-bold cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                        >
+                          <option value="auto">Auto Model</option>
+                          <option value="groq">Groq (Fast)</option>
+                          <option value="gemini">Gemini (Smart)</option>
+                        </select>
+                      ) : (
+                        <div className="bg-slate-100 dark:bg-slate-800 text-[10px] text-gray-400 dark:text-slate-500 rounded-xl px-3 py-1.5 font-bold uppercase tracking-widest border border-slate-200 dark:border-slate-700">
+                          Auto Model
+                        </div>
+                      )}
+                    </div>
+
                     <button
                       onClick={handleSendMessage}
                       disabled={!inputValue.trim() || isLoadingChat}

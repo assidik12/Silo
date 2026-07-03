@@ -5,6 +5,8 @@ import { User, Medal, Settings, Mail, GraduationCap, MapPin, Sparkles } from 'lu
 import ProfileForm from '@/components/profile/ProfileForm';
 import AvatarUpload from '@/components/profile/AvatarUpload';
 import ShareButton from '@/components/shared/ShareButton';
+import PremiumStatusCard from '@/components/premium/PremiumStatusCard';
+import { checkPremiumStatus } from '@/utils/premium';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,6 +32,8 @@ export default async function ProfilePage() {
   const streak = userData?.streak_count || 0;
   const major = userData?.major || 'Belum diatur';
   const bio = userData?.bio || 'Mahasiswa produktif pengguna Silo.';
+  
+  const { isPremium, expiresAt } = await checkPremiumStatus(user.id);
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-fade-in pb-20">
@@ -114,6 +118,9 @@ export default async function ProfilePage() {
               ))}
             </div>
           </div>
+
+          {/* Premium Status Card */}
+          <PremiumStatusCard isPremium={isPremium} premiumExpiresAt={expiresAt} />
 
           {/* Secret Reward / Tukar XP Snippet */}
           <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-4xl p-6 border border-indigo-400 shadow-lg shadow-indigo-500/30 text-white relative overflow-hidden group">

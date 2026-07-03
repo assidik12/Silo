@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FileText, MessageSquare, ArrowLeft, Menu, X, CheckCircle2 } from 'lucide-react';
+import { FileText, MessageSquare, ArrowLeft, Menu, X, CheckCircle2, Ticket } from 'lucide-react';
 import { ThemeToggle } from '../preferences/ThemeToggle';
 
 export default function AdminSidebar() {
@@ -12,7 +12,8 @@ export default function AdminSidebar() {
 
   const navLinks = [
     { name: 'Blog Manager', href: '/admin/blog', icon: FileText },
-    { name: 'Feedback Monitor', href: '/admin/feedback', icon: MessageSquare }
+    { name: 'Feedback Monitor', href: '/admin/feedback', icon: MessageSquare },
+    { name: 'Voucher & Premium', href: '/admin/vouchers', icon: Ticket }
   ];
 
   return (

@@ -9,9 +9,11 @@ interface JournalInputProps {
   isLoading: boolean;
   selectedPersona: 'aesthetic' | 'savage' | 'mindful';
   onPersonaChange: (persona: 'aesthetic' | 'savage' | 'mindful') => void;
+  isPremium?: boolean;
+  journalCountToday?: number;
 }
 
-export default function JournalInput({ onSubmit, isLoading, selectedPersona, onPersonaChange }: JournalInputProps) {
+export default function JournalInput({ onSubmit, isLoading, selectedPersona, onPersonaChange, isPremium = false, journalCountToday = 0 }: JournalInputProps) {
   const [text, setText] = useState("");
 
   const handleSubmit = async () => {
@@ -21,6 +23,24 @@ export default function JournalInput({ onSubmit, isLoading, selectedPersona, onP
 
   return (
     <div className="w-full relative">
+      {/* Premium Lock Indicator */}
+      <div className="absolute top-4 right-4 z-10 pointer-events-none">
+        {isPremium ? (
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50/80 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 text-xs font-bold rounded-full border border-indigo-100 dark:border-indigo-800 backdrop-blur-sm shadow-sm">
+            <span className="text-sm">⭐</span> Premium — Unlimited Journaling
+          </div>
+        ) : (
+          <div className="inline-flex flex-col items-end gap-1">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-full border border-slate-200 dark:border-slate-700 backdrop-blur-sm shadow-sm">
+              Jurnal hari ini: <span className={journalCountToday >= 2 ? "text-amber-500" : ""}>{journalCountToday}/2</span>
+            </div>
+            {journalCountToday >= 2 && (
+              <span className="text-[10px] text-amber-500 font-bold bg-white/80 dark:bg-slate-800/80 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700">Limit tercapai. Butuh Premium ⭐</span>
+            )}
+          </div>
+        )}
+      </div>
+
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}

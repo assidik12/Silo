@@ -14,10 +14,17 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
 
+    // Capture ref param from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref');
+    const callbackUrl = ref 
+      ? `${window.location.origin}/auth/callback?ref=${ref}`
+      : `${window.location.origin}/auth/callback`;
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: callbackUrl,
         scopes: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly',
       },
     });

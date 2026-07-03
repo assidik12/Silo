@@ -65,10 +65,11 @@ export async function generateDeterministicContent(
 export async function generateFastResponse(
   prompt: string,
   systemInstruction: string,
-  isJson: boolean = false
+  isJson: boolean = false,
+  preferredModel: "auto" | "groq" | "gemini" = "auto"
 ): Promise<string | null> {
   // Gunakan Groq jika tersedia (sangat cepat untuk chat/breakdown)
-  if (groq) {
+  if (groq && preferredModel !== "gemini") {
     try {
       console.log("🤖 Generating with Groq (Llama 3)...");
       const chatCompletion = await groq.chat.completions.create({

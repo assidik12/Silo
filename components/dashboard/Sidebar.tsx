@@ -3,10 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, PlusCircle, History, LogOut, CheckCircle2, Menu, X, User, MessageCircle, BookOpen, MessageSquareReply } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, History, LogOut, CheckCircle2, Menu, X, User, MessageCircle, BookOpen, MessageSquareReply, Sparkles } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
-import { ThemeToggle } from '../preferences/ThemeToggle';
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -21,13 +20,13 @@ export default function Sidebar({ isOpen = true, toggleSidebar }: SidebarProps) 
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const checkAdmin = async () => {
+    const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
         setIsAdmin(true);
       }
     };
-    checkAdmin();
+    checkUser();
   }, [supabase]);
 
   const handleLogout = async () => {
@@ -81,7 +80,11 @@ export default function Sidebar({ isOpen = true, toggleSidebar }: SidebarProps) 
             </div>
             {isOpen && <span>Silo</span>}
           </h2>
-          {isOpen && <ThemeToggle />}
+          {toggleSidebar && (
+            <button onClick={toggleSidebar} className="hidden lg:flex p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
         </div>
 
         <div className="flex-1 py-6 px-4 space-y-2 overflow-y-auto overflow-x-hidden custom-scrollbar">
@@ -109,15 +112,6 @@ export default function Sidebar({ isOpen = true, toggleSidebar }: SidebarProps) 
         </div>
 
         <div className="p-4 border-t border-gray-100 dark:border-slate-800 shrink-0 space-y-2">
-          {toggleSidebar && (
-            <button
-              onClick={toggleSidebar}
-              className="hidden lg:flex items-center gap-3 px-4 py-3 w-full rounded-xl font-medium text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
-            >
-              <Menu className="w-5 h-5 shrink-0" />
-              <span className={`${isOpen ? 'block' : 'hidden'}`}>Tutup Menu</span>
-            </button>
-          )}
           <button
             onClick={handleLogout}
             className="flex items-center gap-3 px-4 py-3 w-full rounded-xl font-medium text-gray-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 transition-colors"

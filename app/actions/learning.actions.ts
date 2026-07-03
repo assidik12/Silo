@@ -33,13 +33,22 @@ export async function syncGoogleDriveFolder(driveUrl: string): Promise<ActionRes
     auth.setCredentials({ access_token: provider_token });
     const drive = google.drive({ version: "v3", auth });
 
-    const res = await drive.files.list({
-      q: `'${folderId}' in parents and mimeType='application/pdf' and trashed=false`,
-      fields: "files(id, name)",
-    });
+    let files;
+    try {
+      const res = await drive.files.list({
+        q: `'${folderId}' in parents and mimeType='application/pdf' and trashed=false`,
+        fields: "files(id, name)",
+      });
+      files = res.data.files;
+    } catch (apiErr: any) {
+      console.error("Google Drive API Error:", apiErr.message);
+      return { 
+        success: false, 
+        error: "Gagal mengakses folder. Pastikan folder tersebut milikmu, atau akses sharing-nya sudah diubah menjadi 'Anyone with the link' (Publik)." 
+      };
+    }
 
-    const files = res.data.files;
-    if (!files || files.length === 0) return { success: false, error: "No PDF files found in this folder." };
+    if (!files || files.length === 0) return { success: false, error: "Tidak ada file PDF yang ditemukan di dalam folder tersebut." };
 
     // 1. CEK APAKAH FOLDER SUDAH ADA (Hemat Kuota: Jangan duplikasi folder)
     let { data: dbFolder } = await supabase
@@ -116,6 +125,76 @@ export async function syncGoogleDriveFolder(driveUrl: string): Promise<ActionRes
       data: { 
         filesCount: files.length, 
         folderName: "Google Drive Folder", 
+        dbFolderId: dbFolder.id 
+      } 
+    };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function uploadLocalFiles(formData: FormData): Promise<ActionResponse<{ filesCount: number; folderName: string; dbFolderId: string }>> {
+  try {
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    const files = formData.getAll('files') as File[];
+    if (!files || files.length === 0) {
+      return { success: false, error: "No files provided." };
+    }
+
+    // Create a local folder record
+    const folderName = `Local Upload (${files.length} files) - ${new Date().toLocaleDateString('id-ID')}`;
+    const { data: dbFolder, error: folderError } = await supabase
+      .from("learning_folders")
+      .insert({
+        user_id: user.id,
+        drive_folder_id: `local-${Date.now()}`,
+        folder_name: folderName,
+      })
+      .select("id")
+      .single();
+    
+    if (folderError || !dbFolder) return { success: false, error: "Failed to create folder record in DB." };
+
+    for (const file of files) {
+      try {
+        console.log(`📄 Processing local file: ${file.name}`);
+        const arrayBuffer = await file.arrayBuffer();
+        const text = await parsePdfBuffer(Buffer.from(arrayBuffer));
+        
+        if (!text) continue;
+
+        const chunks = chunkText(text, 1000);
+        for (const chunk of chunks) {
+          if (!chunk.trim()) continue;
+          
+          const embedding = await getEmbedding(chunk);
+          if (!embedding) continue;
+
+          await supabase.from("document_chunks").insert({
+            folder_id: dbFolder.id,
+            user_id: user.id,
+            content: chunk,
+            embedding,
+            metadata: { sourceFile: file.name },
+          });
+        }
+      } catch (e: any) { 
+        console.error(`Error processing file ${file.name}:`, e.message); 
+      }
+    }
+
+    return { 
+      success: true, 
+      data: { 
+        filesCount: files.length, 
+        folderName: folderName, 
         dbFolderId: dbFolder.id 
       } 
     };
@@ -206,7 +285,7 @@ Materi:\n${contextText}`;
   }
 }
 
-export async function chatWithTutor(folderId: string | null, quarterId: string, quarterTitle: string, quarterDescription: string, userMessage: string, history: { role: "ai" | "user"; content: string }[]): Promise<ActionResponse<string>> {
+export async function chatWithTutor(folderId: string | null, quarterId: string, quarterTitle: string, quarterDescription: string, userMessage: string, history: { role: "ai" | "user"; content: string }[], model: "auto" | "groq" | "gemini" = "auto"): Promise<ActionResponse<string>> {
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
@@ -240,7 +319,7 @@ Aturan gaya bahasa:
       ? `Histori Chat Sebelumnya:\n${historyStr}\n\nUser: ${userMessage}\nNeko:`
       : `User: ${userMessage}\nNeko:`;
 
-    const result = await generateFastResponse(fullPrompt, systemInstruction, false);
+    const result = await generateFastResponse(fullPrompt, systemInstruction, false, model);
     if (!result) return { success: false, error: "Gagal memproses chat AI." };
 
     await supabase.from("learning_chat_history").insert([

@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { generateJournalReflection } from "@/lib/ai/journaling";
 import { ActionResponse, JournalEntry, UserProfile } from "@/types";
+import { checkPremiumStatus } from "@/utils/premium";
 
 export async function createJournalEntry(rawText: string, overridePersona?: 'aesthetic' | 'savage' | 'mindful'): Promise<ActionResponse<JournalEntry>> {
   try {
@@ -13,23 +14,27 @@ export async function createJournalEntry(rawText: string, overridePersona?: 'aes
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { success: false, error: "Not authenticated" };
 
-    // 1. Rate Limiting: Max 2 request per day
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
+    // 1. Rate Limiting: Free = max 2/day, Premium = unlimited
+    const { isPremium } = await checkPremiumStatus(user.id);
 
-    const { count, error: countError } = await supabase
-      .from("journal_entries")
-      .select("*", { count: 'exact', head: true })
-      .eq("user_id", user.id)
-      .gte("created_at", startOfDay.toISOString());
+    if (!isPremium) {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
 
-    if (countError) {
-      console.error("Error checking journal limits:", countError);
-      return { success: false, error: "Failed to check limits" };
-    }
+      const { count, error: countError } = await supabase
+        .from("journal_entries")
+        .select("*", { count: 'exact', head: true })
+        .eq("user_id", user.id)
+        .gte("created_at", startOfDay.toISOString());
 
-    if (count !== null && count >= 2) {
-      return { success: false, error: "Limit tercapai. Kamu hanya bisa menulis jurnal 2 kali sehari." };
+      if (countError) {
+        console.error("Error checking journal limits:", countError);
+        return { success: false, error: "Failed to check limits" };
+      }
+
+      if (count !== null && count >= 2) {
+        return { success: false, error: "Limit tercapai. Upgrade ke Premium untuk jurnal unlimited! ⭐" };
+      }
     }
 
     // 2. Get User Profile for AI Tunneling
@@ -187,24 +192,24 @@ export async function updateJournalEntry(
 
     if (enhanceWithAI) {
       // 1. Rate Limiting check
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0);
+      const { isPremium } = await checkPremiumStatus(user.id);
 
-      const { count, error: countError } = await supabase
-        .from("journal_entries")
-        .select("*", { count: 'exact', head: true })
-        .eq("user_id", user.id)
-        .neq("id", id)
-        .gte("created_at", startOfDay.toISOString());
+      if (!isPremium) {
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
 
-      if (countError) return { success: false, error: "Failed to check limits" };
-      
-      // We allow editing, but if it uses AI, we check the limit. 
-      // Note: If they created 2 today, they can't enhance. 
-      // If we want to allow editing their own today's entry without limit penalty, we should be careful. 
-      // For now, strict limit.
-      if (count !== null && count >= 2) {
-        return { success: false, error: "Limit tercapai. Kamu hanya bisa menggunakan AI 2 kali sehari." };
+        const { count, error: countError } = await supabase
+          .from("journal_entries")
+          .select("*", { count: 'exact', head: true })
+          .eq("user_id", user.id)
+          .neq("id", id)
+          .gte("created_at", startOfDay.toISOString());
+
+        if (countError) return { success: false, error: "Failed to check limits" };
+        
+        if (count !== null && count >= 2) {
+          return { success: false, error: "Limit tercapai. Upgrade ke Premium untuk jurnal unlimited! ⭐" };
+        }
       }
 
       // 2. Get User Profile for AI Tunneling

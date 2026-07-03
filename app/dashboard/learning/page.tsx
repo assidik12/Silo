@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { HardDrive, Zap, BookOpen, BrainCircuit, RefreshCw, CheckCircle2, ChevronRight, MessageSquare, Save, History, Edit2, Trash2 } from "lucide-react";
-import { syncGoogleDriveFolder, generateSKSSummary, generateBingeWatchPlan, saveLearningHistory, getLearningHistory, deleteLearningHistory, updateLearningHistoryTitle } from "@/app/actions/learning.actions";
+import { HardDrive, Zap, BookOpen, BrainCircuit, RefreshCw, CheckCircle2, ChevronRight, MessageSquare, Save, History, Edit2, Trash2, UploadCloud } from "lucide-react";
+import { syncGoogleDriveFolder, uploadLocalFiles, generateSKSSummary, generateBingeWatchPlan, saveLearningHistory, getLearningHistory, deleteLearningHistory, updateLearningHistoryTitle } from "@/app/actions/learning.actions";
 import { LearningHistoryItem, Episode } from "@/types";
 import { SksCanvas, BingeWatchCanvas } from "@/components/learning/LearningCanvas";
 import { useModal } from "@/components/providers/ModalProvider";
-import GooglePickerButton from "@/components/integrations/GooglePickerButton";
 
 export default function LearningPage() {
   const { showModal } = useModal();
@@ -181,19 +180,35 @@ export default function LearningPage() {
             </div>
 
             <div className="flex justify-center">
-              <GooglePickerButton 
-                onFolderSelect={async (id, name) => {
-                  setDriveUrl(id);
-                  setIsSyncing(true);
-                  const res = await syncGoogleDriveFolder(id);
-                  if (res.success && res.data) {
-                    setSyncedFolder(res.data);
-                  } else {
-                    showModal({ title: "Gagal Sync", message: res.error || "Gagal", type: "error" });
-                  }
-                  setIsSyncing(false);
-                }} 
-              />
+              <label className={`bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 px-6 py-3 rounded-xl font-bold transition-all cursor-pointer flex items-center gap-2 shadow-sm ${isSyncing ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                <UploadCloud className="w-5 h-5 text-indigo-500" /> 
+                {isSyncing ? "Mengunggah..." : "Upload Local PDF (Bisa Multiple)"}
+                <input 
+                  type="file" 
+                  multiple 
+                  accept=".pdf" 
+                  className="hidden" 
+                  disabled={isSyncing}
+                  onChange={async (e) => {
+                    const files = e.target.files;
+                    if (!files || files.length === 0) return;
+                    setIsSyncing(true);
+                    
+                    const formData = new FormData();
+                    for (let i = 0; i < files.length; i++) {
+                      formData.append("files", files[i]);
+                    }
+
+                    const res = await uploadLocalFiles(formData);
+                    if (res.success && res.data) {
+                      setSyncedFolder(res.data);
+                    } else {
+                      showModal({ title: "Gagal Upload", message: res.error || "Terjadi kesalahan", type: "error" });
+                    }
+                    setIsSyncing(false);
+                  }} 
+                />
+              </label>
             </div>
           </form>
         </div>

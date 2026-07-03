@@ -56,6 +56,9 @@ export interface UserProfile {
   nickname?: string | null;
   name?: string | null;
   semester?: number | null;
+  is_premium?: boolean;
+  premium_expires_at?: string | null;
+  signup_source?: string | null;
 }
 
 export interface JournalEntry {
@@ -65,5 +68,15 @@ export interface JournalEntry {
   ai_reflection: string;
   sentiment_score: number;
   bg_color?: string | null;
+  created_at: string;
+}
+
+export interface VoucherCode {
+  id: string;
+  code: string;
+  duration_days: number;
+  max_uses: number;
+  current_uses: number;
+  is_active: boolean;
   created_at: string;
 }

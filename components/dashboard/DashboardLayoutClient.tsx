@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
+import FloatingActions from './FloatingActions';
 
 export default function DashboardLayoutClient({ children }: { children: React.ReactNode }) {
   // Read from localStorage if user previously closed it
@@ -30,6 +31,8 @@ export default function DashboardLayoutClient({ children }: { children: React.Re
           {children}
         </div>
       </div>
+      
+      <FloatingActions />
     </div>
   );
 }
